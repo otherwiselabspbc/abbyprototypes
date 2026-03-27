@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>The Rune Stones — Phoneme Quest</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino,serif;user-select:none;-webkit-user-select:none;touch-action:none}
+#c{display:block;position:fixed;top:0;left:0;width:100%;height:100%}
+
+/* ── SCREENS ── */
+.screen{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20}
+.screen.off{display:none}
+
+/* ── TITLE ── */
+#s-title{background:radial-gradient(ellipse at center,rgba(30,10,60,0.97) 0%,rgba(8,2,16,0.98) 100%)}
+.eyebrow{font-size:11px;letter-spacing:6px;color:#6b4d9a;text-transform:uppercase;margin-bottom:14px}
+.big-title{font-size:clamp(44px,11vw,80px);color:#e8d5a3;text-align:center;line-height:1.05;text-shadow:0 0 30px rgba(232,213,163,0.5),0 0 60px rgba(120,80,200,0.3);margin-bottom:14px}
+.tagline{font-size:clamp(13px,3.2vw,17px);color:#9080b0;text-align:center;max-width:300px;line-height:1.6;margin-bottom:44px}
+.btn{background:linear-gradient(145deg,#2e1055,#4a1e80);color:#e8d5a3;border:1px solid rgba(150,100,220,0.5);padding:15px 44px;font-size:17px;font-family:inherit;border-radius:3px;cursor:pointer;letter-spacing:3px;text-transform:uppercase;box-shadow:0 0 24px rgba(120,80,200,0.35),inset 0 1px 0 rgba(255,255,255,0.08);transition:box-shadow .2s,transform .1s}
+.btn:active{transform:scale(0.96);box-shadow:0 0 40px rgba(150,100,220,0.6)}
+.skill-tag{position:absolute;bottom:28px;font-size:10px;letter-spacing:3px;color:rgba(100,80,140,0.7);text-transform:uppercase}
+
+/* ── WIN ── */
+#s-win{background:radial-gradient(ellipse at center,rgba(40,25,10,0.97) 0%,rgba(8,2,16,0.98) 100%)}
+.win-title{font-size:clamp(42px,10vw,72px);color:#c8a84b;text-shadow:0 0 40px rgba(200,168,75,0.7);margin-bottom:10px;text-align:center}
+.win-sub{font-size:clamp(14px,3vw,18px);color:#9080b0;text-align:center;margin-bottom:28px}
+.badge{background:rgba(40,20,70,0.9);border:1px solid rgba(150,100,220,0.4);border-radius:6px;padding:14px 28px;margin-bottom:36px;text-align:center}
+.badge-label{font-size:10px;letter-spacing:4px;color:#6b4d9a;text-transform:uppercase}
+.badge-name{font-size:17px;color:#e8d5a3;margin-top:5px}
+
+/* ── FAIL ── */
+#s-fail{background:radial-gradient(ellipse at center,rgba(30,5,10,0.97) 0%,rgba(8,2,16,0.98) 100%)}
+.fail-title{font-size:clamp(38px,9vw,64px);color:#8b2a2a;text-shadow:0 0 30px rgba(139,42,42,0.6);margin-bottom:10px;text-align:center}
+.fail-sub{font-size:clamp(13px,3vw,17px);color:#9080b0;text-align:center;margin-bottom:40px;line-height:1.6}
+
+/* ── HUD ── */
+#hud{position:fixed;top:0;left:0;width:100%;z-index:15;pointer-events:none;display:none;flex-direction:column;align-items:center;padding:14px 20px 0;gap:10px}
+#hud.on{display:flex}
+#round-dots{display:flex;gap:9px}
+.rdot{width:9px;height:9px;border-radius:50%;background:rgba(232,213,163,0.15);border:1px solid rgba(232,213,163,0.3);transition:all .4s}
+.rdot.done{background:#e8d5a3;border-color:#e8d5a3}
+.rdot.cur{background:#c8a84b;border-color:#c8a84b;box-shadow:0 0 8px rgba(200,168,75,0.8)}
+#seq-row{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;min-height:38px}
+.sq{width:36px;height:36px;border-radius:50%;background:rgba(40,15,70,0.85);border:2px solid rgba(120,80,200,0.4);display:flex;align-items:center;justify-content:center;font-size:15px;color:#a090c8;font-style:italic;transition:all .3s}
+.sq.hit{background:rgba(200,168,75,0.25);border-color:#c8a84b;color:#e8d5a3;box-shadow:0 0 10px rgba(200,168,75,0.4)}
+
+/* ── LIVES ── */
+#lives{position:fixed;top:14px;right:18px;display:none;gap:5px;z-index:16}
+#lives.on{display:flex}
+.heart{font-size:19px;transition:all .3s;filter:drop-shadow(0 0 5px rgba(200,80,80,0.7))}
+.heart.lost{filter:grayscale(1);opacity:.25}
+
+/* ── INSTRUCTION ── */
+#msg{position:fixed;bottom:34px;left:50%;transform:translateX(-50%);background:rgba(8,2,16,0.88);border:1px solid rgba(120,80,200,0.35);padding:11px 22px;border-radius:24px;color:#c0b0d8;font-size:clamp(13px,3.2vw,16px);text-align:center;max-width:320px;z-index:15;pointer-events:none;display:none;backdrop-filter:blur(6px);white-space:nowrap}
+#msg.on{display:block}
+
+/* ── READY BTN ── */
+#ready{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);z-index:16;display:none}
+#ready.on{display:block}
+
+/* ── FLASH ── */
+#flash{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:30;opacity:0;transition:opacity .08s}
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+<div id="flash"></div>
+
+<!-- HUD -->
+<div id="hud">
+  <div id="round-dots"></div>
+  <div id="seq-row"></div>
+</div>
+<div id="lives">
+  <span class="heart" id="h1">♥</span>
+  <span class="heart" id="h2">♥</span>
+  <span class="heart" id="h3">♥</span>
+</div>
+<div id="msg"></div>
+<button id="ready" class="btn" style="font-size:14px;padding:12px 32px;letter-spacing:2px">Cast Sequence ›</button>
+
+<!-- Title -->
+<div id="s-title" class="screen">
+  <div class="eyebrow">Phoneme Quest · Stage I</div>
+  <div class="big-title">The Rune<br>Stones</div>
+  <p class="tagline">Three ancient stones hold trapped sounds. Learn their voices — then cast the sequence.</p>
+  <button class="btn" id="btn-start">Begin Ritual</button>
+  <div class="skill-tag">Phonological Awareness · Sequence Detection</div>
+</div>
+
+<!-- Win -->
+<div id="s-win" class="screen off">
+  <div class="win-title">✦ Mastered ✦</div>
+  <p class="win-sub">The binding ritual is complete.</p>
+  <div class="badge">
+    <div class="badge-label">Skill Unlocked</div>
+    <div class="badge-name">Phoneme Sequence Detection</div>
+  </div>
+  <button class="btn" id="btn-replay">Cast Again</button>
+</div>
+
+<!-- Fail -->
+<div id="s-fail" class="screen off">
+  <div class="fail-title">Spell Broken</div>
+  <p class="fail-sub">The sequence was lost to the wind.<br>Breathe. Try once more.</p>
+  <button class="btn" id="btn-retry">Try Again</button>
+</div>
+
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+
+// ─── CURRICULUM ───────────────────────────────────────────────────────────────
+// Domain: Phonological Awareness — Detection
+// Skill: Phoneme Sequence Tapping
+// Source row: "Child taps sounds in a sequence. 3 speaking stones say phonemes when touched."
+// Input: Auditory (hear sequence) + Visual (labeled stones in supported rounds)
+// Output: Tactile (tap correct stones in order)
+// Sample items used directly from CSV
+// TODO (production): replace Web Speech API with pre-recorded phoneme audio from reading specialist
+
+const ROUNDS = [
+  // Round 1 — supported: labels visible, sequence shown visually + spoken
+  { phonemes:['k','p','f'], seq:['p','p','k','f'], support:'full' },
+  // Round 2 — audio only: labels visible, sequence spoken once (no visual)
+  { phonemes:['a','u','o'], seq:['u','u','o'],     support:'audio' },
+  // Round 3 — independent: no labels, sequence spoken once
+  { phonemes:['t','m','a'], seq:['m','a','t'],     support:'none' },
+];
+
+// Approximate phoneme sounds for Web Speech API
+// 'kuh','puh' etc. intentionally use schwa for intelligibility at slow rate
+// In production, replace with isolated phoneme recordings
+const SAY = {k:'kk',p:'pp',f:'ff',a:'aah',u:'uh',o:'oh',t:'tt',m:'mmm',s:'sss'};
+
+// Runic glyphs shown when stone labels are hidden (Round 3)
+const RUNES = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ','ᛇ','ᛈ','ᛉ','ᛊ','ᛏ','ᛒ','ᛖ','ᛗ'];
+
+// Stone accent colors [idle hex, bright hex]
+const COLS = [
+  [0x4422bb, 0x8866ff],
+  [0x228866, 0x44ddaa],
+  [0xaa4422, 0xff8844],
+];
+
+// ─── RENDERER ─────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.85;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x060110);
+scene.fog = new THREE.FogExp2(0x0e0428, 0.055);
+
+const cam = new THREE.PerspectiveCamera(62, 1, 0.1, 120);
+cam.position.set(0, 3.0, 6.8);
+cam.lookAt(0, 0.8, 0);
+
+function resize() {
+  const w = innerWidth, h = innerHeight;
+  cam.aspect = w/h;
+  cam.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+resize();
+addEventListener('resize', resize);
+
+// ─── ENVIRONMENT ──────────────────────────────────────────────────────────────
+scene.add(new THREE.AmbientLight(0x1a0a35, 1.0));
+
+// Moon
+const moonMesh = new THREE.Mesh(
+  new THREE.SphereGeometry(1.4,16,16),
+  new THREE.MeshBasicMaterial({color:0xd8ccaa})
+);
+moonMesh.position.set(-9,14,-22);
+scene.add(moonMesh);
+const moonLight = new THREE.DirectionalLight(0x9988cc,0.6);
+moonLight.position.copy(moonMesh.position);
+moonLight.castShadow = true;
+scene.add(moonLight);
+
+// Ground
+const gnd = new THREE.Mesh(
+  new THREE.CircleGeometry(22,64),
+  new THREE.MeshLambertMaterial({color:0x0c0820})
+);
+gnd.rotation.x = -Math.PI/2;
+gnd.receiveShadow = true;
+scene.add(gnd);
+
+// Stone circle engraving on ground
+const engraving = new THREE.Mesh(
+  new THREE.RingGeometry(2.3,2.55,64),
+  new THREE.MeshBasicMaterial({color:0x1e0d3a,side:THREE.DoubleSide})
+);
+engraving.rotation.x = -Math.PI/2;
+engraving.position.y = 0.005;
+scene.add(engraving);
+
+// Stars
+{
+  const n = 900, pos = new Float32Array(n*3);
+  for(let i=0;i<n;i++){
+    const th=Math.random()*Math.PI*2, ph=Math.acos(2*Math.random()-1), r=40+Math.random()*12;
+    pos[i*3]=r*Math.sin(ph)*Math.cos(th); pos[i*3+1]=r*Math.sin(ph)*Math.sin(th); pos[i*3+2]=r*Math.cos(ph);
+  }
+  const sg=new THREE.BufferGeometry(); sg.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0xffffff,size:0.07,transparent:true,opacity:0.85})));
+}
+
+// Fireflies
+const FF_N = 28;
+const ffPos = new Float32Array(FF_N*3);
+const ffVel = [];
+for(let i=0;i<FF_N;i++){
+  ffPos[i*3]=(Math.random()-.5)*10; ffPos[i*3+1]=Math.random()*2.8; ffPos[i*3+2]=(Math.random()-.5)*10;
+  ffVel.push({x:(Math.random()-.5)*.012,y:(Math.random()-.5)*.006,z:(Math.random()-.5)*.012,phase:Math.random()*Math.PI*2});
+}
+const ffGeo=new THREE.BufferGeometry(); ffGeo.setAttribute('position',new THREE.BufferAttribute(ffPos,3));
+const ffMat=new THREE.PointsMaterial({color:0x99ffbb,size:0.11,transparent:true,opacity:0.8});
+const fireflies=new THREE.Points(ffGeo,ffMat);
+scene.add(fireflies);
+
+// ─── CANVAS TEXTURE FACTORY ───────────────────────────────────────────────────
+function makeStoneTexture(phoneme, support, colorHex) {
+  const S = 256;
+  const cv = document.createElement('canvas'); cv.width=S; cv.height=S;
+  const ctx = cv.getContext('2d');
+
+  // Stone face background
+  ctx.fillStyle='#07021a'; ctx.fillRect(0,0,S,S);
+
+  // Glow
+  const r=(colorHex>>16)&255, g=(colorHex>>8)&255, b=colorHex&255;
+  const col=`${r},${g},${b}`;
+  const grd=ctx.createRadialGradient(S/2,S/2,30,S/2,S/2,110);
+  grd.addColorStop(0,`rgba(${col},0.25)`); grd.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=grd; ctx.fillRect(0,0,S,S);
+
+  // Scratches
+  ctx.strokeStyle=`rgba(${col},0.12)`; ctx.lineWidth=1;
+  for(let i=0;i<6;i++){
+    ctx.beginPath();
+    ctx.moveTo(Math.random()*S,Math.random()*S);
+    ctx.lineTo(Math.random()*S,Math.random()*S);
+    ctx.stroke();
+  }
+
+  if(support==='none'){
+    // Show random rune glyph
+    const sym = RUNES[Math.floor(phoneme.charCodeAt(0)*7+13)%RUNES.length];
+    ctx.shadowColor=`rgb(${col})`; ctx.shadowBlur=18;
+    ctx.fillStyle=`rgba(${col},0.5)`; ctx.font='bold 96px serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(sym,S/2,S/2);
+  } else {
+    // Show phoneme letter
+    ctx.shadowColor=`rgb(${col})`; ctx.shadowBlur=28;
+    ctx.fillStyle=`rgb(${col})`;
+    ctx.font=`bold italic 108px Georgia,serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(phoneme.toUpperCase(),S/2,S/2+4);
+  }
+
+  return new THREE.CanvasTexture(cv);
+}
+
+// ─── STONE CREATION ───────────────────────────────────────────────────────────
+const STONE_XZ = [[-2.2,0],[2.2,0],[0,-2.2]];
+
+let groups=[], meshes=[], faces=[];
+
+function buildStones(phonemes, support) {
+  groups.forEach(g=>scene.remove(g));
+  groups=[]; meshes=[]; faces=[];
+
+  phonemes.forEach((ph,i)=>{
+    const g=new THREE.Group();
+    g.position.set(STONE_XZ[i][0],-3.5,STONE_XZ[i][1]);
+    g.userData={idx:i, phoneme:ph, entryStart:0, runeAssigned:RUNES[i*3%RUNES.length]};
+
+    // Main stone body — two overlapping boxes for chunky feel
+    const baseMat=new THREE.MeshLambertMaterial({color:0x100d22});
+    const bodyA=new THREE.Mesh(new THREE.BoxGeometry(1.15,2.8,0.58),baseMat);
+    bodyA.position.y=1.4; bodyA.castShadow=true; g.add(bodyA);
+
+    // Stone cap (slightly wider top)
+    const cap=new THREE.Mesh(new THREE.BoxGeometry(1.22,0.18,0.64),
+      new THREE.MeshLambertMaterial({color:0x0d0a1d}));
+    cap.position.y=2.89; g.add(cap);
+
+    // Rune face plane
+    const tex=makeStoneTexture(ph,support,COLS[i][0]);
+    const faceMesh=new THREE.Mesh(
+      new THREE.PlaneGeometry(0.85,0.85),
+      new THREE.MeshBasicMaterial({map:tex,transparent:true})
+    );
+    faceMesh.position.set(0,1.5,0.3);
+    faceMesh.userData.stoneIdx=i;
+    g.add(faceMesh);
+
+    // Glow outline on face
+    const glowMesh=new THREE.Mesh(
+      new THREE.PlaneGeometry(0.95,0.95),
+      new THREE.MeshBasicMaterial({color:COLS[i][0],transparent:true,opacity:0.08,side:THREE.DoubleSide})
+    );
+    glowMesh.position.set(0,1.5,0.29);
+    g.add(glowMesh);
+
+    // Point light
+    const pl=new THREE.PointLight(COLS[i][0],0.9,3.5);
+    pl.position.set(0,1.6,0.7);
+    g.add(pl);
+    g.userData.light=pl;
+    g.userData.glow=glowMesh;
+    g.userData.faceTex=tex;
+
+    bodyA.userData.stoneIdx=i;
+    cap.userData.stoneIdx=i;
+
+    scene.add(g);
+    groups.push(g);
+    meshes.push(bodyA,cap);
+    faces.push(faceMesh);
+  });
+}
+
+// ─── PARTICLES ────────────────────────────────────────────────────────────────
+const particles=[];
+
+function burst(pos, color, n=18) {
+  const geo=new THREE.BufferGeometry();
+  const p=new Float32Array(n*3);
+  const v=[];
+  for(let i=0;i<n;i++){
+    p[i*3]=pos.x; p[i*3+1]=pos.y+1.5; p[i*3+2]=pos.z;
+    const ang=Math.random()*Math.PI*2;
+    const spd=0.04+Math.random()*0.1;
+    v.push({x:Math.cos(ang)*spd,y:0.06+Math.random()*0.08,z:Math.sin(ang)*spd,life:1});
+  }
+  geo.setAttribute('position',new THREE.BufferAttribute(p,3));
+  const ps=new THREE.Points(geo,new THREE.PointsMaterial({color,size:0.1,transparent:true,opacity:1}));
+  ps.userData={v,n};
+  scene.add(ps);
+  particles.push(ps);
+}
+
+function tickParticles(){
+  for(let s=particles.length-1;s>=0;s--){
+    const ps=particles[s];
+    const arr=ps.geometry.attributes.position.array;
+    let dead=true;
+    ps.userData.v.forEach((v,i)=>{
+      v.life-=0.022; if(v.life<=0) return;
+      dead=false;
+      arr[i*3]+=v.x; arr[i*3+1]+=v.y; arr[i*3+2]+=v.z;
+      v.y-=0.004;
+    });
+    ps.geometry.attributes.position.needsUpdate=true;
+    ps.material.opacity=Math.max(0,ps.userData.v[0].life);
+    if(dead){scene.remove(ps);particles.splice(s,1);}
+  }
+}
+
+// ─── AUDIO ────────────────────────────────────────────────────────────────────
+function say(text,onEnd){
+  if(!window.speechSynthesis){if(onEnd)onEnd();return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.rate=0.55; u.pitch=1.1; u.volume=1;
+  if(onEnd) u.onend=onEnd;
+  speechSynthesis.speak(u);
+}
+function sayPhoneme(ph,onEnd){ say(SAY[ph]||ph,onEnd); }
+function saySeq(seq,i,onEnd){
+  if(i>=seq.length){if(onEnd)setTimeout(onEnd,200);return;}
+  sayPhoneme(seq[i],()=>setTimeout(()=>saySeq(seq,i+1,onEnd),320));
+}
+
+// ─── UI HELPERS ───────────────────────────────────────────────────────────────
+const $=id=>document.getElementById(id);
+const flash=el=>{el.style.opacity='1';setTimeout(()=>el.style.opacity='0',160);}
+const flashEl=$('flash');
+
+function showScreen(id){
+  ['s-title','s-win','s-fail'].forEach(s=>{
+    const el=$(s); el.classList.add('off'); el.classList.remove('screen');
+  });
+  if(id){ const el=$(id); el.classList.remove('off'); el.classList.add('screen'); }
+}
+
+function setMsg(txt){
+  const el=$('msg');
+  el.textContent=txt; el.classList.toggle('on',!!txt);
+}
+
+function buildRoundDots(cur){
+  const el=$('round-dots'); el.innerHTML='';
+  ROUNDS.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='rdot'+(i<cur?' done':i===cur?' cur':'');
+    el.appendChild(d);
+  });
+}
+
+function buildSeqRow(seq,support){
+  const el=$('seq-row'); el.innerHTML='';
+  if(support==='none') return;
+  seq.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='sq'; d.id='sq'+i;
+    d.textContent = support==='full' ? `/${seq[i]}/` : '·';
+    el.appendChild(d);
+  });
+}
+
+function markTap(i){
+  const el=$('sq'+i); if(el) el.classList.add('hit');
+}
+
+function updateLives(n){
+  ['h1','h2','h3'].forEach((id,i)=>$(id).classList.toggle('lost',i>=n));
+}
+
+// ─── STONE INTERACTION ────────────────────────────────────────────────────────
+const ray=new THREE.Raycaster();
+const ptr=new THREE.Vector2();
+const hlTimeouts=[];
+
+function highlightStone(idx, mode){
+  const g=groups[idx]; if(!g) return;
+  const pl=g.userData.light;
+  const glow=g.userData.glow;
+  clearTimeout(hlTimeouts[idx]);
+  if(mode==='speak'||mode==='ok'){
+    pl.color.setHex(0xffffff); pl.intensity=3.5;
+    glow.material.opacity=0.3;
+    g.scale.setScalar(1.06);
+    burst(new THREE.Vector3(STONE_XZ[idx][0],0,STONE_XZ[idx][1]),COLS[idx][1],16);
+    hlTimeouts[idx]=setTimeout(()=>{
+      pl.color.setHex(COLS[idx][0]); pl.intensity=0.9;
+      glow.material.opacity=0.08; g.scale.setScalar(1);
+    },550);
+  } else if(mode==='wrong'){
+    pl.color.setHex(0xff1111); pl.intensity=4;
+    g.scale.setScalar(0.94);
+    hlTimeouts[idx]=setTimeout(()=>{
+      pl.color.setHex(COLS[idx][0]); pl.intensity=0.9; g.scale.setScalar(1);
+    },450);
+  }
+}
+
+function onTap(e){
+  e.preventDefault();
+  const cx=e.changedTouches?e.changedTouches[0].clientX:e.clientX;
+  const cy=e.changedTouches?e.changedTouches[0].clientY:e.clientY;
+  ptr.x=(cx/innerWidth)*2-1; ptr.y=-(cy/innerHeight)*2+1;
+  ray.setFromCamera(ptr,cam);
+  const hits=ray.intersectObjects([...meshes,...faces],false);
+  if(!hits.length) return;
+  const idx=hits[0].object.userData.stoneIdx;
+  if(idx===undefined) return;
+  onStoneTap(idx);
+}
+canvas.addEventListener('touchend',onTap,{passive:false});
+canvas.addEventListener('click',onTap);
+
+// ─── GAME STATE ───────────────────────────────────────────────────────────────
+let state='TITLE'; // TITLE EXPLORE SPEAKING TAPPING ROUNDWIN WIN FAIL
+let round=0, tapIdx=0, lives=3;
+
+function startGame(){
+  round=0; lives=3; tapIdx=0;
+  showScreen(null);
+  $('hud').classList.add('on');
+  $('lives').classList.add('on');
+  updateLives(3);
+  startRound();
+}
+
+function startRound(){
+  const R=ROUNDS[round]; tapIdx=0; state='IDLE';
+  buildRoundDots(round);
+  buildSeqRow(R.seq,R.support);
+  buildStones(R.phonemes,R.support);
+
+  // Animate stones rising
+  const now=Date.now();
+  groups.forEach((g,i)=>{ g.userData.entryStart=now+i*260; });
+
+  setTimeout(()=>{
+    state='EXPLORE';
+    setMsg('Touch each stone to hear its sound ✦');
+    $('ready').classList.add('on');
+  },1100+groups.length*260);
+}
+
+function beginCasting(){
+  $('ready').classList.remove('on');
+  state='SPEAKING';
+  const R=ROUNDS[round];
+  setMsg('Listen carefully…');
+
+  // Flash stones in sequence order while speaking
+  let delay=400;
+  R.seq.forEach((ph,i)=>{
+    setTimeout(()=>{
+      const si=R.phonemes.indexOf(ph);
+      highlightStone(si,'speak');
+    },delay);
+    delay+=750;
+  });
+
+  setTimeout(()=>{
+    saySeq(R.seq,0,()=>{
+      setTimeout(()=>{
+        state='TAPPING';
+        setMsg('Tap the sequence →');
+      },300);
+    });
+  },400);
+}
+
+function onStoneTap(idx){
+  if(state==='EXPLORE'){
+    highlightStone(idx,'speak');
+    sayPhoneme(groups[idx].userData.phoneme);
+    return;
+  }
+  if(state!=='TAPPING') return;
+
+  const R=ROUNDS[round];
+  const expected=R.phonemes.indexOf(R.seq[tapIdx]);
+
+  if(idx===expected){
+    highlightStone(idx,'ok');
+    sayPhoneme(R.seq[tapIdx]);
+    markTap(tapIdx);
+    flashEl.style.background='rgba(80,255,140,0.18)'; flash(flashEl);
+    tapIdx++;
+    if(tapIdx>=R.seq.length) setTimeout(roundWin,600);
+  } else {
+    highlightStone(idx,'wrong');
+    flashEl.style.background='rgba(255,40,40,0.28)'; flash(flashEl);
+    lives--;
+    updateLives(lives);
+    tapIdx=0;
+    buildSeqRow(R.seq,R.support); // reset visual progress
+    if(lives<=0){ setTimeout(gameFail,600); return; }
+    setMsg('Try again…');
+    setTimeout(()=>{ if(state==='TAPPING') setMsg('Tap the sequence →'); },1200);
+  }
+}
+
+function roundWin(){
+  state='ROUNDWIN'; setMsg('');
+  groups.forEach((g,i)=>{
+    setTimeout(()=>{
+      burst(new THREE.Vector3(STONE_XZ[i][0],0,STONE_XZ[i][1]),0xffee88,24);
+      g.userData.light.color.setHex(0xffd060); g.userData.light.intensity=3;
+    },i*180);
+  });
+  say('Well done!',()=>{
+    round++;
+    if(round>=ROUNDS.length) setTimeout(gameWin,600);
+    else setTimeout(startRound,900);
+  });
+}
+
+function gameWin(){
+  state='WIN';
+  $('hud').classList.remove('on'); $('lives').classList.remove('on');
+  $('ready').classList.remove('on'); setMsg('');
+  groups.forEach((g,i)=>{
+    setTimeout(()=>burst(new THREE.Vector3(STONE_XZ[i][0],0,STONE_XZ[i][1]),0xffd060,35),i*120);
+  });
+  say('The ritual is complete. You have mastered the sequence.');
+  setTimeout(()=>showScreen('s-win'),700);
+}
+
+function gameFail(){
+  state='FAIL';
+  $('hud').classList.remove('on'); $('lives').classList.remove('on');
+  $('ready').classList.remove('on'); setMsg('');
+  say('The stones have gone silent.');
+  setTimeout(()=>showScreen('s-fail'),800);
+}
+
+// ─── BUTTON WIRING ────────────────────────────────────────────────────────────
+$('btn-start').addEventListener('click',()=>{
+  say(''); // warm up speech synthesis
+  setTimeout(startGame,80);
+});
+$('ready').addEventListener('click',beginCasting);
+$('btn-replay').addEventListener('click',()=>{ showScreen(null); startGame(); });
+$('btn-retry').addEventListener('click',()=>{ showScreen(null); startGame(); });
+
+// ─── ANIMATION LOOP ───────────────────────────────────────────────────────────
+let t=0;
+(function loop(){
+  requestAnimationFrame(loop);
+  t+=0.016;
+  const now=Date.now();
+
+  // Stone entry + idle float
+  groups.forEach((g,i)=>{
+    const es=g.userData.entryStart;
+    if(!es || now<es) return;
+    const prog=Math.min(1,(now-es)/650);
+    const ease=1-Math.pow(1-prog,3);
+    const floatY=Math.sin(t*0.75+i*2.3)*0.045;
+    g.position.y=-3.5+3.5*ease+floatY;
+
+    // Pulse idle light
+    const pl=g.userData.light;
+    if(pl.intensity<2.5)
+      pl.intensity=0.65+0.3*Math.sin(t*1.4+i*1.5);
+  });
+
+  // Fireflies
+  for(let i=0;i<FF_N;i++){
+    const v=ffVel[i];
+    ffPos[i*3]+=v.x; ffPos[i*3+2]+=v.z;
+    ffPos[i*3+1]+=Math.sin(t*1.1+v.phase)*0.006;
+    if(Math.abs(ffPos[i*3])>6) v.x*=-1;
+    if(ffPos[i*3+1]<0.3){ffPos[i*3+1]=0.3;v.y=Math.abs(v.y);}
+    if(ffPos[i*3+1]>3.2){ffPos[i*3+1]=3.2;v.y=-Math.abs(v.y);}
+    if(Math.abs(ffPos[i*3+2])>6) v.z*=-1;
+  }
+  ffGeo.attributes.position.needsUpdate=true;
+  ffMat.opacity=0.5+0.3*Math.sin(t*1.8);
+
+  tickParticles();
+  renderer.render(scene,cam);
+})();
+</script>
+</body>
+</html>
