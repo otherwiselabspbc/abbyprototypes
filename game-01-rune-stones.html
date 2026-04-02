@@ -57,7 +57,7 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
 #msg.on{display:block}
 
 /* ── READY BTN ── */
-#ready{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);z-index:16;display:none}
+#ready{position:fixed;bottom:88px;left:0;right:0;margin:0 auto;width:fit-content;z-index:16;display:none}
 #ready.on{display:block}
 
 /* ── BUTTON BOUNCE ── */
@@ -67,6 +67,7 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
   65%{transform:translateY(-4px) scale(1.02);}
 }
 .btn{animation:btn-bounce 2.2s ease-in-out infinite;}
+.btn:hover{animation-play-state:paused;transform:scale(1.1) !important;box-shadow:0 0 40px rgba(180,120,255,0.85),0 0 80px rgba(120,80,200,0.4),inset 0 1px 0 rgba(255,255,255,0.15);border-color:rgba(200,150,255,0.9);transition:transform .15s,box-shadow .15s,border-color .15s}
 .btn:active{animation:none;transform:scale(0.96) !important;}
 
 /* ── HOW TO PLAY ── */
@@ -76,13 +77,16 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
 .step-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#3d1f6b,#5a2d8a);border:1px solid rgba(150,100,220,0.5);display:flex;align-items:center;justify-content:center;font-size:14px;color:#c8a84b;font-weight:bold}
 .step-text{font-size:clamp(14px,3.5vw,17px);color:#c0b0d8;line-height:1.45;padding-top:4px}
 
-/* ── WAND ── */
-#wand{position:fixed;bottom:13%;left:50%;width:7px;height:145px;transform-origin:bottom center;transform:translateX(-50%) rotate(0deg);z-index:25;display:none;pointer-events:none;transition:transform 0.42s cubic-bezier(0.34,1.5,0.64,1)}
+/* ── WAND (tip anchored at cursor) ── */
+#wand{position:fixed;top:0;left:0;width:8px;height:148px;transform-origin:top center;transform:rotate(20deg);z-index:25;display:none;pointer-events:none;will-change:transform,top,left}
 #wand.on{display:block}
-#wand-shaft{position:absolute;bottom:0;left:0;width:7px;height:132px;background:linear-gradient(to top,#2a1005,#7a4018,#c88830,#f0e0a0);border-radius:3px 3px 1px 1px;box-shadow:0 0 10px rgba(200,140,48,0.35),0 0 24px rgba(200,140,48,0.12)}
+#wand-shaft{position:absolute;top:8px;left:0;width:8px;height:132px;background:linear-gradient(to bottom,#f0e0a0,#c88830,#7a4018,#2a1005);border-radius:1px 1px 3px 3px;box-shadow:0 0 10px rgba(200,140,48,0.35),0 0 24px rgba(200,140,48,0.12)}
 #wand-star{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:24px;color:#ffe070;text-shadow:0 0 8px #ffe070,0 0 22px rgba(255,200,60,0.9),0 0 50px rgba(200,140,30,0.5);animation:star-pulse 0.38s ease-in-out infinite alternate}
-#wand-glow{position:absolute;top:0px;left:50%;transform:translateX(-50%);width:30px;height:30px;background:radial-gradient(circle,rgba(255,210,60,0.4) 0%,transparent 70%);border-radius:50%;animation:star-pulse 0.38s ease-in-out infinite alternate}
+#wand-glow{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:34px;height:34px;background:radial-gradient(circle,rgba(255,210,60,0.35) 0%,transparent 70%);border-radius:50%;animation:star-pulse 0.38s ease-in-out infinite alternate}
 @keyframes star-pulse{from{opacity:.75;transform:translateX(-50%) scale(1)}to{opacity:1;transform:translateX(-50%) scale(1.4)}}
+
+/* ── ROUND BANNER ── */
+#round-banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(44px,11vw,84px);color:#c8a84b;text-shadow:0 0 30px rgba(200,168,75,0.9),0 0 70px rgba(200,168,75,0.4);pointer-events:none;z-index:28;opacity:0;transition:opacity .3s;text-align:center;white-space:nowrap}
 
 /* ── FLASH ── */
 #flash{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:30;opacity:0;transition:opacity .08s}
@@ -111,6 +115,7 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
   <span class="heart" id="h3">♥</span>
 </div>
 <div id="msg"></div>
+<div id="round-banner"></div>
 <button id="ready" class="btn" style="font-size:14px;padding:12px 32px;letter-spacing:2px">Cast Sequence ›</button>
 
 <!-- Title -->
@@ -480,23 +485,31 @@ function showScreen(id){
   if(id) $(id).classList.remove('off');
 }
 
-// Project a world position to screen coords for wand aiming
-function project(wx, wy, wz){
-  const v=new THREE.Vector3(wx,wy,wz).project(cam);
-  return {x:(v.x+1)/2*innerWidth, y:(-v.y+1)/2*innerHeight};
-}
-
-function aimWand(stoneIdx){
-  const [wx,wz]=STONE_XZ[stoneIdx];
-  const sp=project(wx,1.5,wz);
-  const baseX=innerWidth/2, baseY=innerHeight*0.87;
-  const dx=sp.x-baseX, dy=sp.y-baseY;
-  const angle=Math.atan2(dx,-dy)*180/Math.PI;
-  $('wand').style.transform=`translateX(-50%) rotate(${angle}deg)`;
-}
-
 function showWand(){ $('wand').classList.add('on'); }
 function hideWand(){ $('wand').classList.remove('on'); }
+
+// ── Wand cursor tracking ──
+let mX=innerWidth/2, mY=innerHeight/2;
+let prevMX=mX, prevMY=mY;
+let wandTargetAngle=20, wandCurAngle=20;
+
+function moveWand(cx,cy){
+  const dx=cx-prevMX, dy=cy-prevMY;
+  prevMX=mX; prevMY=mY; mX=cx; mY=cy;
+  const spd=Math.sqrt(dx*dx+dy*dy);
+  if(spd>4){
+    // angle from tip, +20 bias so wand tilts right at rest
+    wandTargetAngle=Math.atan2(dx,-dy)*180/Math.PI+20;
+    wandTargetAngle=Math.max(-70,Math.min(100,wandTargetAngle));
+  }
+  const w=$('wand');
+  if(w.classList.contains('on')){
+    w.style.left=(cx-4)+'px';
+    w.style.top=(cy-10)+'px';
+  }
+}
+document.addEventListener('mousemove',e=>moveWand(e.clientX,e.clientY));
+document.addEventListener('touchmove',e=>moveWand(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
 
 function speakHowTo(){
   const steps=[
@@ -599,6 +612,7 @@ function startGame(){
   $('hud').classList.add('on');
   $('lives').classList.add('on');
   updateLives(3);
+  showWand();
   startRound();
 }
 
@@ -625,30 +639,16 @@ function beginCasting(){
   const R=ROUNDS[round];
   setMsg('Listen carefully…');
 
-  // Show wand pointing straight up to start
-  showWand();
-  $('wand').style.transform='translateX(-50%) rotate(0deg)';
-
-  // Aim wand at each stone as sequence plays + flash stone
+  // Flash stones in sequence order while speaking
   let delay=400;
   R.seq.forEach((ph,i)=>{
-    setTimeout(()=>{
-      const si=R.phonemes.indexOf(ph);
-      aimWand(si);
-      highlightStone(si,'speak');
-    },delay);
+    setTimeout(()=>{ highlightStone(R.phonemes.indexOf(ph),'speak'); },delay);
     delay+=750;
   });
 
   setTimeout(()=>{
     saySeq(R.seq,0,()=>{
-      setTimeout(()=>{
-        state='TAPPING';
-        // Swipe wand offscreen then hide
-        $('wand').style.transform='translateX(-50%) rotate(90deg)';
-        setTimeout(hideWand,420);
-        setMsg('Tap the sequence →');
-      },300);
+      setTimeout(()=>{ state='TAPPING'; setMsg('Tap the sequence →'); },300);
     });
   },400);
 }
@@ -686,6 +686,12 @@ function onStoneTap(idx){
 
 function roundWin(){
   state='ROUNDWIN'; setMsg('');
+
+  // Show "Well Done!" banner
+  const banner=$('round-banner');
+  banner.textContent='✦ Well Done! ✦';
+  banner.style.opacity='1';
+
   groups.forEach((g,i)=>{
     setTimeout(()=>{
       burst(new THREE.Vector3(STONE_XZ[i][0],0,STONE_XZ[i][1]),0xffee88,24);
@@ -693,16 +699,21 @@ function roundWin(){
     },i*180);
   });
   say('Well done!',()=>{
-    round++;
-    if(round>=ROUNDS.length) setTimeout(gameWin,600);
-    else setTimeout(startRound,900);
+    setTimeout(()=>{
+      banner.style.opacity='0';
+      setTimeout(()=>{
+        round++;
+        if(round>=ROUNDS.length) setTimeout(gameWin,600);
+        else setTimeout(startRound,900);
+      },350);
+    },600);
   });
 }
 
 function gameWin(){
   state='WIN';
   $('hud').classList.remove('on'); $('lives').classList.remove('on');
-  $('ready').classList.remove('on'); setMsg('');
+  $('ready').classList.remove('on'); setMsg(''); hideWand();
   groups.forEach((g,i)=>{
     setTimeout(()=>burst(new THREE.Vector3(STONE_XZ[i][0],0,STONE_XZ[i][1]),0xffd060,35),i*120);
   });
@@ -713,7 +724,7 @@ function gameWin(){
 function gameFail(){
   state='FAIL';
   $('hud').classList.remove('on'); $('lives').classList.remove('on');
-  $('ready').classList.remove('on'); setMsg('');
+  $('ready').classList.remove('on'); setMsg(''); hideWand();
   say('The stones have gone silent.');
   setTimeout(()=>showScreen('s-fail'),800);
 }
@@ -766,6 +777,11 @@ let t=0;
   }
   ffGeo.attributes.position.needsUpdate=true;
   ffMat.opacity=0.5+0.3*Math.sin(t*1.8);
+
+  // Lerp wand angle for springy feel
+  wandCurAngle += (wandTargetAngle - wandCurAngle) * 0.1;
+  const w=$('wand');
+  if(w.classList.contains('on')) w.style.transform=`rotate(${wandCurAngle}deg)`;
 
   tickParticles();
   renderer.render(scene,cam);
