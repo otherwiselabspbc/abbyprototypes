@@ -11,7 +11,7 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
 
 /* ── SCREENS ── */
 .screen{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20}
-.screen.off{display:none}
+.off{display:none !important}
 
 /* ── TITLE ── */
 #s-title{background:radial-gradient(ellipse at center,rgba(30,10,60,0.97) 0%,rgba(8,2,16,0.98) 100%)}
@@ -76,6 +76,14 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
 .step-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#3d1f6b,#5a2d8a);border:1px solid rgba(150,100,220,0.5);display:flex;align-items:center;justify-content:center;font-size:14px;color:#c8a84b;font-weight:bold}
 .step-text{font-size:clamp(14px,3.5vw,17px);color:#c0b0d8;line-height:1.45;padding-top:4px}
 
+/* ── WAND ── */
+#wand{position:fixed;bottom:13%;left:50%;width:7px;height:145px;transform-origin:bottom center;transform:translateX(-50%) rotate(0deg);z-index:25;display:none;pointer-events:none;transition:transform 0.42s cubic-bezier(0.34,1.5,0.64,1)}
+#wand.on{display:block}
+#wand-shaft{position:absolute;bottom:0;left:0;width:7px;height:132px;background:linear-gradient(to top,#2a1005,#7a4018,#c88830,#f0e0a0);border-radius:3px 3px 1px 1px;box-shadow:0 0 10px rgba(200,140,48,0.35),0 0 24px rgba(200,140,48,0.12)}
+#wand-star{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:24px;color:#ffe070;text-shadow:0 0 8px #ffe070,0 0 22px rgba(255,200,60,0.9),0 0 50px rgba(200,140,30,0.5);animation:star-pulse 0.38s ease-in-out infinite alternate}
+#wand-glow{position:absolute;top:0px;left:50%;transform:translateX(-50%);width:30px;height:30px;background:radial-gradient(circle,rgba(255,210,60,0.4) 0%,transparent 70%);border-radius:50%;animation:star-pulse 0.38s ease-in-out infinite alternate}
+@keyframes star-pulse{from{opacity:.75;transform:translateX(-50%) scale(1)}to{opacity:1;transform:translateX(-50%) scale(1.4)}}
+
 /* ── FLASH ── */
 #flash{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:30;opacity:0;transition:opacity .08s}
 </style>
@@ -84,6 +92,13 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
 
 <canvas id="c"></canvas>
 <div id="flash"></div>
+
+<!-- Wand -->
+<div id="wand">
+  <div id="wand-glow"></div>
+  <div id="wand-star">✦</div>
+  <div id="wand-shaft"></div>
+</div>
 
 <!-- HUD -->
 <div id="hud">
@@ -232,7 +247,7 @@ gnd.rotation.x = -Math.PI/2;
 gnd.receiveShadow = true;
 scene.add(gnd);
 
-// Stone circle engraving on ground
+// Inner ritual circle
 const engraving = new THREE.Mesh(
   new THREE.RingGeometry(2.3,2.55,64),
   new THREE.MeshBasicMaterial({color:0x1e0d3a,side:THREE.DoubleSide})
@@ -240,6 +255,40 @@ const engraving = new THREE.Mesh(
 engraving.rotation.x = -Math.PI/2;
 engraving.position.y = 0.005;
 scene.add(engraving);
+
+// Outer ritual circle
+const outerRing = new THREE.Mesh(
+  new THREE.RingGeometry(3.6,3.8,64),
+  new THREE.MeshBasicMaterial({color:0x180a30,side:THREE.DoubleSide})
+);
+outerRing.rotation.x = -Math.PI/2;
+outerRing.position.y = 0.005;
+scene.add(outerRing);
+
+// 8 glowing rune markers around the outer circle
+const markerMat = new THREE.MeshBasicMaterial({color:0x6633cc});
+for(let i=0;i<8;i++){
+  const ang = (i/8)*Math.PI*2;
+  const mx = Math.cos(ang)*3.7, mz = Math.sin(ang)*3.7;
+  const orb = new THREE.Mesh(new THREE.SphereGeometry(0.07,8,8),markerMat);
+  orb.position.set(mx,0.06,mz);
+  scene.add(orb);
+  const ml = new THREE.PointLight(0x7744ee,0.4,1.8);
+  ml.position.set(mx,0.25,mz);
+  scene.add(ml);
+}
+
+// Radial lines between inner and outer rings
+const lineMat = new THREE.MeshBasicMaterial({color:0x150828,side:THREE.DoubleSide});
+for(let i=0;i<8;i++){
+  const ang = (i/8)*Math.PI*2;
+  const lineGeo = new THREE.PlaneGeometry(0.05,1.2);
+  const line = new THREE.Mesh(lineGeo,lineMat);
+  line.rotation.x = -Math.PI/2;
+  line.rotation.z = ang;
+  line.position.set(Math.cos(ang)*3.0,0.006,Math.sin(ang)*3.0);
+  scene.add(line);
+}
 
 // Stars
 {
@@ -427,11 +476,27 @@ const flash=el=>{el.style.opacity='1';setTimeout(()=>el.style.opacity='0',160);}
 const flashEl=$('flash');
 
 function showScreen(id){
-  ['s-title','s-howto','s-win','s-fail'].forEach(s=>{
-    const el=$(s); el.classList.add('off'); el.classList.remove('screen');
-  });
-  if(id){ const el=$(id); el.classList.remove('off'); el.classList.add('screen'); }
+  ['s-title','s-howto','s-win','s-fail'].forEach(s=>$(s).classList.add('off'));
+  if(id) $(id).classList.remove('off');
 }
+
+// Project a world position to screen coords for wand aiming
+function project(wx, wy, wz){
+  const v=new THREE.Vector3(wx,wy,wz).project(cam);
+  return {x:(v.x+1)/2*innerWidth, y:(-v.y+1)/2*innerHeight};
+}
+
+function aimWand(stoneIdx){
+  const [wx,wz]=STONE_XZ[stoneIdx];
+  const sp=project(wx,1.5,wz);
+  const baseX=innerWidth/2, baseY=innerHeight*0.87;
+  const dx=sp.x-baseX, dy=sp.y-baseY;
+  const angle=Math.atan2(dx,-dy)*180/Math.PI;
+  $('wand').style.transform=`translateX(-50%) rotate(${angle}deg)`;
+}
+
+function showWand(){ $('wand').classList.add('on'); }
+function hideWand(){ $('wand').classList.remove('on'); }
 
 function speakHowTo(){
   const steps=[
@@ -560,11 +625,16 @@ function beginCasting(){
   const R=ROUNDS[round];
   setMsg('Listen carefully…');
 
-  // Flash stones in sequence order while speaking
+  // Show wand pointing straight up to start
+  showWand();
+  $('wand').style.transform='translateX(-50%) rotate(0deg)';
+
+  // Aim wand at each stone as sequence plays + flash stone
   let delay=400;
   R.seq.forEach((ph,i)=>{
     setTimeout(()=>{
       const si=R.phonemes.indexOf(ph);
+      aimWand(si);
       highlightStone(si,'speak');
     },delay);
     delay+=750;
@@ -574,6 +644,9 @@ function beginCasting(){
     saySeq(R.seq,0,()=>{
       setTimeout(()=>{
         state='TAPPING';
+        // Swipe wand offscreen then hide
+        $('wand').style.transform='translateX(-50%) rotate(90deg)';
+        setTimeout(hideWand,420);
         setMsg('Tap the sequence →');
       },300);
     });
