@@ -60,6 +60,22 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
 #ready{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);z-index:16;display:none}
 #ready.on{display:block}
 
+/* ── BUTTON BOUNCE ── */
+@keyframes btn-bounce{
+  0%,100%{transform:translateY(0) scale(1);}
+  45%{transform:translateY(-7px) scale(1.04);}
+  65%{transform:translateY(-4px) scale(1.02);}
+}
+.btn{animation:btn-bounce 2.2s ease-in-out infinite;}
+.btn:active{animation:none;transform:scale(0.96) !important;}
+
+/* ── HOW TO PLAY ── */
+#s-howto{background:radial-gradient(ellipse at center,rgba(25,8,55,0.97) 0%,rgba(8,2,16,0.98) 100%)}
+.steps{display:flex;flex-direction:column;gap:16px;margin-bottom:40px;max-width:310px;width:100%}
+.step{display:flex;align-items:flex-start;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(150,100,220,0.2);border-radius:8px;padding:14px 16px}
+.step-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#3d1f6b,#5a2d8a);border:1px solid rgba(150,100,220,0.5);display:flex;align-items:center;justify-content:center;font-size:14px;color:#c8a84b;font-weight:bold}
+.step-text{font-size:clamp(14px,3.5vw,17px);color:#c0b0d8;line-height:1.45;padding-top:4px}
+
 /* ── FLASH ── */
 #flash{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:30;opacity:0;transition:opacity .08s}
 </style>
@@ -89,6 +105,27 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
   <p class="tagline">Three ancient stones hold trapped sounds. Learn their voices — then cast the sequence.</p>
   <button class="btn" id="btn-start">Begin Ritual</button>
   <div class="skill-tag">Phonological Awareness · Sequence Detection</div>
+</div>
+
+<!-- How To Play -->
+<div id="s-howto" class="screen off">
+  <div class="eyebrow">How to Play</div>
+  <div class="big-title" style="font-size:clamp(32px,8vw,52px);margin-bottom:28px">The Ritual</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">Tap each stone to hear the sound it holds.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">Press <strong style="color:#e8d5a3">Cast Sequence</strong> and listen carefully to the order.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text">Tap the stones again in that same order to cast the spell.</div>
+    </div>
+  </div>
+  <button class="btn" id="btn-howto">I'm Ready!</button>
 </div>
 
 <!-- Win -->
@@ -390,10 +427,25 @@ const flash=el=>{el.style.opacity='1';setTimeout(()=>el.style.opacity='0',160);}
 const flashEl=$('flash');
 
 function showScreen(id){
-  ['s-title','s-win','s-fail'].forEach(s=>{
+  ['s-title','s-howto','s-win','s-fail'].forEach(s=>{
     const el=$(s); el.classList.add('off'); el.classList.remove('screen');
   });
   if(id){ const el=$(id); el.classList.remove('off'); el.classList.add('screen'); }
+}
+
+function speakHowTo(){
+  const steps=[
+    'Here is how to play.',
+    'Step 1. Tap each stone to hear the sound it holds.',
+    'Step 2. Press Cast Sequence and listen carefully to the order.',
+    'Step 3. Tap the stones again in that same order to cast the spell.',
+    "When you're ready, press I'm Ready!"
+  ];
+  function next(i){
+    if(i>=steps.length) return;
+    say(steps[i],()=>setTimeout(()=>next(i+1),180));
+  }
+  next(0);
 }
 
 function setMsg(txt){
@@ -596,7 +648,12 @@ function gameFail(){
 // ─── BUTTON WIRING ────────────────────────────────────────────────────────────
 $('btn-start').addEventListener('click',()=>{
   say(''); // warm up speech synthesis
-  setTimeout(startGame,80);
+  setTimeout(()=>{ showScreen('s-howto'); speakHowTo(); },80);
+});
+$('btn-howto').addEventListener('click',()=>{
+  speechSynthesis.cancel();
+  showScreen(null);
+  startGame();
 });
 $('ready').addEventListener('click',beginCasting);
 $('btn-replay').addEventListener('click',()=>{ showScreen(null); startGame(); });
