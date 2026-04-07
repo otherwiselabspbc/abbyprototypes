@@ -60,6 +60,10 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
 #ready{position:fixed;bottom:88px;left:0;right:0;margin:0 auto;width:fit-content;z-index:16;display:none}
 #ready.on{display:block}
 
+/* ── NEXT ROUND BTN ── */
+#next-round{position:fixed;bottom:88px;left:0;right:0;margin:0 auto;width:fit-content;z-index:29;display:none}
+#next-round.on{display:block}
+
 /* ── BUTTON BOUNCE ── */
 @keyframes btn-bounce{
   0%,100%{transform:translateY(0) scale(1);}
@@ -116,6 +120,7 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
 </div>
 <div id="msg"></div>
 <div id="round-banner"></div>
+<button id="next-round" class="btn">Continue ›</button>
 <button id="ready" class="btn" style="font-size:14px;padding:12px 32px;letter-spacing:2px">Cast Sequence ›</button>
 
 <!-- Title -->
@@ -687,7 +692,6 @@ function onStoneTap(idx){
 function roundWin(){
   state='ROUNDWIN'; setMsg('');
 
-  // Show "Well Done!" banner
   const banner=$('round-banner');
   banner.textContent='✦ Well Done! ✦';
   banner.style.opacity='1';
@@ -698,22 +702,29 @@ function roundWin(){
       g.userData.light.color.setHex(0xffd060); g.userData.light.intensity=3;
     },i*180);
   });
+
   say('Well done!',()=>{
-    setTimeout(()=>{
-      banner.style.opacity='0';
-      setTimeout(()=>{
-        round++;
-        if(round>=ROUNDS.length) setTimeout(gameWin,600);
-        else setTimeout(startRound,900);
-      },350);
-    },600);
+    // Show continue button after audio finishes
+    $('next-round').classList.add('on');
   });
+}
+
+function advanceRound(){
+  $('next-round').classList.remove('on');
+  const banner=$('round-banner');
+  banner.style.opacity='0';
+  setTimeout(()=>{
+    round++;
+    if(round>=ROUNDS.length) gameWin();
+    else startRound();
+  },300);
 }
 
 function gameWin(){
   state='WIN';
   $('hud').classList.remove('on'); $('lives').classList.remove('on');
-  $('ready').classList.remove('on'); setMsg(''); hideWand();
+  $('ready').classList.remove('on'); $('next-round').classList.remove('on');
+  $('round-banner').style.opacity='0'; setMsg(''); hideWand();
   groups.forEach((g,i)=>{
     setTimeout(()=>burst(new THREE.Vector3(STONE_XZ[i][0],0,STONE_XZ[i][1]),0xffd060,35),i*120);
   });
@@ -724,7 +735,8 @@ function gameWin(){
 function gameFail(){
   state='FAIL';
   $('hud').classList.remove('on'); $('lives').classList.remove('on');
-  $('ready').classList.remove('on'); setMsg(''); hideWand();
+  $('ready').classList.remove('on'); $('next-round').classList.remove('on');
+  $('round-banner').style.opacity='0'; setMsg(''); hideWand();
   say('The stones have gone silent.');
   setTimeout(()=>showScreen('s-fail'),800);
 }
@@ -740,6 +752,7 @@ $('btn-howto').addEventListener('click',()=>{
   startGame();
 });
 $('ready').addEventListener('click',beginCasting);
+$('next-round').addEventListener('click',advanceRound);
 $('btn-replay').addEventListener('click',()=>{ showScreen(null); startGame(); });
 $('btn-retry').addEventListener('click',()=>{ showScreen(null); startGame(); });
 
