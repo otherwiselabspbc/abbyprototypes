@@ -64,6 +64,10 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
 #next-round{position:fixed;bottom:88px;left:0;right:0;margin:0 auto;width:fit-content;z-index:29;display:none}
 #next-round.on{display:block}
 
+/* ── REPLAY SEQ BTN ── */
+#replay-seq{position:fixed;bottom:88px;left:0;right:0;margin:0 auto;width:fit-content;z-index:16;display:none}
+#replay-seq.on{display:block}
+
 /* ── BUTTON BOUNCE ── */
 @keyframes btn-bounce{
   0%,100%{transform:translateY(0) scale(1);}
@@ -121,6 +125,7 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
 <div id="msg"></div>
 <div id="round-banner"></div>
 <button id="next-round" class="btn">Continue ›</button>
+<button id="replay-seq" class="btn" style="font-size:14px;padding:12px 32px;letter-spacing:2px">↺ Replay Sequence</button>
 <button id="ready" class="btn" style="font-size:14px;padding:12px 32px;letter-spacing:2px">Cast Sequence ›</button>
 
 <!-- Title -->
@@ -329,20 +334,36 @@ function makeStoneTexture(phoneme, support, colorHex) {
   const S = 256;
   const cv = document.createElement('canvas'); cv.width=S; cv.height=S;
   const ctx = cv.getContext('2d');
+  const cx=S/2, cy=S/2, rad=S/2-3;
 
-  // Stone face background
-  ctx.fillStyle='#07021a'; ctx.fillRect(0,0,S,S);
+  // Transparent base — circle clip keeps everything round
+  ctx.clearRect(0,0,S,S);
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx,cy,rad,0,Math.PI*2); ctx.clip();
 
-  // Glow
   const r=(colorHex>>16)&255, g=(colorHex>>8)&255, b=colorHex&255;
   const col=`${r},${g},${b}`;
-  const grd=ctx.createRadialGradient(S/2,S/2,30,S/2,S/2,110);
-  grd.addColorStop(0,`rgba(${col},0.25)`); grd.addColorStop(1,'rgba(0,0,0,0)');
+
+  // Lighter disc background for contrast
+  ctx.fillStyle=`rgba(${col},0.28)`; ctx.fillRect(0,0,S,S);
+  ctx.fillStyle='rgba(255,255,255,0.13)'; ctx.fillRect(0,0,S,S);
+
+  // Center glow
+  const grd=ctx.createRadialGradient(cx,cy,10,cx,cy,rad);
+  grd.addColorStop(0,`rgba(${col},0.45)`);
+  grd.addColorStop(0.55,`rgba(${col},0.12)`);
+  grd.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=grd; ctx.fillRect(0,0,S,S);
 
+  // Bright rim ring
+  const rim=ctx.createRadialGradient(cx,cy,rad-18,cx,cy,rad);
+  rim.addColorStop(0,'rgba(0,0,0,0)');
+  rim.addColorStop(1,`rgba(${col},0.55)`);
+  ctx.fillStyle=rim; ctx.fillRect(0,0,S,S);
+
   // Scratches
-  ctx.strokeStyle=`rgba(${col},0.12)`; ctx.lineWidth=1;
-  for(let i=0;i<6;i++){
+  ctx.strokeStyle=`rgba(${col},0.18)`; ctx.lineWidth=1;
+  for(let i=0;i<4;i++){
     ctx.beginPath();
     ctx.moveTo(Math.random()*S,Math.random()*S);
     ctx.lineTo(Math.random()*S,Math.random()*S);
@@ -350,20 +371,19 @@ function makeStoneTexture(phoneme, support, colorHex) {
   }
 
   if(support==='none'){
-    // Show random rune glyph
-    const sym = RUNES[Math.floor(phoneme.charCodeAt(0)*7+13)%RUNES.length];
-    ctx.shadowColor=`rgb(${col})`; ctx.shadowBlur=18;
-    ctx.fillStyle=`rgba(${col},0.5)`; ctx.font='bold 96px serif';
+    const sym=RUNES[Math.floor(phoneme.charCodeAt(0)*7+13)%RUNES.length];
+    ctx.shadowColor=`rgb(${col})`; ctx.shadowBlur=20;
+    ctx.fillStyle=`rgba(255,255,255,0.65)`; ctx.font='bold 96px serif';
     ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(sym,S/2,S/2);
+    ctx.fillText(sym,cx,cy);
   } else {
-    // Show phoneme letter
-    ctx.shadowColor=`rgb(${col})`; ctx.shadowBlur=28;
-    ctx.fillStyle=`rgb(${col})`;
-    ctx.font=`bold italic 108px Georgia,serif`;
+    ctx.shadowColor=`rgb(${col})`; ctx.shadowBlur=36;
+    ctx.fillStyle='#ffffff';
+    ctx.font=`bold italic 110px Georgia,serif`;
     ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(phoneme.toUpperCase(),S/2,S/2+4);
+    ctx.fillText(phoneme.toUpperCase(),cx,cy+4);
   }
+  ctx.restore();
 
   return new THREE.CanvasTexture(cv);
 }
@@ -375,7 +395,7 @@ let groups=[], meshes=[], faces=[];
 
 function buildStones(phonemes, support) {
   groups.forEach(g=>scene.remove(g));
-  groups=[]; meshes=[]; faces=[];
+  groups=[]; meshes=[]; faces=[]; hoveredStone=-1;
 
   phonemes.forEach((ph,i)=>{
     const g=new THREE.Group();
@@ -392,22 +412,22 @@ function buildStones(phonemes, support) {
       new THREE.MeshLambertMaterial({color:0x0d0a1d}));
     cap.position.y=2.89; g.add(cap);
 
-    // Rune face plane
+    // Rune face — circular disc
     const tex=makeStoneTexture(ph,support,COLS[i][0]);
     const faceMesh=new THREE.Mesh(
-      new THREE.PlaneGeometry(0.85,0.85),
+      new THREE.CircleGeometry(0.5,48),
       new THREE.MeshBasicMaterial({map:tex,transparent:true})
     );
     faceMesh.position.set(0,1.5,0.3);
     faceMesh.userData.stoneIdx=i;
     g.add(faceMesh);
 
-    // Glow outline on face
+    // Glow halo behind disc
     const glowMesh=new THREE.Mesh(
-      new THREE.PlaneGeometry(0.95,0.95),
+      new THREE.CircleGeometry(0.62,48),
       new THREE.MeshBasicMaterial({color:COLS[i][0],transparent:true,opacity:0.08,side:THREE.DoubleSide})
     );
-    glowMesh.position.set(0,1.5,0.29);
+    glowMesh.position.set(0,1.5,0.285);
     g.add(glowMesh);
 
     // Point light
@@ -498,12 +518,43 @@ let mX=innerWidth/2, mY=innerHeight/2;
 let prevMX=mX, prevMY=mY;
 let wandTargetAngle=20, wandCurAngle=20;
 
+let hoveredStone=-1;
+
+function setStoneHover(idx){
+  const g=groups[idx]; if(!g) return;
+  if(g.userData.light.intensity>2) return; // don't override active flash
+  g.scale.setScalar(1.1);
+  g.userData.glow.material.opacity=0.32;
+  g.userData.light.intensity=2.0;
+  g.userData.light.color.setHex(0xffffff);
+}
+function clearStoneHover(idx){
+  const g=groups[idx]; if(!g) return;
+  if(g.userData.light.intensity>2.5) return;
+  g.scale.setScalar(1);
+  g.userData.glow.material.opacity=0.08;
+  g.userData.light.intensity=0.9;
+  g.userData.light.color.setHex(COLS[idx][0]);
+}
+function checkWandHover(cx,cy){
+  if(!groups.length) return;
+  ptr.x=(cx/innerWidth)*2-1; ptr.y=-(cy/innerHeight)*2+1;
+  ray.setFromCamera(ptr,cam);
+  const hits=ray.intersectObjects([...meshes,...faces],false);
+  const newH=hits.length&&hits[0].object.userData.stoneIdx!==undefined
+    ?hits[0].object.userData.stoneIdx:-1;
+  if(newH!==hoveredStone){
+    if(hoveredStone>=0) clearStoneHover(hoveredStone);
+    if(newH>=0) setStoneHover(newH);
+    hoveredStone=newH;
+  }
+}
+
 function moveWand(cx,cy){
   const dx=cx-prevMX, dy=cy-prevMY;
   prevMX=mX; prevMY=mY; mX=cx; mY=cy;
   const spd=Math.sqrt(dx*dx+dy*dy);
   if(spd>4){
-    // angle from tip, +20 bias so wand tilts right at rest
     wandTargetAngle=Math.atan2(dx,-dy)*180/Math.PI+20;
     wandTargetAngle=Math.max(-70,Math.min(100,wandTargetAngle));
   }
@@ -512,6 +563,7 @@ function moveWand(cx,cy){
     w.style.left=(cx-4)+'px';
     w.style.top=(cy-10)+'px';
   }
+  checkWandHover(cx,cy);
 }
 document.addEventListener('mousemove',e=>moveWand(e.clientX,e.clientY));
 document.addEventListener('touchmove',e=>moveWand(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
@@ -638,13 +690,12 @@ function startRound(){
   },1100+groups.length*260);
 }
 
-function beginCasting(){
-  $('ready').classList.remove('on');
-  state='SPEAKING';
+function playCastingSequence(){
   const R=ROUNDS[round];
+  $('replay-seq').classList.remove('on');
+  state='SPEAKING';
   setMsg('Listen carefully…');
 
-  // Flash stones in sequence order while speaking
   let delay=400;
   R.seq.forEach((ph,i)=>{
     setTimeout(()=>{ highlightStone(R.phonemes.indexOf(ph),'speak'); },delay);
@@ -653,9 +704,18 @@ function beginCasting(){
 
   setTimeout(()=>{
     saySeq(R.seq,0,()=>{
-      setTimeout(()=>{ state='TAPPING'; setMsg('Tap the sequence →'); },300);
+      setTimeout(()=>{
+        state='TAPPING';
+        setMsg('Tap the sequence →');
+        $('replay-seq').classList.add('on');
+      },300);
     });
   },400);
+}
+
+function beginCasting(){
+  $('ready').classList.remove('on');
+  playCastingSequence();
 }
 
 function onStoneTap(idx){
@@ -691,6 +751,7 @@ function onStoneTap(idx){
 
 function roundWin(){
   state='ROUNDWIN'; setMsg('');
+  $('replay-seq').classList.remove('on');
 
   const banner=$('round-banner');
   banner.textContent='✦ Well Done! ✦';
@@ -736,6 +797,7 @@ function gameFail(){
   state='FAIL';
   $('hud').classList.remove('on'); $('lives').classList.remove('on');
   $('ready').classList.remove('on'); $('next-round').classList.remove('on');
+  $('replay-seq').classList.remove('on');
   $('round-banner').style.opacity='0'; setMsg(''); hideWand();
   say('The stones have gone silent.');
   setTimeout(()=>showScreen('s-fail'),800);
@@ -753,6 +815,7 @@ $('btn-howto').addEventListener('click',()=>{
 });
 $('ready').addEventListener('click',beginCasting);
 $('next-round').addEventListener('click',advanceRound);
+$('replay-seq').addEventListener('click',playCastingSequence);
 $('btn-replay').addEventListener('click',()=>{ showScreen(null); startGame(); });
 $('btn-retry').addEventListener('click',()=>{ showScreen(null); startGame(); });
 
