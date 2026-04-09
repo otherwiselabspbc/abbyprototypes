@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>The Enchanted Harp — Phoneme Quest</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d0804;overflow:hidden;font-family:'Palatino Linotype',Palatino,serif;user-select:none;-webkit-user-select:none;touch-action:none}
+#c{display:block;position:fixed;top:0;left:0;width:100%;height:100%}
+
+/* ── SCREENS ── */
+.screen{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20}
+.off{display:none !important}
+
+/* ── TITLE ── */
+#s-title{background:radial-gradient(ellipse at center,rgba(60,30,5,0.97) 0%,rgba(13,8,4,0.98) 100%)}
+.eyebrow{font-size:11px;letter-spacing:6px;color:#9a6b1a;text-transform:uppercase;margin-bottom:14px}
+.big-title{font-size:clamp(44px,11vw,80px);color:#f0d888;text-align:center;line-height:1.05;text-shadow:0 0 30px rgba(240,216,136,0.5),0 0 60px rgba(180,120,20,0.3);margin-bottom:14px}
+.tagline{font-size:clamp(13px,3.2vw,17px);color:#a08060;text-align:center;max-width:310px;line-height:1.6;margin-bottom:44px}
+.skill-tag{position:absolute;bottom:28px;font-size:10px;letter-spacing:3px;color:rgba(140,100,30,0.7);text-transform:uppercase}
+
+/* ── BUTTONS ── */
+.btn{background:linear-gradient(145deg,#3d2005,#6a3a0a);color:#f0d888;border:1px solid rgba(200,140,30,0.5);padding:15px 44px;font-size:17px;font-family:inherit;border-radius:3px;cursor:pointer;letter-spacing:3px;text-transform:uppercase;box-shadow:0 0 24px rgba(180,120,20,0.35),inset 0 1px 0 rgba(255,255,255,0.08);transition:box-shadow .2s,transform .1s}
+.btn:hover{animation-play-state:paused;transform:scale(1.1) !important;box-shadow:0 0 40px rgba(220,160,30,0.85),0 0 80px rgba(180,120,20,0.4);border-color:rgba(240,190,60,0.9)}
+.btn:active{transform:scale(0.96) !important}
+@keyframes btn-bounce{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-7px) scale(1.04)}65%{transform:translateY(-4px) scale(1.02)}}
+.btn{animation:btn-bounce 2.2s ease-in-out infinite}
+
+/* ── HOW TO PLAY ── */
+#s-howto{background:radial-gradient(ellipse at center,rgba(50,25,5,0.97) 0%,rgba(13,8,4,0.98) 100%)}
+.steps{display:flex;flex-direction:column;gap:16px;margin-bottom:40px;max-width:310px;width:100%}
+.step{display:flex;align-items:flex-start;gap:14px;background:rgba(255,200,50,0.04);border:1px solid rgba(200,140,30,0.2);border-radius:8px;padding:14px 16px}
+.step-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#5a2e05,#8a4810);border:1px solid rgba(200,140,30,0.5);display:flex;align-items:center;justify-content:center;font-size:14px;color:#f0d888;font-weight:bold}
+.step-text{font-size:clamp(14px,3.5vw,17px);color:#c0a070;line-height:1.45;padding-top:4px}
+
+/* ── WIN ── */
+#s-win{background:radial-gradient(ellipse at center,rgba(50,35,5,0.97) 0%,rgba(13,8,4,0.98) 100%)}
+.win-title{font-size:clamp(42px,10vw,72px);color:#f0d060;text-shadow:0 0 40px rgba(240,208,80,0.7);margin-bottom:10px;text-align:center}
+.win-sub{font-size:clamp(14px,3vw,18px);color:#a08060;text-align:center;margin-bottom:28px}
+.badge{background:rgba(50,25,5,0.9);border:1px solid rgba(200,140,30,0.4);border-radius:6px;padding:14px 28px;margin-bottom:36px;text-align:center}
+.badge-label{font-size:10px;letter-spacing:4px;color:#9a6b1a;text-transform:uppercase}
+.badge-name{font-size:17px;color:#f0d888;margin-top:5px}
+
+/* ── FAIL ── */
+#s-fail{background:radial-gradient(ellipse at center,rgba(30,10,5,0.97) 0%,rgba(13,8,4,0.98) 100%)}
+.fail-title{font-size:clamp(38px,9vw,64px);color:#8b3020;text-shadow:0 0 30px rgba(139,48,32,0.6);margin-bottom:10px;text-align:center}
+.fail-sub{font-size:clamp(13px,3vw,17px);color:#a08060;text-align:center;margin-bottom:40px;line-height:1.6}
+
+/* ── HUD ── */
+#hud{position:fixed;top:0;left:0;width:100%;z-index:15;pointer-events:none;display:none;flex-direction:column;align-items:center;padding:14px 20px 0;gap:10px}
+#hud.on{display:flex}
+#round-dots{display:flex;gap:9px}
+.rdot{width:9px;height:9px;border-radius:50%;background:rgba(240,216,136,0.15);border:1px solid rgba(240,216,136,0.3);transition:all .4s}
+.rdot.done{background:#f0d888;border-color:#f0d888}
+.rdot.cur{background:#f0b020;border-color:#f0b020;box-shadow:0 0 8px rgba(240,176,32,0.8)}
+#seq-row{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;min-height:38px}
+.sq{width:36px;height:36px;border-radius:50%;background:rgba(50,25,5,0.85);border:2px solid rgba(180,120,20,0.4);display:flex;align-items:center;justify-content:center;font-size:15px;color:#c0a060;font-style:italic;transition:all .3s}
+.sq.hit{background:rgba(240,176,32,0.25);border-color:#f0b020;color:#f0d888;box-shadow:0 0 10px rgba(240,176,32,0.4)}
+
+/* ── LIVES ── */
+#lives{position:fixed;top:14px;right:18px;display:none;gap:5px;z-index:16}
+#lives.on{display:flex}
+.heart{font-size:19px;transition:all .3s;filter:drop-shadow(0 0 5px rgba(220,100,60,0.7))}
+.heart.lost{filter:grayscale(1);opacity:.25}
+
+/* ── INSTRUCTION ── */
+#msg{position:fixed;bottom:34px;left:50%;transform:translateX(-50%);background:rgba(13,8,4,0.9);border:1px solid rgba(180,120,20,0.35);padding:11px 22px;border-radius:24px;color:#c0a070;font-size:clamp(13px,3.2vw,16px);text-align:center;max-width:340px;z-index:15;pointer-events:none;display:none;backdrop-filter:blur(6px);white-space:nowrap}
+#msg.on{display:block}
+
+/* ── ACTION BUTTONS ── */
+#ready,#replay-seq,#next-round{position:fixed;bottom:88px;left:0;right:0;margin:0 auto;width:fit-content;z-index:16;display:none}
+#ready.on,#replay-seq.on,#next-round.on{display:block}
+#replay-seq{font-size:14px !important;padding:12px 32px !important;letter-spacing:2px !important}
+
+/* ── ROUND BANNER ── */
+#round-banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(44px,11vw,84px);color:#f0d060;text-shadow:0 0 30px rgba(240,208,80,0.9),0 0 70px rgba(200,150,20,0.4);pointer-events:none;z-index:28;opacity:0;transition:opacity .3s;text-align:center;white-space:nowrap}
+
+/* ── WAND ── */
+#wand{position:fixed;top:0;left:0;width:8px;height:148px;transform-origin:top center;transform:rotate(20deg);z-index:25;display:none;pointer-events:none}
+#wand.on{display:block}
+#wand-shaft{position:absolute;top:8px;left:0;width:8px;height:132px;background:linear-gradient(to bottom,#f0e0a0,#c88830,#7a4018,#2a1005);border-radius:1px 1px 3px 3px;box-shadow:0 0 10px rgba(200,140,48,0.35)}
+#wand-star{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:24px;color:#ffe070;text-shadow:0 0 8px #ffe070,0 0 22px rgba(255,200,60,0.9);animation:star-pulse .38s ease-in-out infinite alternate}
+#wand-glow{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:34px;height:34px;background:radial-gradient(circle,rgba(255,210,60,0.35) 0%,transparent 70%);border-radius:50%;animation:star-pulse .38s ease-in-out infinite alternate}
+@keyframes star-pulse{from{opacity:.75;transform:translateX(-50%) scale(1)}to{opacity:1;transform:translateX(-50%) scale(1.4)}}
+
+/* ── FLASH ── */
+#flash{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:30;opacity:0;transition:opacity .08s}
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+<div id="flash"></div>
+
+<div id="wand">
+  <div id="wand-glow"></div>
+  <div id="wand-star">✦</div>
+  <div id="wand-shaft"></div>
+</div>
+
+<!-- HUD -->
+<div id="hud"><div id="round-dots"></div><div id="seq-row"></div></div>
+<div id="lives">
+  <span class="heart" id="h1">♥</span>
+  <span class="heart" id="h2">♥</span>
+  <span class="heart" id="h3">♥</span>
+</div>
+<div id="msg"></div>
+<div id="round-banner"></div>
+<button id="ready"      class="btn">Cast Sequence ›</button>
+<button id="replay-seq" class="btn">↺ Replay Sequence</button>
+<button id="next-round" class="btn" style="z-index:29">Continue ›</button>
+
+<!-- Title -->
+<div id="s-title" class="screen">
+  <div class="eyebrow">Phoneme Quest · Stage II</div>
+  <div class="big-title">The Enchanted<br>Harp</div>
+  <p class="tagline">A ghostly melody drifts through the strings. Learn each sound — then play it back to cast the spell.</p>
+  <button class="btn" id="btn-start">Begin Ritual</button>
+  <div class="skill-tag">Phonological Awareness · Sequence Detection</div>
+</div>
+
+<!-- How To Play -->
+<div id="s-howto" class="screen off">
+  <div class="eyebrow">How to Play</div>
+  <div class="big-title" style="font-size:clamp(32px,8vw,52px);margin-bottom:28px">The Melody</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">Pluck each string to hear the sound it holds.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">Press <strong style="color:#f0d888">Cast Sequence</strong> — watch the ghost orb drift across the strings.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text">Pluck the strings in the same order to complete the spell.</div>
+    </div>
+  </div>
+  <button class="btn" id="btn-howto">I'm Ready!</button>
+</div>
+
+<!-- Win -->
+<div id="s-win" class="screen off">
+  <div class="win-title">✦ Mastered ✦</div>
+  <p class="win-sub">The melody is yours.</p>
+  <div class="badge">
+    <div class="badge-label">Skill Unlocked</div>
+    <div class="badge-name">Phoneme Sequence Detection</div>
+  </div>
+  <button class="btn" id="btn-replay">Play Again</button>
+</div>
+
+<!-- Fail -->
+<div id="s-fail" class="screen off">
+  <div class="fail-title">Spell Broken</div>
+  <p class="fail-sub">The strings fell silent.<br>Breathe. Try once more.</p>
+  <button class="btn" id="btn-retry">Try Again</button>
+</div>
+
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+
+// ─── CURRICULUM ───────────────────────────────────────────────────────────────
+// Domain: Phonological Awareness — Detection
+// Skill: Phoneme Sequence Tapping (same target as game-01, different mechanic)
+// CSV row: "Child taps sounds in a sequence."
+// New phoneme sets — continues difficulty from game-01
+// Input: Auditory (pluck to hear) + Visual (letter label in supported rounds)
+// Output: Tactile (pluck strings in correct order)
+// TODO: replace Web Speech API with pre-recorded phoneme audio
+
+const ROUNDS = [
+  { phonemes:['s','n','b'], seq:['n','b','s','n'], support:'full'  },
+  { phonemes:['e','i','o'], seq:['i','i','e'],     support:'audio' },
+  { phonemes:['r','l','w'], seq:['l','w','r'],     support:'none'  },
+];
+
+const SAY = {
+  s:'sss', n:'nnn', b:'buh', e:'eh', i:'ih', o:'oh',
+  r:'rrr', l:'lll', w:'wuh',
+  // carry-overs (used in sequence speech)
+  k:'kuh', p:'puh', f:'fff', a:'aah', u:'uh', t:'tuh', m:'mmm'
+};
+
+const RUNES = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ','ᛇ','ᛈ','ᛉ','ᛊ','ᛏ','ᛒ','ᛖ','ᛗ'];
+
+// String accent colors [idle, bright]
+const COLS = [
+  [0xcc8820, 0xffcc44],
+  [0x33aa66, 0x66ffaa],
+  [0xcc4433, 0xff7755],
+];
+
+// String X positions (horizontal spread)
+const STRING_X = [-1.5, 0, 1.5];
+const STRING_Y  = 1.35;  // center height
+const STRING_H  = 2.4;   // height of string
+
+// ─── RENDERER ─────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.shadowMap.enabled = true;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.9;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0502);
+scene.fog = new THREE.FogExp2(0x1a0c04, 0.05);
+
+const cam = new THREE.PerspectiveCamera(58, 1, 0.1, 120);
+cam.position.set(0, 2.0, 6.5);
+cam.lookAt(0, 1.4, 0);
+
+function resize(){
+  const w=innerWidth,h=innerHeight;
+  cam.aspect=w/h; cam.updateProjectionMatrix(); renderer.setSize(w,h);
+}
+resize(); addEventListener('resize',resize);
+
+// ─── LIGHTING ─────────────────────────────────────────────────────────────────
+scene.add(new THREE.AmbientLight(0x2a1a08, 1.2));
+
+// Warm overhead lantern
+const lantern = new THREE.PointLight(0xff9933, 1.2, 12);
+lantern.position.set(0, 6, 1);
+lantern.castShadow = true;
+scene.add(lantern);
+
+// Side fill
+const fill = new THREE.DirectionalLight(0xffc880, 0.3);
+fill.position.set(-5, 4, 3);
+scene.add(fill);
+
+// ─── ENVIRONMENT ──────────────────────────────────────────────────────────────
+// Stone floor
+const floor = new THREE.Mesh(
+  new THREE.PlaneGeometry(24,24),
+  new THREE.MeshLambertMaterial({color:0x1a1410})
+);
+floor.rotation.x = -Math.PI/2; floor.receiveShadow = true;
+scene.add(floor);
+
+// Back wall (implied)
+const wall = new THREE.Mesh(
+  new THREE.PlaneGeometry(20,10),
+  new THREE.MeshLambertMaterial({color:0x160e06})
+);
+wall.position.set(0,3,-5); scene.add(wall);
+
+// Candlelight candles (decorative point lights)
+[[-3.5,0.8,1.5],[3.5,0.8,1.5],[-3.5,0.8,-1],[3.5,0.8,-1]].forEach(([x,y,z])=>{
+  const cl = new THREE.PointLight(0xff8830, 0.25, 3.5);
+  cl.position.set(x,y,z); scene.add(cl);
+  const flame = new THREE.Mesh(
+    new THREE.SphereGeometry(0.06,6,6),
+    new THREE.MeshBasicMaterial({color:0xffaa40})
+  );
+  flame.position.set(x,y+0.15,z); scene.add(flame);
+});
+
+// Stars visible through arched window (far background)
+{
+  const n=600, pos=new Float32Array(n*3);
+  for(let i=0;i<n;i++){
+    const th=Math.random()*Math.PI*2, ph=Math.acos(2*Math.random()-1), r=40+Math.random()*10;
+    pos[i*3]=r*Math.sin(ph)*Math.cos(th); pos[i*3+1]=Math.abs(r*Math.sin(ph)*Math.sin(th))+2; pos[i*3+2]=r*Math.cos(ph)-10;
+  }
+  const sg=new THREE.BufferGeometry(); sg.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0xfff8e8,size:0.1,transparent:true,opacity:0.6})));
+}
+
+// ─── HARP FRAME ───────────────────────────────────────────────────────────────
+const harpMat = new THREE.MeshLambertMaterial({color:0x8b6010});
+const harpShine = new THREE.MeshLambertMaterial({color:0xb07818});
+
+// Base beam
+const base = new THREE.Mesh(new THREE.BoxGeometry(3.8,0.2,0.4), harpMat);
+base.position.set(0,0.1,0); base.castShadow=true; scene.add(base);
+// Base feet
+[-1.7,1.7].forEach(x=>{
+  const f=new THREE.Mesh(new THREE.BoxGeometry(0.4,0.1,0.55),harpMat);
+  f.position.set(x,0.05,0); scene.add(f);
+});
+
+// Curved neck — QuadraticBezierCurve3 for organic harp shape
+const neckCurve = new THREE.QuadraticBezierCurve3(
+  new THREE.Vector3(-2.0, 0.2, 0),
+  new THREE.Vector3(-2.8, 2.0, 0),
+  new THREE.Vector3(-0.5, 3.4, 0)
+);
+const neckGeo = new THREE.TubeGeometry(neckCurve, 24, 0.1, 8, false);
+const neck = new THREE.Mesh(neckGeo, harpShine);
+neck.castShadow = true; scene.add(neck);
+
+// Soundboard (right side, slightly angled)
+const sb = new THREE.Mesh(new THREE.BoxGeometry(0.22,3.1,0.38), harpMat);
+sb.position.set(2.0,1.6,0); sb.rotation.z = -0.04; sb.castShadow=true; scene.add(sb);
+
+// Top cap on soundboard
+const sbCap = new THREE.Mesh(new THREE.BoxGeometry(0.28,0.18,0.45),harpShine);
+sbCap.position.set(2.0,3.15,0); scene.add(sbCap);
+
+// Decorative tuning pins
+for(let i=0;i<3;i++){
+  const pin=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,0.18,6),harpShine);
+  pin.position.set(-0.5+i*0.18, 3.28, 0.05); pin.rotation.x=Math.PI/2;
+  scene.add(pin);
+}
+
+// ─── STRING TEXTURE FACTORY ───────────────────────────────────────────────────
+function makeStringLabel(phoneme, support, colorHex) {
+  const S=256; const cv=document.createElement('canvas'); cv.width=S; cv.height=S;
+  const ctx=cv.getContext('2d'); const cx=S/2, cy=S/2, rad=S/2-3;
+  ctx.clearRect(0,0,S,S);
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx,cy,rad,0,Math.PI*2); ctx.clip();
+
+  const r=(colorHex>>16)&255, g=(colorHex>>8)&255, b=colorHex&255;
+  const col=`${r},${g},${b}`;
+
+  // Stone disc base
+  ctx.fillStyle='#1c1408'; ctx.fillRect(0,0,S,S);
+  // Grain
+  for(let i=0;i<300;i++){
+    const x=Math.random()*S,y=Math.random()*S,r2=Math.random()*2.5+.3;
+    ctx.fillStyle=`rgba(220,190,130,${Math.random()*.06})`; ctx.beginPath();
+    ctx.arc(x,y,r2,0,Math.PI*2); ctx.fill();
+  }
+  // Ambient color bleed
+  const grd=ctx.createRadialGradient(cx,cy,0,cx,cy,rad);
+  grd.addColorStop(0,`rgba(${col},.25)`); grd.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=grd; ctx.fillRect(0,0,S,S);
+  // Rim
+  const rim=ctx.createRadialGradient(cx,cy,rad-18,cx,cy,rad);
+  rim.addColorStop(0,'rgba(0,0,0,0)'); rim.addColorStop(1,`rgba(${col},.5)`);
+  ctx.fillStyle=rim; ctx.fillRect(0,0,S,S);
+
+  if(support==='none'){
+    const sym=RUNES[Math.floor(phoneme.charCodeAt(0)*7+13)%RUNES.length];
+    ctx.shadowColor=`rgb(${col})`; ctx.shadowBlur=28;
+    ctx.fillStyle='rgba(255,255,255,.8)';
+    ctx.font='bold 90px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(sym,cx,cy); ctx.shadowBlur=12;
+    ctx.fillStyle='rgba(255,255,255,.95)'; ctx.fillText(sym,cx,cy);
+  } else {
+    ctx.shadowColor=`rgb(${col})`; ctx.shadowBlur=44;
+    ctx.fillStyle='rgba(255,255,255,.9)';
+    ctx.font='bold italic 110px Georgia,serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(phoneme.toUpperCase(),cx,cy+4);
+    ctx.shadowBlur=14; ctx.fillStyle='rgba(255,255,255,.98)';
+    ctx.fillText(phoneme.toUpperCase(),cx,cy+4);
+  }
+  ctx.restore();
+  return new THREE.CanvasTexture(cv);
+}
+
+// ─── STRINGS ──────────────────────────────────────────────────────────────────
+let strings=[], hitboxes=[], labelMeshes=[], glowRings=[], stringLights=[];
+
+function buildStrings(phonemes, support){
+  strings.forEach(g=>scene.remove(g));
+  strings=[]; hitboxes=[]; labelMeshes=[]; glowRings=[]; stringLights=[];
+  hoveredString=-1;
+
+  phonemes.forEach((ph,i)=>{
+    const g=new THREE.Group();
+    g.position.set(STRING_X[i], 0, 0);
+    g.userData={idx:i, phoneme:ph, entryStart:0, vibTime:0};
+
+    // Visual string (thin cylinder)
+    const strMesh=new THREE.Mesh(
+      new THREE.CylinderGeometry(0.022,0.022,STRING_H,8),
+      new THREE.MeshBasicMaterial({color:COLS[i][0]})
+    );
+    strMesh.position.y=STRING_Y;
+    strMesh.userData.stringIdx=i;
+    g.add(strMesh);
+
+    // String glow (slightly wider, transparent)
+    const strGlow=new THREE.Mesh(
+      new THREE.CylinderGeometry(0.055,0.055,STRING_H,8),
+      new THREE.MeshBasicMaterial({color:COLS[i][1],transparent:true,opacity:0.06})
+    );
+    strGlow.position.y=STRING_Y; g.add(strGlow);
+    g.userData.strGlow=strGlow;
+
+    // Invisible hitbox (wide for touch)
+    const hb=new THREE.Mesh(
+      new THREE.CylinderGeometry(0.38,0.38,STRING_H,8),
+      new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false})
+    );
+    hb.position.y=STRING_Y;
+    hb.userData.stringIdx=i;
+    g.add(hb); hitboxes.push(hb);
+
+    // Label disc at center of string
+    const tex=makeStringLabel(ph,support,COLS[i][0]);
+    const label=new THREE.Mesh(
+      new THREE.CircleGeometry(0.42,48),
+      new THREE.MeshBasicMaterial({map:tex,transparent:true})
+    );
+    label.position.set(0,STRING_Y,0.08);
+    label.userData.stringIdx=i;
+    g.add(label); labelMeshes.push(label);
+
+    // Label glow ring
+    const glowR=new THREE.Mesh(
+      new THREE.CircleGeometry(0.54,48),
+      new THREE.MeshBasicMaterial({color:COLS[i][0],transparent:true,opacity:0.06})
+    );
+    glowR.position.set(0,STRING_Y,0.07); g.add(glowR);
+    g.userData.glowR=glowR; glowRings.push(glowR);
+
+    // Carved ring border
+    const crvR=new THREE.Mesh(
+      new THREE.RingGeometry(0.42,0.56,48),
+      new THREE.MeshLambertMaterial({color:0x3a2808})
+    );
+    crvR.position.set(0,STRING_Y,0.075); crvR.userData.stringIdx=i; g.add(crvR);
+
+    // Point light
+    const pl=new THREE.PointLight(COLS[i][0],0.7,3);
+    pl.position.set(0,STRING_Y,0.5); g.add(pl);
+    g.userData.light=pl; stringLights.push(pl);
+
+    // Top & bottom tuning knobs
+    [STRING_Y+STRING_H/2, STRING_Y-STRING_H/2].forEach(y=>{
+      const knob=new THREE.Mesh(new THREE.SphereGeometry(0.06,8,8),
+        new THREE.MeshLambertMaterial({color:COLS[i][0]}));
+      knob.position.y=y; g.add(knob);
+    });
+
+    // Start below ground
+    g.position.y = -4;
+    scene.add(g);
+    strings.push(g);
+  });
+}
+
+// ─── GHOST ORB ────────────────────────────────────────────────────────────────
+const orbGeo = new THREE.SphereGeometry(0.14,16,16);
+const orbMat = new THREE.MeshBasicMaterial({color:0xffeebb,transparent:true,opacity:0});
+const orbMesh = new THREE.Mesh(orbGeo,orbMat); scene.add(orbMesh);
+const orbLight = new THREE.PointLight(0xffeebb,0,2); scene.add(orbLight);
+
+let orbTargetX = 0, orbCurX = 0, orbVisible = false;
+
+function showOrb(stringIdx){
+  orbVisible=true;
+  orbTargetX=STRING_X[stringIdx];
+  orbMat.opacity=0.85;
+  orbLight.intensity=1.5;
+}
+function hideOrb(){
+  orbVisible=false;
+  orbMat.opacity=0;
+  orbLight.intensity=0;
+}
+
+// ─── PARTICLES ────────────────────────────────────────────────────────────────
+const particles=[];
+function burst(x,y,color,n=18){
+  const geo=new THREE.BufferGeometry();
+  const p=new Float32Array(n*3), v=[];
+  for(let i=0;i<n;i++){
+    p[i*3]=x; p[i*3+1]=y; p[i*3+2]=0.1;
+    const ang=Math.random()*Math.PI*2, spd=0.04+Math.random()*.1;
+    v.push({x:Math.cos(ang)*spd,y:Math.sin(ang)*spd*.5+.04,z:(Math.random()-.5)*.05,life:1});
+  }
+  geo.setAttribute('position',new THREE.BufferAttribute(p,3));
+  const ps=new THREE.Points(geo,new THREE.PointsMaterial({color,size:.1,transparent:true,opacity:1}));
+  ps.userData={v,n}; scene.add(ps); particles.push(ps);
+}
+function tickParticles(){
+  for(let s=particles.length-1;s>=0;s--){
+    const ps=particles[s]; const arr=ps.geometry.attributes.position.array; let dead=true;
+    ps.userData.v.forEach((v,i)=>{
+      v.life-=.022; if(v.life<=0) return; dead=false;
+      arr[i*3]+=v.x; arr[i*3+1]+=v.y; arr[i*3+2]+=v.z; v.y-=.003;
+    });
+    ps.geometry.attributes.position.needsUpdate=true;
+    ps.material.opacity=Math.max(0,ps.userData.v[0].life);
+    if(dead){scene.remove(ps);particles.splice(s,1);}
+  }
+}
+
+// ─── AUDIO ────────────────────────────────────────────────────────────────────
+function say(text,onEnd){
+  if(!window.speechSynthesis){if(onEnd)onEnd();return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.rate=0.55; u.pitch=1.1; u.volume=1;
+  if(onEnd) u.onend=onEnd;
+  speechSynthesis.speak(u);
+}
+function sayPhoneme(ph,onEnd){
+  if(!window.speechSynthesis){if(onEnd)onEnd();return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(SAY[ph]||ph);
+  u.rate=0.75; u.pitch=1.0; u.volume=1;
+  if(onEnd) u.onend=onEnd;
+  speechSynthesis.speak(u);
+}
+function saySeq(seq,i,onEnd){
+  if(i>=seq.length){if(onEnd)setTimeout(onEnd,200);return;}
+  sayPhoneme(seq[i],()=>setTimeout(()=>saySeq(seq,i+1,onEnd),320));
+}
+
+// ─── UI HELPERS ───────────────────────────────────────────────────────────────
+const $=id=>document.getElementById(id);
+const flashEl=$('flash');
+function flash(type){flashEl.style.background=type;flashEl.style.opacity='1';setTimeout(()=>flashEl.style.opacity='0',160);}
+
+function showScreen(id){
+  ['s-title','s-howto','s-win','s-fail'].forEach(s=>$(s).classList.add('off'));
+  if(id) $(id).classList.remove('off');
+}
+function setMsg(txt){const el=$('msg');el.textContent=txt;el.classList.toggle('on',!!txt);}
+function buildRoundDots(cur){
+  const el=$('round-dots'); el.innerHTML='';
+  ROUNDS.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='rdot'+(i<cur?' done':i===cur?' cur':''); el.appendChild(d);
+  });
+}
+function buildSeqRow(seq,support){
+  const el=$('seq-row'); el.innerHTML='';
+  if(support==='none') return;
+  seq.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='sq'; d.id='sq'+i;
+    d.textContent=support==='full'?`/${seq[i]}/`:'·'; el.appendChild(d);
+  });
+}
+function markTap(i){const el=$('sq'+i);if(el)el.classList.add('hit');}
+function updateLives(n){['h1','h2','h3'].forEach((id,i)=>$(id).classList.toggle('lost',i>=n));}
+
+// ─── STRING HIGHLIGHT ────────────────────────────────────────────────────────
+const hlT=[];
+function highlightString(idx,mode){
+  const g=strings[idx]; if(!g) return;
+  const pl=g.userData.light, glowR=g.userData.glowR, strGlow=g.userData.strGlow;
+  clearTimeout(hlT[idx]);
+  if(mode==='pluck'||mode==='ok'){
+    pl.color.setHex(0xffffff); pl.intensity=3.5;
+    glowR.material.opacity=0.35; strGlow.material.opacity=0.35;
+    g.userData.vibTime=1.0; // trigger vibration
+    burst(STRING_X[idx],STRING_Y,COLS[idx][1],14);
+    hlT[idx]=setTimeout(()=>{
+      pl.color.setHex(COLS[idx][0]); pl.intensity=0.7;
+      glowR.material.opacity=0.06; strGlow.material.opacity=0.06;
+    },550);
+  } else if(mode==='wrong'){
+    pl.color.setHex(0xff2222); pl.intensity=4;
+    hlT[idx]=setTimeout(()=>{pl.color.setHex(COLS[idx][0]);pl.intensity=0.7;},450);
+  }
+}
+
+// ─── WAND / HOVER ─────────────────────────────────────────────────────────────
+let mX=innerWidth/2,mY=innerHeight/2,prevMX=mX,prevMY=mY;
+let wandTargetAngle=20,wandCurAngle=20,hoveredString=-1;
+const ray=new THREE.Raycaster(); const ptr=new THREE.Vector2();
+
+function setStringHover(idx){
+  const g=strings[idx]; if(!g||g.userData.light.intensity>2) return;
+  g.userData.glowR.material.opacity=0.28; g.userData.light.intensity=1.6;
+  g.userData.light.color.setHex(0xffffff);
+}
+function clearStringHover(idx){
+  const g=strings[idx]; if(!g||g.userData.light.intensity>2.5) return;
+  g.userData.glowR.material.opacity=0.06; g.userData.light.intensity=0.7;
+  g.userData.light.color.setHex(COLS[idx][0]);
+}
+function checkHover(cx,cy){
+  if(!strings.length) return;
+  ptr.x=(cx/innerWidth)*2-1; ptr.y=-(cy/innerHeight)*2+1;
+  ray.setFromCamera(ptr,cam);
+  const hits=ray.intersectObjects([...hitboxes,...labelMeshes],false);
+  const newH=hits.length&&hits[0].object.userData.stringIdx!==undefined
+    ?hits[0].object.userData.stringIdx:-1;
+  if(newH!==hoveredString){
+    if(hoveredString>=0) clearStringHover(hoveredString);
+    if(newH>=0) setStringHover(newH);
+    hoveredString=newH;
+  }
+}
+function moveWand(cx,cy){
+  const dx=cx-prevMX,dy=cy-prevMY; prevMX=mX; prevMY=mY; mX=cx; mY=cy;
+  const spd=Math.sqrt(dx*dx+dy*dy);
+  if(spd>4){
+    wandTargetAngle=Math.atan2(dx,-dy)*180/Math.PI+20;
+    wandTargetAngle=Math.max(-70,Math.min(100,wandTargetAngle));
+  }
+  const w=$('wand');
+  if(w.classList.contains('on')){w.style.left=(cx-4)+'px';w.style.top=(cy-10)+'px';}
+  checkHover(cx,cy);
+}
+document.addEventListener('mousemove',e=>moveWand(e.clientX,e.clientY));
+document.addEventListener('touchmove',e=>moveWand(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
+
+// ─── TAP HANDLER ──────────────────────────────────────────────────────────────
+function onTap(e){
+  e.preventDefault();
+  const cx=e.changedTouches?e.changedTouches[0].clientX:e.clientX;
+  const cy=e.changedTouches?e.changedTouches[0].clientY:e.clientY;
+  ptr.x=(cx/innerWidth)*2-1; ptr.y=-(cy/innerHeight)*2+1;
+  ray.setFromCamera(ptr,cam);
+  const hits=ray.intersectObjects([...hitboxes,...labelMeshes],false);
+  if(!hits.length) return;
+  const idx=hits[0].object.userData.stringIdx;
+  if(idx===undefined) return;
+  onStringTap(idx);
+}
+canvas.addEventListener('touchend',onTap,{passive:false});
+canvas.addEventListener('click',onTap);
+
+// ─── GAME STATE ───────────────────────────────────────────────────────────────
+let state='TITLE', round=0, tapIdx=0, lives=3;
+
+function showWand(){$('wand').classList.add('on');}
+function hideWand(){$('wand').classList.remove('on');}
+
+function startGame(){
+  round=0; lives=3; tapIdx=0;
+  showScreen(null); $('hud').classList.add('on'); $('lives').classList.add('on');
+  updateLives(3); showWand(); startRound();
+}
+
+function startRound(){
+  const R=ROUNDS[round]; tapIdx=0; state='IDLE';
+  buildRoundDots(round); buildSeqRow(R.seq,R.support);
+  buildStrings(R.phonemes,R.support);
+  hideOrb();
+  // Animate strings rising
+  const now=Date.now();
+  strings.forEach((g,i)=>{g.userData.entryStart=now+i*220;});
+  setTimeout(()=>{
+    state='EXPLORE'; setMsg('Pluck each string to hear its sound ✦');
+    $('ready').classList.add('on');
+  },900+strings.length*220);
+}
+
+function playCastingSequence(){
+  const R=ROUNDS[round];
+  $('replay-seq').classList.remove('on');
+  state='SPEAKING'; setMsg('Listen carefully…');
+
+  // Move orb to each string in sequence and flash
+  let delay=400;
+  R.seq.forEach((ph,i)=>{
+    setTimeout(()=>{
+      const si=R.phonemes.indexOf(ph);
+      showOrb(si); highlightString(si,'pluck');
+    },delay);
+    delay+=780;
+  });
+
+  setTimeout(()=>{
+    saySeq(R.seq,0,()=>{
+      setTimeout(()=>{
+        state='TAPPING'; setMsg('Pluck the sequence →');
+        $('replay-seq').classList.add('on');
+        hideOrb();
+      },350);
+    });
+  },400);
+}
+
+function beginCasting(){
+  $('ready').classList.remove('on');
+  playCastingSequence();
+}
+
+function onStringTap(idx){
+  if(state==='EXPLORE'){
+    highlightString(idx,'pluck'); sayPhoneme(strings[idx].userData.phoneme); return;
+  }
+  if(state!=='TAPPING') return;
+  const R=ROUNDS[round];
+  const expected=R.phonemes.indexOf(R.seq[tapIdx]);
+  if(idx===expected){
+    highlightString(idx,'ok'); sayPhoneme(R.seq[tapIdx]);
+    markTap(tapIdx); flash('rgba(80,255,140,0.18)'); tapIdx++;
+    if(tapIdx>=R.seq.length) setTimeout(roundWin,600);
+  } else {
+    highlightString(idx,'wrong'); flash('rgba(255,40,40,0.28)');
+    lives--; updateLives(lives); tapIdx=0;
+    buildSeqRow(R.seq,R.support);
+    if(lives<=0){setTimeout(gameFail,600);return;}
+    setMsg('Try again…');
+    setTimeout(()=>{if(state==='TAPPING') setMsg('Pluck the sequence →');},1200);
+  }
+}
+
+function roundWin(){
+  state='ROUNDWIN'; setMsg('');
+  $('replay-seq').classList.remove('on');
+  const banner=$('round-banner');
+  banner.textContent='✦ Well Done! ✦'; banner.style.opacity='1';
+  strings.forEach((g,i)=>{
+    setTimeout(()=>{
+      burst(STRING_X[i],STRING_Y,COLS[i][1],22);
+      g.userData.light.color.setHex(0xffd060); g.userData.light.intensity=3;
+    },i*180);
+  });
+  say('Well done!',()=>{ $('next-round').classList.add('on'); });
+}
+
+function advanceRound(){
+  $('next-round').classList.remove('on');
+  $('round-banner').style.opacity='0';
+  setTimeout(()=>{
+    round++;
+    if(round>=ROUNDS.length) gameWin(); else startRound();
+  },300);
+}
+
+function gameWin(){
+  state='WIN'; $('hud').classList.remove('on'); $('lives').classList.remove('on');
+  $('ready').classList.remove('on'); $('next-round').classList.remove('on');
+  $('replay-seq').classList.remove('on'); $('round-banner').style.opacity='0';
+  setMsg(''); hideWand(); hideOrb();
+  strings.forEach((g,i)=>setTimeout(()=>burst(STRING_X[i],STRING_Y,0xffd060,35),i*120));
+  say('The melody is yours. The spell is cast.');
+  setTimeout(()=>showScreen('s-win'),800);
+}
+
+function gameFail(){
+  state='FAIL'; $('hud').classList.remove('on'); $('lives').classList.remove('on');
+  $('ready').classList.remove('on'); $('next-round').classList.remove('on');
+  $('replay-seq').classList.remove('on'); setMsg(''); hideWand(); hideOrb();
+  say('The strings fell silent.');
+  setTimeout(()=>showScreen('s-fail'),800);
+}
+
+// ─── HOW TO SPEAK ──────────────────────────────────────────────────────────────
+function speakHowTo(){
+  const steps=[
+    'Here is how to play.',
+    'Step 1. Pluck each string to hear the sound it holds.',
+    'Step 2. Press Cast Sequence and watch the ghost orb drift between strings.',
+    'Step 3. Pluck the strings in that same order to cast the spell.',
+    "Press I'm Ready when you are set."
+  ];
+  function next(i){if(i>=steps.length)return;say(steps[i],()=>setTimeout(()=>next(i+1),180));}
+  next(0);
+}
+
+// ─── BUTTONS ──────────────────────────────────────────────────────────────────
+$('btn-start').addEventListener('click',()=>{say('');setTimeout(()=>{showScreen('s-howto');speakHowTo();},80);});
+$('btn-howto').addEventListener('click',()=>{speechSynthesis.cancel();showScreen(null);startGame();});
+$('ready').addEventListener('click',beginCasting);
+$('replay-seq').addEventListener('click',playCastingSequence);
+$('next-round').addEventListener('click',advanceRound);
+$('btn-replay').addEventListener('click',()=>{showScreen(null);startGame();});
+$('btn-retry').addEventListener('click',()=>{showScreen(null);startGame();});
+
+// ─── ANIMATION LOOP ───────────────────────────────────────────────────────────
+let t=0;
+(function loop(){
+  requestAnimationFrame(loop); t+=0.016;
+  const now=Date.now();
+
+  // String entry + idle sway
+  strings.forEach((g,i)=>{
+    const es=g.userData.entryStart;
+    if(!es||now<es) return;
+    const prog=Math.min(1,(now-es)/600);
+    const ease=1-Math.pow(1-prog,3);
+    g.position.y=-4+4*ease;
+
+    // Vibration on pluck
+    if(g.userData.vibTime>0){
+      g.scale.x=1+Math.sin(t*38)*0.18*g.userData.vibTime;
+      g.userData.vibTime-=0.045;
+      if(g.userData.vibTime<=0){g.scale.x=1;g.userData.vibTime=0;}
+    }
+
+    // Pulse idle light
+    const pl=g.userData.light;
+    if(pl.intensity<2) pl.intensity=0.55+0.22*Math.sin(t*1.3+i*1.8);
+  });
+
+  // Ghost orb lerp
+  orbCurX+=(orbTargetX-orbCurX)*0.1;
+  orbMesh.position.set(orbCurX, STRING_Y+Math.sin(t*3)*0.06, 0.15);
+  orbLight.position.copy(orbMesh.position);
+
+  // Lantern flicker
+  lantern.intensity=1.2+0.08*Math.sin(t*2.3)*Math.sin(t*3.7);
+
+  // Wand angle lerp
+  wandCurAngle+=(wandTargetAngle-wandCurAngle)*0.1;
+  const w=$('wand');
+  if(w.classList.contains('on')) w.style.transform=`rotate(${wandCurAngle}deg)`;
+
+  tickParticles();
+  renderer.render(scene,cam);
+})();
+</script>
+</body>
+</html>
