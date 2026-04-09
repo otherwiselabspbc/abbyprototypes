@@ -839,12 +839,14 @@ function speakHowTo(){
   // Helper: hex int → css string
   const css=h=>'#'+h.toString(16).padStart(6,'0');
 
-  // 2D string endpoints (computed to match harp geometry)
-  // neck points from quadratic bezier P0=(198,40) P1=(108,-8) P2=(22,75) at t=0.8,0.5,0.2
+  // String endpoints — tuning peg on neck underside → bridge pin on soundboard left face
+  // Neck bezier: P0=(29,52) P1=(40,4) P2=(210,72)  at t=0.35,0.60,0.80
+  // Soundboard left face: (148,248)→(206,72), 17° lean
+  // Longest string nearest column; shortest nearest soundboard junction
   const DS=[
-    {nx:56, ny:44, bx:196, by:208}, // long, low  (t≈0.8 on neck)
-    {nx:108,ny:22, bx:196, by:138}, // mid         (t≈0.5 on neck)
-    {nx:161,ny:24, bx:196, by:73},  // short, high (t≈0.2 on neck)
+    {nx:57,  ny:38, bx:156, by:217}, // long / low  — phoneme 0
+    {nx:100, ny:42, bx:172, by:169}, // mid          — phoneme 1
+    {nx:148, ny:55, bx:187, by:126}, // short / high — phoneme 2
   ];
 
   let dHL=-1, dGlw=0, dVib=0, dDead=false;
@@ -852,93 +854,172 @@ function speakHowTo(){
   function drawDemo(){
     ctx.clearRect(0,0,DW,DH);
     ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.save();
 
-    // ── frame ──
+    // ── BASE — short horizontal footing ──
+    ctx.fillStyle='#8a5010';
+    ctx.beginPath();
+    ctx.roundRect(17,244,148,14,3);
+    ctx.fill();
+    ctx.strokeStyle='#c88020'; ctx.lineWidth=1;
+    ctx.stroke();
+
+    // ── COLUMN — tall tapered vertical pillar (wider at bottom) ──
+    ctx.fillStyle='#7a4810';
+    ctx.beginPath();
+    ctx.moveTo(21,244); // bottom-left
+    ctx.lineTo(39,244); // bottom-right
+    ctx.lineTo(35,52);  // top-right (narrows)
+    ctx.lineTo(24,52);  // top-left
+    ctx.closePath();
+    ctx.fill();
+    // Highlight edge
+    ctx.strokeStyle='#c88020'; ctx.lineWidth=1.5; ctx.stroke();
+    // Left-side sheen
+    ctx.strokeStyle='rgba(220,160,60,0.25)'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(23,240); ctx.lineTo(25,58); ctx.stroke();
+
+    // ── SOUNDBOARD — angled ~17° from vertical, wide at base, narrow at top ──
+    ctx.fillStyle='#7a4810';
+    ctx.beginPath();
+    ctx.moveTo(147,244); // bottom-left
+    ctx.lineTo(171,244); // bottom-right
+    ctx.lineTo(215,71);  // top-right
+    ctx.lineTo(205,71);  // top-left
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle='#c88020'; ctx.lineWidth=1.5; ctx.stroke();
+
+    // ── NECK — curved top piece arching upward near column, sweeping down to soundboard ──
+    // Outermost (background) curve for depth
+    ctx.strokeStyle='rgba(140,80,10,0.6)'; ctx.lineWidth=10;
+    ctx.beginPath(); ctx.moveTo(29,57); ctx.quadraticCurveTo(44,12,210,77); ctx.stroke();
+    // Main neck body
     ctx.strokeStyle='#c88020'; ctx.lineWidth=8;
-    // Base
-    ctx.beginPath(); ctx.moveTo(18,248); ctx.lineTo(200,248); ctx.stroke();
-    // Pillar
-    ctx.beginPath(); ctx.moveTo(22,248); ctx.lineTo(22,78); ctx.stroke();
-    // Soundboard
-    ctx.beginPath(); ctx.moveTo(198,248); ctx.lineTo(198,42); ctx.stroke();
-    // Neck arch
-    ctx.strokeStyle='#eeaa30'; ctx.lineWidth=6;
-    ctx.beginPath(); ctx.moveTo(198,42); ctx.quadraticCurveTo(108,-8,22,78); ctx.stroke();
-    // Scroll
-    ctx.fillStyle='#eeaa30'; ctx.beginPath(); ctx.arc(22,72,7,0,Math.PI*2); ctx.fill();
-    // Base feet
-    ctx.fillStyle='#c88020';
-    [[18,248,14,8],[186,248,14,8]].forEach(([x,y,w,h])=>{
-      ctx.fillRect(x,y,w,h);
-    });
+    ctx.beginPath(); ctx.moveTo(29,52); ctx.quadraticCurveTo(40,4,210,72); ctx.stroke();
+    // Inner highlight
+    ctx.strokeStyle='#eeaa30'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(30,53); ctx.quadraticCurveTo(41,6,209,73); ctx.stroke();
 
-    // ── strings ──
+    // Scroll cap where neck meets column
+    ctx.fillStyle='#eeaa30';
+    ctx.beginPath(); ctx.arc(29,52,6,0,Math.PI*2); ctx.fill();
+
+    ctx.restore();
+
+    // ── STRINGS — drawn before pins so pins sit on top ──
     DS.forEach((s,i)=>{
       const isHL=i===dHL, g=isHL?dGlw:0;
-      const vib=isHL?Math.sin(dVib)*3.5*dGlw:0;
-      const nx=s.nx+vib, bx=s.bx;
+      const vib=isHL?Math.sin(dVib)*3.0*dGlw:0;
+      const nx=s.nx+vib;
       const idlec=css(COLS[i][0]), gloc=css(COLS[i][1]);
       const colStr=isHL?gloc:idlec;
 
-      // Glow halo
+      // Glow halo behind string
       if(g>0){
-        ctx.save(); ctx.strokeStyle=gloc; ctx.lineWidth=14*g; ctx.globalAlpha=0.28*g;
-        ctx.beginPath(); ctx.moveTo(nx,s.ny); ctx.lineTo(bx,s.by); ctx.stroke(); ctx.restore();
+        ctx.save(); ctx.strokeStyle=gloc; ctx.lineWidth=11*g; ctx.globalAlpha=0.30*g;
+        ctx.beginPath(); ctx.moveTo(nx,s.ny); ctx.lineTo(s.bx,s.by); ctx.stroke(); ctx.restore();
       }
       // String line
-      ctx.strokeStyle=colStr; ctx.lineWidth=isHL?2.5:1.5; ctx.globalAlpha=1;
-      ctx.beginPath(); ctx.moveTo(nx,s.ny); ctx.lineTo(bx,s.by); ctx.stroke();
+      ctx.strokeStyle=colStr; ctx.lineWidth=isHL?2:1.5; ctx.globalAlpha=1;
+      ctx.beginPath(); ctx.moveTo(nx,s.ny); ctx.lineTo(s.bx,s.by); ctx.stroke();
 
-      // Label disc at midpoint
-      const mx=(nx+bx)/2, my=(s.ny+s.by)/2, r=isHL?22:18;
+      // Label disc at string midpoint
+      const mx=(nx+s.bx)/2, my=(s.ny+s.by)/2, r=isHL?17:14;
       ctx.beginPath(); ctx.arc(mx,my,r,0,Math.PI*2);
-      ctx.fillStyle=colStr; ctx.globalAlpha=g>0?Math.min(1,0.25+0.75*g):0.22; ctx.fill();
-      ctx.globalAlpha=1; ctx.strokeStyle=colStr; ctx.lineWidth=isHL?2.5:1.5;
+      ctx.fillStyle=colStr; ctx.globalAlpha=g>0?Math.min(1,0.28+0.72*g):0.22; ctx.fill();
+      ctx.globalAlpha=1;
+      ctx.strokeStyle=isHL?gloc:idlec; ctx.lineWidth=isHL?2:1;
       ctx.beginPath(); ctx.arc(mx,my,r,0,Math.PI*2); ctx.stroke();
 
       // Letter
-      ctx.fillStyle='#fff'; ctx.globalAlpha=g>0?1:0.6;
-      ctx.font=`bold italic ${isHL?20:15}px Georgia,serif`;
+      ctx.fillStyle='#fff'; ctx.globalAlpha=g>0?1:0.65;
+      ctx.font=`bold italic ${isHL?16:13}px Georgia,serif`;
       ctx.textAlign='center'; ctx.textBaseline='middle';
       ctx.fillText(DPH[i].toUpperCase(),mx,my+2); ctx.globalAlpha=1;
+    });
 
-      // Neck pin
-      ctx.fillStyle=gloc; ctx.globalAlpha=0.8;
-      ctx.beginPath(); ctx.arc(s.nx,s.ny,4,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1;
-      // Board pin
-      ctx.fillStyle=gloc;
-      ctx.beginPath(); ctx.arc(s.bx,s.by,4,0,Math.PI*2); ctx.fill();
+    // ── TUNING PEGS on neck underside + BRIDGE PINS on soundboard ──
+    DS.forEach((s,i)=>{
+      const gloc=css(COLS[i][1]), idlec=css(COLS[i][0]);
+      const isHL=i===dHL;
+      // Tuning peg (neck underside)
+      ctx.fillStyle=isHL?gloc:idlec; ctx.globalAlpha=0.9;
+      ctx.beginPath(); ctx.arc(s.nx,s.ny,4,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle='#eeaa30'; ctx.lineWidth=1; ctx.stroke();
+      // Bridge pin (soundboard left face)
+      ctx.fillStyle=isHL?gloc:idlec;
+      ctx.beginPath(); ctx.arc(s.bx,s.by,3.5,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle='#c88020'; ctx.lineWidth=1; ctx.stroke();
+      ctx.globalAlpha=1;
     });
   }
 
-  // rAF draw loop
+  // ── Web Audio harp pluck ──
+  let _aCtx=null;
+  function getAC(){
+    if(!_aCtx){ try{ _aCtx=new(window.AudioContext||window.webkitAudioContext)(); }catch(e){} }
+    return _aCtx;
+  }
+  // Unlock AudioContext on first user interaction (required by browsers)
+  document.addEventListener('pointerdown',()=>{ const c=getAC(); if(c&&c.state==='suspended') c.resume(); },{once:true,capture:true});
+
+  // G major triad — warm harp notes for each string (low → high)
+  const HARP_HZ=[196, 246.94, 293.66]; // G3, B3, D4
+
+  function playHarpPluck(idx){
+    const ac=getAC(); if(!ac) return;
+    try{
+      if(ac.state==='suspended') ac.resume();
+      const now=ac.currentTime;
+      // Fundamental + harmonics → warm harp timbre
+      [[1,0.55],[2,0.20],[3,0.09],[4,0.03]].forEach(([mult,gv])=>{
+        const osc=ac.createOscillator(), gn=ac.createGain();
+        osc.type='sine'; osc.frequency.value=HARP_HZ[idx]*mult;
+        gn.gain.setValueAtTime(gv*0.5, now);
+        gn.gain.exponentialRampToValueAtTime(0.0001, now+2.6);
+        osc.connect(gn); gn.connect(ac.destination);
+        osc.start(now); osc.stop(now+2.6);
+      });
+    }catch(e){}
+  }
+
+  // rAF draw loop — exponential glow decay (harp-like sustain ~2s)
   function demoRAF(){
     if(dDead) return;
-    dGlw=Math.max(0,dGlw-0.022);
-    dVib+=7;
+    dGlw=Math.max(0, dGlw*0.962-0.001);
+    dVib+=6;
     drawDemo();
     requestAnimationFrame(demoRAF);
   }
   requestAnimationFrame(demoRAF);
 
-  // Sequenced pluck: each string highlights + plays phoneme, then next after delay
+  // Each string struck once, well-spaced; sequence repeats after a long pause
   function demoPluck(i){
     if(dDead) return;
     dHL=i; dGlw=1; dVib=0;
+
+    // Harp tone
+    playHarpPluck(i);
+
+    // Phoneme voiceover
     const u=new SpeechSynthesisUtterance(SAY[DPH[i]]||DPH[i]);
     u.rate=0.18; u.pitch=1.0; u.volume=0.85;
     speechSynthesis.cancel(); speechSynthesis.speak(u);
-    setTimeout(()=>{
-      dHL=-1;
-      const next=(i+1)%3;
-      setTimeout(()=>demoPluck(next), next===0?1200:600);
-    },800);
+
+    // Clear highlight after glow fades
+    setTimeout(()=>{ dHL=-1; }, 1800);
+
+    // Schedule next: 2.2s between strings, 4.5s pause after last before repeat
+    const delay = i<2 ? 2200 : 4500;
+    setTimeout(()=>demoPluck(i<2?i+1:0), delay);
   }
+
   // Wait for voices to load then start
   function startDemo(){
     if(!speechSynthesis.getVoices().length){
-      speechSynthesis.onvoiceschanged=()=>{ speechSynthesis.onvoiceschanged=null; setTimeout(()=>demoPluck(0),400); };
-    } else { setTimeout(()=>demoPluck(0),400); }
+      speechSynthesis.onvoiceschanged=()=>{ speechSynthesis.onvoiceschanged=null; setTimeout(()=>demoPluck(0),600); };
+    } else { setTimeout(()=>demoPluck(0),600); }
   }
   startDemo();
   // Stop demo when game starts
