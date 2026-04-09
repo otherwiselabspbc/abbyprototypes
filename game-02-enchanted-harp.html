@@ -86,6 +86,11 @@ body{background:#200e04;overflow:hidden;font-family:'Palatino Linotype',Palatino
 
 /* ── FLASH ── */
 #flash{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:30;opacity:0;transition:opacity .08s}
+
+/* ── TITLE DEMO ── */
+#demo-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin:10px 0 16px}
+#demo-c{border-radius:12px;background:rgba(14,7,2,0.85);border:1px solid rgba(210,150,30,0.35);box-shadow:0 0 18px rgba(180,110,20,0.2)}
+.demo-label{font-size:clamp(13px,3.2vw,15px);color:#d0a850;text-align:center;letter-spacing:.5px;margin:0;line-height:1.4}
 </style>
 </head>
 <body>
@@ -115,8 +120,11 @@ body{background:#200e04;overflow:hidden;font-family:'Palatino Linotype',Palatino
 <!-- Title -->
 <div id="s-title" class="screen">
   <div class="eyebrow">Phoneme Quest · Stage II</div>
-  <div class="big-title">The Enchanted<br>Harp</div>
-  <p class="tagline">A ghostly melody drifts through the strings. Learn each sound — then play it back to cast the spell.</p>
+  <div class="big-title" style="font-size:clamp(34px,8.5vw,60px);margin-bottom:6px">The Enchanted Harp</div>
+  <div id="demo-wrap">
+    <canvas id="demo-c" width="220" height="262"></canvas>
+    <p class="demo-label">Each string plays a sound.<br>Listen, then tap them in the same order!</p>
+  </div>
   <button class="btn" id="btn-start">Begin Ritual</button>
   <div class="skill-tag">Phonological Awareness · Sequence Detection</div>
 </div>
@@ -180,11 +188,12 @@ const ROUNDS = [
 ];
 
 // Phoneme approximations for Web Speech API
-// Fricatives/nasals: prefix letter forces phoneme context rather than letter-name reading
+// At rate 0.18 TTS sustains each character as a phoneme rather than letter-naming it
+// TODO: replace with pre-recorded audio for production accuracy
 const SAY = {
-  s:'hs',  n:'mn',  b:'buh', e:'eh',  i:'ih', o:'oh',
-  r:'rrr', l:'lll', w:'wuh',
-  k:'kuh', p:'puh', f:'fff', a:'aah', u:'uh', t:'tuh', m:'mmm'
+  s:'ssssss', n:'nnnnnn', b:'buh', e:'eh',  i:'ih', o:'oh',
+  r:'rrr',   l:'lll',   w:'wuh',
+  k:'kuh',   p:'puh',   f:'fff', a:'aah', u:'uh', t:'tuh', m:'mmm'
 };
 
 const RUNES = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ','ᛇ','ᛈ','ᛉ','ᛊ','ᛏ','ᛒ','ᛖ','ᛗ'];
@@ -568,8 +577,7 @@ function sayPhoneme(ph,onEnd){
   if(!window.speechSynthesis){if(onEnd)onEnd();return;}
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(SAY[ph]||ph);
-  u.rate=0.45; u.pitch=1.0; u.volume=1;
-  // Prefer a local natural-sounding voice
+  u.rate=0.18; u.pitch=1.0; u.volume=1;
   const voices=speechSynthesis.getVoices();
   const v=voices.find(v=>v.lang.startsWith('en')&&v.localService)||voices.find(v=>v.lang.startsWith('en'));
   if(v) u.voice=v;
@@ -819,6 +827,122 @@ function speakHowTo(){
   ];
   function next(i){if(i>=steps.length)return;say(steps[i],()=>setTimeout(()=>next(i+1),180));}
   next(0);
+}
+
+// ─── TITLE DEMO ───────────────────────────────────────────────────────────────
+// 2D animated harp demo that loops on the landing screen, showing each string pluck
+{
+  const dc=$('demo-c'); const ctx=dc.getContext('2d');
+  const DW=dc.width, DH=dc.height;
+  const DPH=ROUNDS[0].phonemes; // ['s','n','b']
+
+  // Helper: hex int → css string
+  const css=h=>'#'+h.toString(16).padStart(6,'0');
+
+  // 2D string endpoints (computed to match harp geometry)
+  // neck points from quadratic bezier P0=(198,40) P1=(108,-8) P2=(22,75) at t=0.8,0.5,0.2
+  const DS=[
+    {nx:56, ny:44, bx:196, by:208}, // long, low  (t≈0.8 on neck)
+    {nx:108,ny:22, bx:196, by:138}, // mid         (t≈0.5 on neck)
+    {nx:161,ny:24, bx:196, by:73},  // short, high (t≈0.2 on neck)
+  ];
+
+  let dHL=-1, dGlw=0, dVib=0, dDead=false;
+
+  function drawDemo(){
+    ctx.clearRect(0,0,DW,DH);
+    ctx.lineCap='round'; ctx.lineJoin='round';
+
+    // ── frame ──
+    ctx.strokeStyle='#c88020'; ctx.lineWidth=8;
+    // Base
+    ctx.beginPath(); ctx.moveTo(18,248); ctx.lineTo(200,248); ctx.stroke();
+    // Pillar
+    ctx.beginPath(); ctx.moveTo(22,248); ctx.lineTo(22,78); ctx.stroke();
+    // Soundboard
+    ctx.beginPath(); ctx.moveTo(198,248); ctx.lineTo(198,42); ctx.stroke();
+    // Neck arch
+    ctx.strokeStyle='#eeaa30'; ctx.lineWidth=6;
+    ctx.beginPath(); ctx.moveTo(198,42); ctx.quadraticCurveTo(108,-8,22,78); ctx.stroke();
+    // Scroll
+    ctx.fillStyle='#eeaa30'; ctx.beginPath(); ctx.arc(22,72,7,0,Math.PI*2); ctx.fill();
+    // Base feet
+    ctx.fillStyle='#c88020';
+    [[18,248,14,8],[186,248,14,8]].forEach(([x,y,w,h])=>{
+      ctx.fillRect(x,y,w,h);
+    });
+
+    // ── strings ──
+    DS.forEach((s,i)=>{
+      const isHL=i===dHL, g=isHL?dGlw:0;
+      const vib=isHL?Math.sin(dVib)*3.5*dGlw:0;
+      const nx=s.nx+vib, bx=s.bx;
+      const idlec=css(COLS[i][0]), gloc=css(COLS[i][1]);
+      const colStr=isHL?gloc:idlec;
+
+      // Glow halo
+      if(g>0){
+        ctx.save(); ctx.strokeStyle=gloc; ctx.lineWidth=14*g; ctx.globalAlpha=0.28*g;
+        ctx.beginPath(); ctx.moveTo(nx,s.ny); ctx.lineTo(bx,s.by); ctx.stroke(); ctx.restore();
+      }
+      // String line
+      ctx.strokeStyle=colStr; ctx.lineWidth=isHL?2.5:1.5; ctx.globalAlpha=1;
+      ctx.beginPath(); ctx.moveTo(nx,s.ny); ctx.lineTo(bx,s.by); ctx.stroke();
+
+      // Label disc at midpoint
+      const mx=(nx+bx)/2, my=(s.ny+s.by)/2, r=isHL?22:18;
+      ctx.beginPath(); ctx.arc(mx,my,r,0,Math.PI*2);
+      ctx.fillStyle=colStr; ctx.globalAlpha=g>0?Math.min(1,0.25+0.75*g):0.22; ctx.fill();
+      ctx.globalAlpha=1; ctx.strokeStyle=colStr; ctx.lineWidth=isHL?2.5:1.5;
+      ctx.beginPath(); ctx.arc(mx,my,r,0,Math.PI*2); ctx.stroke();
+
+      // Letter
+      ctx.fillStyle='#fff'; ctx.globalAlpha=g>0?1:0.6;
+      ctx.font=`bold italic ${isHL?20:15}px Georgia,serif`;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(DPH[i].toUpperCase(),mx,my+2); ctx.globalAlpha=1;
+
+      // Neck pin
+      ctx.fillStyle=gloc; ctx.globalAlpha=0.8;
+      ctx.beginPath(); ctx.arc(s.nx,s.ny,4,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1;
+      // Board pin
+      ctx.fillStyle=gloc;
+      ctx.beginPath(); ctx.arc(s.bx,s.by,4,0,Math.PI*2); ctx.fill();
+    });
+  }
+
+  // rAF draw loop
+  function demoRAF(){
+    if(dDead) return;
+    dGlw=Math.max(0,dGlw-0.022);
+    dVib+=7;
+    drawDemo();
+    requestAnimationFrame(demoRAF);
+  }
+  requestAnimationFrame(demoRAF);
+
+  // Sequenced pluck: each string highlights + plays phoneme, then next after delay
+  function demoPluck(i){
+    if(dDead) return;
+    dHL=i; dGlw=1; dVib=0;
+    const u=new SpeechSynthesisUtterance(SAY[DPH[i]]||DPH[i]);
+    u.rate=0.18; u.pitch=1.0; u.volume=0.85;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+    setTimeout(()=>{
+      dHL=-1;
+      const next=(i+1)%3;
+      setTimeout(()=>demoPluck(next), next===0?1200:600);
+    },800);
+  }
+  // Wait for voices to load then start
+  function startDemo(){
+    if(!speechSynthesis.getVoices().length){
+      speechSynthesis.onvoiceschanged=()=>{ speechSynthesis.onvoiceschanged=null; setTimeout(()=>demoPluck(0),400); };
+    } else { setTimeout(()=>demoPluck(0),400); }
+  }
+  startDemo();
+  // Stop demo when game starts
+  $('btn-start').addEventListener('click',()=>{ dDead=true; speechSynthesis.cancel(); },true);
 }
 
 // ─── BUTTONS ──────────────────────────────────────────────────────────────────
