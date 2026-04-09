@@ -179,11 +179,12 @@ const ROUNDS = [
   { phonemes:['r','l','w'], seq:['l','w','r'],     support:'none'  },
 ];
 
+// Phoneme approximations for Web Speech API
+// Fricatives/nasals: prefix letter forces phoneme context rather than letter-name reading
 const SAY = {
-  s:'sssss', n:'nnnn', b:'buh', e:'eh', i:'ih', o:'oh',
-  r:'rrr', l:'llll', w:'wuh',
-  // carry-overs (used in sequence speech)
-  k:'kuh', p:'puh', f:'ffff', a:'aah', u:'uh', t:'tuh', m:'mmmm'
+  s:'hs',  n:'mn',  b:'buh', e:'eh',  i:'ih', o:'oh',
+  r:'rrr', l:'lll', w:'wuh',
+  k:'kuh', p:'puh', f:'fff', a:'aah', u:'uh', t:'tuh', m:'mmm'
 };
 
 const RUNES = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ','ᛇ','ᛈ','ᛉ','ᛊ','ᛏ','ᛒ','ᛖ','ᛗ'];
@@ -195,10 +196,14 @@ const COLS = [
   [0xcc4433, 0xff7755],
 ];
 
-// String X positions (horizontal spread)
-const STRING_X = [-1.5, 0, 1.5];
-const STRING_Y  = 1.35;  // center height
-const STRING_H  = 2.4;   // height of string
+// Diagonal string endpoints [neckPoint, soundboardPoint]
+// Strings fan from neck (top arch) diagonally down to soundboard (right side)
+const STRING_POINTS = [
+  [new THREE.Vector3(-1.6, 3.7,  0), new THREE.Vector3(1.72, 0.3,  0)], // low string
+  [new THREE.Vector3(-0.2, 4.4,  0), new THREE.Vector3(1.72, 1.65, 0)], // mid string
+  [new THREE.Vector3( 1.0, 3.85, 0), new THREE.Vector3(1.72, 3.0,  0)], // high string
+];
+function strMid(i){ return STRING_POINTS[i][0].clone().lerp(STRING_POINTS[i][1], 0.5); }
 
 // ─── RENDERER ─────────────────────────────────────────────────────────────────
 const canvas = document.getElementById('c');
@@ -321,42 +326,59 @@ archLight.position.set(0, 3.5, -4); scene.add(archLight);
 }
 
 // ─── HARP FRAME ───────────────────────────────────────────────────────────────
+// Standard harp: BASE (bottom) + PILLAR (left) + NECK (top arch) + SOUNDBOARD (right)
 const harpMat = new THREE.MeshLambertMaterial({color:0xc88020});
 const harpShine = new THREE.MeshLambertMaterial({color:0xeeaa30});
 
-// Base beam
-const base = new THREE.Mesh(new THREE.BoxGeometry(3.8,0.2,0.4), harpMat);
-base.position.set(0,0.1,0); base.castShadow=true; scene.add(base);
-// Base feet
-[-1.7,1.7].forEach(x=>{
-  const f=new THREE.Mesh(new THREE.BoxGeometry(0.4,0.1,0.55),harpMat);
-  f.position.set(x,0.05,0); scene.add(f);
+// BASE — horizontal beam at bottom
+const base = new THREE.Mesh(new THREE.BoxGeometry(4.0, 0.22, 0.48), harpMat);
+base.position.set(-0.15, 0.11, 0); base.castShadow=true; scene.add(base);
+// Feet
+[-1.9, 1.7].forEach(x=>{
+  const f = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.12, 0.64), harpMat);
+  f.position.set(x, 0.06, 0); scene.add(f);
 });
 
-// Curved neck — QuadraticBezierCurve3 for organic harp shape
-const neckCurve = new THREE.QuadraticBezierCurve3(
-  new THREE.Vector3(-2.0, 0.2, 0),
-  new THREE.Vector3(-2.8, 2.0, 0),
-  new THREE.Vector3(-0.5, 3.4, 0)
+// PILLAR — left vertical column (very slight forward bow, like a real harp pillar)
+const pillarCurve = new THREE.QuadraticBezierCurve3(
+  new THREE.Vector3(-2.0, 0.22, 0),
+  new THREE.Vector3(-2.12, 1.65, 0.05),
+  new THREE.Vector3(-2.0, 3.15, 0)
 );
-const neckGeo = new THREE.TubeGeometry(neckCurve, 24, 0.1, 8, false);
-const neck = new THREE.Mesh(neckGeo, harpShine);
-neck.castShadow = true; scene.add(neck);
+const pillar = new THREE.Mesh(new THREE.TubeGeometry(pillarCurve, 20, 0.13, 10, false), harpMat);
+pillar.castShadow=true; scene.add(pillar);
+// Scroll at top of pillar
+const scroll = new THREE.Mesh(new THREE.SphereGeometry(0.18, 14, 14), harpShine);
+scroll.position.set(-2.0, 3.3, 0); scene.add(scroll);
 
-// Soundboard (right side, slightly angled)
-const sb = new THREE.Mesh(new THREE.BoxGeometry(0.22,3.1,0.38), harpMat);
-sb.position.set(2.0,1.6,0); sb.rotation.z = -0.04; sb.castShadow=true; scene.add(sb);
+// NECK — the arching top beam (most distinctive harp feature)
+// Sweeps from top of soundboard over to top of pillar
+const neckCurve = new THREE.QuadraticBezierCurve3(
+  new THREE.Vector3( 1.72, 3.68, 0),  // top-right: soundboard
+  new THREE.Vector3(-0.14, 4.95, 0),  // peak of arch
+  new THREE.Vector3(-2.0,  3.15, 0)   // top-left: pillar
+);
+const neck = new THREE.Mesh(new THREE.TubeGeometry(neckCurve, 36, 0.1, 10, false), harpShine);
+neck.castShadow=true; scene.add(neck);
 
-// Top cap on soundboard
-const sbCap = new THREE.Mesh(new THREE.BoxGeometry(0.28,0.18,0.45),harpShine);
-sbCap.position.set(2.0,3.15,0); scene.add(sbCap);
-
-// Decorative tuning pins
-for(let i=0;i<3;i++){
-  const pin=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,0.18,6),harpShine);
-  pin.position.set(-0.5+i*0.18, 3.28, 0.05); pin.rotation.x=Math.PI/2;
+// SOUNDBOARD — right side resonating body (taller than original)
+const sb = new THREE.Mesh(new THREE.BoxGeometry(0.26, 3.7, 0.42), harpMat);
+sb.position.set(1.72, 1.9, 0); sb.castShadow=true; scene.add(sb);
+// Soundboard cap
+const sbCap = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.22, 0.50), harpShine);
+sbCap.position.set(1.72, 3.72, 0); scene.add(sbCap);
+// Tuning pins (where strings anchor on soundboard)
+[0.3, 1.65, 3.0].forEach(y=>{
+  const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 0.22, 7), harpShine);
+  pin.position.set(1.59, y, 0.12); pin.rotation.z = Math.PI/2;
   scene.add(pin);
-}
+});
+// Neck pins (where strings attach to neck — small bumps along arch)
+[-1.6,-0.2,1.0].forEach((nx,i)=>{
+  const nkPt = STRING_POINTS[i][0];
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), harpShine);
+  knob.position.copy(nkPt); scene.add(knob);
+});
 
 // ─── STRING TEXTURE FACTORY ───────────────────────────────────────────────────
 function makeStringLabel(phoneme, support, colorHex) {
@@ -414,75 +436,72 @@ function buildStrings(phonemes, support){
   hoveredString=-1;
 
   phonemes.forEach((ph,i)=>{
-    const g=new THREE.Group();
-    g.position.set(STRING_X[i], 0, 0);
-    g.userData={idx:i, phoneme:ph, entryStart:0, vibTime:0};
+    const topPt = STRING_POINTS[i][0];
+    const botPt = STRING_POINTS[i][1];
+    const mid   = strMid(i);
 
-    // Visual string (thin cylinder)
-    const strMesh=new THREE.Mesh(
-      new THREE.CylinderGeometry(0.022,0.022,STRING_H,8),
+    const g = new THREE.Group();
+    // Group origin = string midpoint in world space
+    g.position.copy(mid);
+    g.userData = {idx:i, phoneme:ph, entryStart:0, vibTime:0, midY:mid.y};
+
+    // Compute top/bot relative to group origin
+    const localTop = topPt.clone().sub(mid);
+    const localBot = botPt.clone().sub(mid);
+    const strCurve = new THREE.LineCurve3(localTop, localBot);
+
+    // Visual string (thin diagonal tube)
+    const strMesh = new THREE.Mesh(
+      new THREE.TubeGeometry(strCurve, 1, 0.018, 8, false),
       new THREE.MeshBasicMaterial({color:COLS[i][0]})
     );
-    strMesh.position.y=STRING_Y;
-    strMesh.userData.stringIdx=i;
-    g.add(strMesh);
+    strMesh.userData.stringIdx=i; g.add(strMesh);
 
-    // String glow (slightly wider, transparent)
-    const strGlow=new THREE.Mesh(
-      new THREE.CylinderGeometry(0.055,0.055,STRING_H,8),
+    // String glow (slightly wider)
+    const strGlow = new THREE.Mesh(
+      new THREE.TubeGeometry(strCurve, 1, 0.055, 8, false),
       new THREE.MeshBasicMaterial({color:COLS[i][1],transparent:true,opacity:0.06})
     );
-    strGlow.position.y=STRING_Y; g.add(strGlow);
-    g.userData.strGlow=strGlow;
+    g.add(strGlow); g.userData.strGlow=strGlow;
 
-    // Invisible hitbox (wide for touch)
-    const hb=new THREE.Mesh(
-      new THREE.CylinderGeometry(0.38,0.38,STRING_H,8),
+    // Wide invisible hitbox for touch — tube along same line
+    const hb = new THREE.Mesh(
+      new THREE.TubeGeometry(strCurve, 1, 0.4, 8, false),
       new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false})
     );
-    hb.position.y=STRING_Y;
-    hb.userData.stringIdx=i;
-    g.add(hb); hitboxes.push(hb);
+    hb.userData.stringIdx=i; g.add(hb); hitboxes.push(hb);
 
-    // Label disc at center of string
-    const tex=makeStringLabel(ph,support,COLS[i][0]);
-    const label=new THREE.Mesh(
-      new THREE.CircleGeometry(0.42,48),
+    // Label disc at group center (= string midpoint)
+    const tex = makeStringLabel(ph, support, COLS[i][0]);
+    const label = new THREE.Mesh(
+      new THREE.CircleGeometry(0.42, 48),
       new THREE.MeshBasicMaterial({map:tex,transparent:true})
     );
-    label.position.set(0,STRING_Y,0.08);
-    label.userData.stringIdx=i;
-    g.add(label); labelMeshes.push(label);
+    label.position.set(0, 0, 0.09);
+    label.userData.stringIdx=i; g.add(label); labelMeshes.push(label);
 
-    // Label glow ring
-    const glowR=new THREE.Mesh(
-      new THREE.CircleGeometry(0.54,48),
+    // Glow ring
+    const glowR = new THREE.Mesh(
+      new THREE.CircleGeometry(0.54, 48),
       new THREE.MeshBasicMaterial({color:COLS[i][0],transparent:true,opacity:0.06})
     );
-    glowR.position.set(0,STRING_Y,0.07); g.add(glowR);
+    glowR.position.set(0, 0, 0.08); g.add(glowR);
     g.userData.glowR=glowR; glowRings.push(glowR);
 
     // Carved ring border
-    const crvR=new THREE.Mesh(
-      new THREE.RingGeometry(0.42,0.56,48),
+    const crvR = new THREE.Mesh(
+      new THREE.RingGeometry(0.42, 0.56, 48),
       new THREE.MeshLambertMaterial({color:0x3a2808})
     );
-    crvR.position.set(0,STRING_Y,0.075); crvR.userData.stringIdx=i; g.add(crvR);
+    crvR.position.set(0, 0, 0.075); crvR.userData.stringIdx=i; g.add(crvR);
 
-    // Point light
-    const pl=new THREE.PointLight(COLS[i][0],0.7,3);
-    pl.position.set(0,STRING_Y,0.5); g.add(pl);
+    // Point light at disc
+    const pl = new THREE.PointLight(COLS[i][0], 0.7, 3);
+    pl.position.set(0, 0, 0.5); g.add(pl);
     g.userData.light=pl; stringLights.push(pl);
 
-    // Top & bottom tuning knobs
-    [STRING_Y+STRING_H/2, STRING_Y-STRING_H/2].forEach(y=>{
-      const knob=new THREE.Mesh(new THREE.SphereGeometry(0.06,8,8),
-        new THREE.MeshLambertMaterial({color:COLS[i][0]}));
-      knob.position.y=y; g.add(knob);
-    });
-
-    // Start below ground
-    g.position.y = -4;
+    // Start below ground for entry animation
+    g.position.y = mid.y - 4;
     scene.add(g);
     strings.push(g);
   });
@@ -494,11 +513,12 @@ const orbMat = new THREE.MeshBasicMaterial({color:0xffeebb,transparent:true,opac
 const orbMesh = new THREE.Mesh(orbGeo,orbMat); scene.add(orbMesh);
 const orbLight = new THREE.PointLight(0xffeebb,0,2); scene.add(orbLight);
 
-let orbTargetX = 0, orbCurX = 0, orbVisible = false;
+let orbTargetX = 0, orbTargetY = 2.0, orbCurX = 0, orbCurY = 2.0, orbVisible = false;
 
 function showOrb(stringIdx){
   orbVisible=true;
-  orbTargetX=STRING_X[stringIdx];
+  const mid=strMid(stringIdx);
+  orbTargetX=mid.x; orbTargetY=mid.y;
   orbMat.opacity=0.85;
   orbLight.intensity=1.5;
 }
@@ -548,7 +568,11 @@ function sayPhoneme(ph,onEnd){
   if(!window.speechSynthesis){if(onEnd)onEnd();return;}
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(SAY[ph]||ph);
-  u.rate=0.55; u.pitch=1.05; u.volume=1;
+  u.rate=0.45; u.pitch=1.0; u.volume=1;
+  // Prefer a local natural-sounding voice
+  const voices=speechSynthesis.getVoices();
+  const v=voices.find(v=>v.lang.startsWith('en')&&v.localService)||voices.find(v=>v.lang.startsWith('en'));
+  if(v) u.voice=v;
   if(onEnd) u.onend=onEnd;
   speechSynthesis.speak(u);
 }
@@ -596,7 +620,7 @@ function highlightString(idx,mode){
     pl.color.setHex(0xffffff); pl.intensity=3.5;
     glowR.material.opacity=0.35; strGlow.material.opacity=0.35;
     g.userData.vibTime=1.0; // trigger vibration
-    burst(STRING_X[idx],STRING_Y,COLS[idx][1],14);
+    const _bm=strMid(idx); burst(_bm.x,_bm.y,COLS[idx][1],14);
     hlT[idx]=setTimeout(()=>{
       pl.color.setHex(COLS[idx][0]); pl.intensity=0.7;
       glowR.material.opacity=0.06; strGlow.material.opacity=0.06;
@@ -750,7 +774,7 @@ function roundWin(){
   banner.textContent='✦ Well Done! ✦'; banner.style.opacity='1';
   strings.forEach((g,i)=>{
     setTimeout(()=>{
-      burst(STRING_X[i],STRING_Y,COLS[i][1],22);
+      const _bm=strMid(i); burst(_bm.x,_bm.y,COLS[i][1],22);
       g.userData.light.color.setHex(0xffd060); g.userData.light.intensity=3;
     },i*180);
   });
@@ -771,7 +795,7 @@ function gameWin(){
   $('ready').classList.remove('on'); $('next-round').classList.remove('on');
   $('replay-seq').classList.remove('on'); $('round-banner').style.opacity='0';
   setMsg(''); hideWand(); hideOrb();
-  strings.forEach((g,i)=>setTimeout(()=>burst(STRING_X[i],STRING_Y,0xffd060,35),i*120));
+  strings.forEach((g,i)=>setTimeout(()=>{const _bm=strMid(i);burst(_bm.x,_bm.y,0xffd060,35);},i*120));
   say('The melody is yours. The spell is cast.');
   setTimeout(()=>showScreen('s-win'),800);
 }
@@ -812,19 +836,20 @@ let t=0;
   requestAnimationFrame(loop); t+=0.016;
   const now=Date.now();
 
-  // String entry + idle sway
+  // String entry + idle pulse
   strings.forEach((g,i)=>{
     const es=g.userData.entryStart;
     if(!es||now<es) return;
     const prog=Math.min(1,(now-es)/600);
     const ease=1-Math.pow(1-prog,3);
-    g.position.y=-4+4*ease;
+    g.position.y = g.userData.midY - 4 + 4*ease;
 
-    // Vibration on pluck
+    // Vibration on pluck — scale the whole group
     if(g.userData.vibTime>0){
-      g.scale.x=1+Math.sin(t*38)*0.18*g.userData.vibTime;
+      const w=1+Math.sin(t*40)*0.06*g.userData.vibTime;
+      g.scale.set(w, 1, w);
       g.userData.vibTime-=0.045;
-      if(g.userData.vibTime<=0){g.scale.x=1;g.userData.vibTime=0;}
+      if(g.userData.vibTime<=0){g.scale.setScalar(1);g.userData.vibTime=0;}
     }
 
     // Pulse idle light
@@ -832,9 +857,10 @@ let t=0;
     if(pl.intensity<2) pl.intensity=0.55+0.22*Math.sin(t*1.3+i*1.8);
   });
 
-  // Ghost orb lerp
+  // Ghost orb lerp (tracks to string midpoint)
   orbCurX+=(orbTargetX-orbCurX)*0.1;
-  orbMesh.position.set(orbCurX, STRING_Y+Math.sin(t*3)*0.06, 0.15);
+  orbCurY+=(orbTargetY-orbCurY)*0.1;
+  orbMesh.position.set(orbCurX, orbCurY+Math.sin(t*3)*0.06, 0.2);
   orbLight.position.copy(orbMesh.position);
 
   // Lantern flicker
