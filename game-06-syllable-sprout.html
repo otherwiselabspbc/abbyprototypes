@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Syllable Sprout — Syllable Counting</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#3d8a28;overflow:hidden;font-family:'Press Start 2P',monospace;
+  user-select:none;-webkit-user-select:none;height:100vh;width:100vw}
+
+.screen{position:fixed;top:0;left:0;width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10}
+.off{display:none!important}
+
+/* ══ LANDING ══ */
+#s-title{background:linear-gradient(180deg,#89d4f5 0%,#a8e2f8 20%,#6cc14c 35%,#5aac3a 50%,#4a9830 100%)}
+.eyebrow{font-size:8px;letter-spacing:4px;color:#fff;text-transform:uppercase;margin-bottom:14px;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.3)}
+.big-title{font-size:clamp(26px,7vw,46px);color:#fff;text-align:center;line-height:1.3;
+  text-shadow:3px 3px 0 #2d6a1e;margin-bottom:12px}
+.tagline{font-size:clamp(9px,2.2vw,11px);color:#fff;text-align:center;
+  line-height:2.4;word-spacing:0.15em;margin-bottom:32px;text-shadow:1px 1px 0 rgba(0,0,0,0.25)}
+
+#demo-canvas{border-radius:16px;border:4px solid #5a3e1b;margin-bottom:24px;
+  box-shadow:4px 4px 0 rgba(0,0,0,0.2);pointer-events:none;position:relative;z-index:1}
+
+.btn{background:linear-gradient(180deg,#ff6b6b 0%,#ee5a24 100%);color:#fff;
+  border:4px solid #b33a1a;padding:14px 36px;font-size:12px;
+  font-family:'Press Start 2P',monospace;border-radius:4px;cursor:pointer;letter-spacing:2px;
+  text-transform:uppercase;position:relative;z-index:20;
+  box-shadow:inset -3px -3px 0 #b33a1a,inset 3px 3px 0 #ff9a7a,6px 6px 0 rgba(0,0,0,0.2);
+  transition:transform .1s;animation:btn-bounce 2.2s ease-in-out infinite;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn:hover{animation-play-state:paused;transform:scale(1.05)!important}
+.btn:active{animation:none;transform:scale(0.96)!important}
+.btn-green{background:linear-gradient(180deg,#7cfc00 0%,#32cd32 100%);
+  border-color:#1a5010;
+  box-shadow:inset -3px -3px 0 #1a5010,inset 3px 3px 0 #a0ff60,6px 6px 0 rgba(0,0,0,0.2)}
+@keyframes btn-bounce{0%,100%{transform:translateY(0)}45%{transform:translateY(-6px)}65%{transform:translateY(-3px)}}
+.skill-tag{position:absolute;bottom:20px;font-size:7px;letter-spacing:2px;
+  color:rgba(255,255,255,0.6);text-transform:uppercase;text-shadow:1px 1px 0 rgba(0,0,0,0.2)}
+
+/* ══ LEARN ══ */
+#s-learn{background:linear-gradient(180deg,#89d4f5 0%,#a8e2f8 20%,#6cc14c 35%,#5aac3a 50%,#4a9830 100%);
+  justify-content:space-between;padding:clamp(20px,5vw,36px) 20px clamp(28px,6vw,44px)}
+#learn-step-label{font-size:8px;letter-spacing:3px;color:#fff;text-transform:uppercase;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.25)}
+#learn-title{font-size:clamp(12px,3vw,15px);color:#fff;text-align:center;
+  line-height:2.4;word-spacing:0.15em;
+  text-shadow:2px 2px 0 rgba(0,0,0,0.2);transition:opacity .4s}
+#learn-title.fade{opacity:0}
+#learn-title em{color:#ffe44d;font-style:normal;padding:0 0.15em}
+#learn-caption{font-size:clamp(11px,2.8vw,14px);color:#fff;text-align:center;
+  line-height:2.6;word-spacing:0.15em;
+  background:rgba(42,30,15,0.9);border:4px solid #5a3e1b;border-radius:8px;
+  padding:clamp(14px,3.5vw,20px) clamp(18px,4.5vw,24px);
+  box-shadow:4px 4px 0 rgba(0,0,0,0.25);text-shadow:1px 1px 0 #000;
+  opacity:0;transition:opacity .4s,transform .4s;transform:translateY(8px)}
+#learn-caption.show{opacity:1;transform:translateY(0)}
+#learn-caption strong{color:#ffe44d;padding:0 0.15em}
+#learn-area{display:flex;align-items:center;justify-content:center;min-height:clamp(180px,45vw,280px)}
+#learn-bottom{display:flex;flex-direction:column;align-items:center;gap:16px}
+#learn-next{opacity:0;pointer-events:none;transition:opacity .4s}
+#learn-next.show{opacity:1;pointer-events:auto}
+#learn-dots{display:flex;gap:10px;margin-bottom:8px}
+.ldot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.2);
+  border:2px solid rgba(255,255,255,0.4);transition:all .3s}
+.ldot.active{background:#ffe44d;border-color:#cc8800}
+.ldot.done{background:#7cfc00;border-color:#2a5020}
+
+.flower-canvas{border-radius:50%;touch-action:none;position:relative;z-index:1}
+
+/* ══ TRANSITION ══ */
+#s-transition{background:linear-gradient(180deg,#89d4f5 0%,#a8e2f8 20%,#6cc14c 35%,#5aac3a 50%,#4a9830 100%)}
+.trans-title{font-size:clamp(16px,4vw,22px);color:#fff;text-align:center;
+  text-shadow:3px 3px 0 #2d6a1e;margin-bottom:12px}
+.trans-sub{font-size:clamp(9px,2.2vw,11px);color:#fff;text-align:center;
+  line-height:2.4;word-spacing:0.15em;margin-bottom:32px;text-shadow:1px 1px 0 rgba(0,0,0,0.2)}
+
+/* ══ PRACTICE ══ */
+#s-game{background:linear-gradient(180deg,#89d4f5 0%,#a8e2f8 20%,#6cc14c 35%,#5aac3a 50%,#4a9830 100%);
+  justify-content:space-between;padding:clamp(14px,4vw,24px) 20px clamp(24px,5vw,36px)}
+#hud-top{display:flex;flex-direction:column;align-items:center;gap:6px}
+#phase-label{font-size:7px;letter-spacing:4px;color:#ffe44d;text-transform:uppercase;margin-bottom:2px;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.3)}
+#round-dots{display:flex;gap:10px}
+.rdot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.2);
+  border:2px solid rgba(255,255,255,0.4);transition:all .4s}
+.rdot.done{background:#7cfc00;border-color:#2a5020}
+.rdot.cur{background:#ffe44d;border-color:#cc8800}
+#round-label{font-size:7px;letter-spacing:3px;color:#fff;text-transform:uppercase;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.2)}
+
+#instruction{
+  position:fixed;top:42%;left:50%;transform:translate(-50%,-50%);z-index:40;
+  font-size:clamp(11px,2.8vw,14px);color:#fff;text-align:center;
+  line-height:2.6;word-spacing:0.15em;
+  background:rgba(42,30,15,0.94);border:4px solid #5a3e1b;border-radius:8px;
+  padding:clamp(14px,3.5vw,20px) clamp(18px,4.5vw,24px);
+  box-shadow:4px 4px 0 rgba(0,0,0,0.25);text-shadow:1px 1px 0 #000;
+  transition:opacity .35s,transform .35s;pointer-events:none}
+#instruction.fade{opacity:0;transform:translate(-50%,-50%) scale(0.95)}
+#instruction.hidden{display:none}
+
+#game-area{display:flex;flex-direction:column;align-items:center;gap:20px}
+
+/* Word display */
+#word-display{font-size:clamp(18px,4.5vw,26px);color:#fff;text-align:center;
+  text-shadow:3px 3px 0 rgba(0,0,0,0.3);min-height:40px;padding:8px 20px;
+  background:rgba(42,30,15,0.7);border:3px solid #5a3e1b;border-radius:8px;
+  letter-spacing:0.1em;transition:opacity .3s}
+#word-display.hidden{opacity:0}
+
+/* Number buttons */
+#number-row{display:flex;gap:clamp(8px,2.5vw,14px);justify-content:center}
+.num-btn{
+  width:clamp(48px,11vw,64px);height:clamp(48px,11vw,64px);
+  border-radius:50%;border:4px solid #c0392b;
+  background:linear-gradient(135deg,#ff7e4e 0%,#e74c3c 100%);
+  color:#fff;font-size:clamp(16px,4vw,22px);font-family:'Press Start 2P',monospace;
+  cursor:pointer;position:relative;z-index:20;
+  box-shadow:inset -3px -3px 0 #a03020,inset 3px 3px 0 #ff9a7a,4px 4px 0 rgba(0,0,0,0.2);
+  text-shadow:2px 2px 0 rgba(0,0,0,0.3);transition:transform .12s;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  display:flex;align-items:center;justify-content:center}
+.num-btn:active{transform:scale(0.9)}
+.num-btn.correct{background:linear-gradient(135deg,#7cfc00 0%,#32cd32 100%);
+  border-color:#1a5010;
+  box-shadow:inset -3px -3px 0 #1a5010,inset 3px 3px 0 #a0ff60,4px 4px 0 rgba(0,0,0,0.2)}
+.num-btn.wrong{animation:btn-shake 0.4s ease-out}
+@keyframes btn-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+#bottom-bar{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
+
+/* ══ WIN ══ */
+#s-win{background:linear-gradient(180deg,#89d4f5 0%,#ffe44d 60%,#ffaa00 100%)}
+.win-title{font-size:clamp(28px,8vw,50px);color:#fff;
+  text-shadow:4px 4px 0 #2d6a1e;margin-bottom:12px;text-align:center}
+.win-sub{font-size:clamp(9px,2.2vw,11px);color:#fff;text-align:center;
+  max-width:300px;line-height:2.2;word-spacing:0.15em;margin-bottom:28px;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.2)}
+.badge{background:#fff;border:4px solid #5a3e1b;border-radius:12px;
+  padding:16px 28px;margin-bottom:32px;text-align:center;
+  box-shadow:4px 4px 0 rgba(0,0,0,0.15)}
+.badge-label{font-size:7px;letter-spacing:3px;color:#5a3e1b;text-transform:uppercase}
+.badge-name{font-size:12px;color:#2d6a1e;margin-top:8px}
+</style>
+</head>
+<body>
+
+<!-- ══ LANDING ══ -->
+<div class="screen" id="s-title">
+  <p class="eyebrow">Phonological Awareness</p>
+  <h1 class="big-title">Syllable<br>Sprout</h1>
+  <p class="tagline">Every word is made of syllables.<br>Count them to make<br>your flower bloom!</p>
+  <canvas id="demo-canvas" width="220" height="220"></canvas>
+  <button class="btn" id="startBtn">Begin</button>
+  <p class="skill-tag">Syllable Counting · Ages 5–10</p>
+</div>
+
+<!-- ══ LEARN ══ -->
+<div class="screen off" id="s-learn">
+  <div>
+    <div id="learn-dots"><div class="ldot active"></div><div class="ldot"></div><div class="ldot"></div></div>
+    <div id="learn-step-label">Learn</div>
+  </div>
+  <div id="learn-title">Words are made of <em>syllables</em>.</div>
+  <div id="learn-caption"></div>
+  <div id="learn-area"><canvas id="learn-canvas" class="flower-canvas" width="280" height="280"></canvas></div>
+  <div id="learn-bottom">
+    <button class="btn" id="learn-next" style="padding:12px 36px;font-size:15px">Continue</button>
+  </div>
+</div>
+
+<!-- ══ TRANSITION ══ -->
+<div class="screen off" id="s-transition">
+  <p class="eyebrow">Learn Complete</p>
+  <div class="trans-title">Ready to Practice?</div>
+  <p class="trans-sub">Listen to each word.<br>Tap the number of syllables!</p>
+  <button class="btn" id="practiceBtn">Start Practice</button>
+</div>
+
+<!-- ══ PRACTICE ══ -->
+<div class="screen off" id="s-game">
+  <div id="hud-top">
+    <div id="phase-label">Practice</div>
+    <div id="round-dots"><div class="rdot cur"></div><div class="rdot"></div><div class="rdot"></div></div>
+    <div id="round-label">Round 1 of 3</div>
+  </div>
+  <div id="instruction" class="hidden"></div>
+  <div id="game-area">
+    <canvas id="game-canvas" class="flower-canvas" width="280" height="280"></canvas>
+    <div id="word-display"></div>
+    <div id="number-row">
+      <button class="num-btn" data-num="1">1</button>
+      <button class="num-btn" data-num="2">2</button>
+      <button class="num-btn" data-num="3">3</button>
+      <button class="num-btn" data-num="4">4</button>
+      <button class="num-btn" data-num="5">5</button>
+    </div>
+  </div>
+  <div id="bottom-bar"></div>
+</div>
+
+<!-- ══ WIN ══ -->
+<div class="screen off" id="s-win">
+  <p class="eyebrow">Quest Complete</p>
+  <div class="win-title">Well Done!</div>
+  <p class="win-sub">You can count syllables in words!<br>Your flowers are in full bloom.</p>
+  <div class="badge">
+    <div class="badge-label">Skill Unlocked</div>
+    <div class="badge-name">Syllable Counting 🌼</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px;align-items:center">
+    <button class="btn btn-green" id="homeBtn">Back to Garden</button>
+    <button class="btn" id="playAgainBtn" style="font-size:10px;padding:10px 28px">Play Again</button>
+  </div>
+</div>
+
+<script>
+// Refresh guard
+(function(){
+  if(!sessionStorage.getItem('fromGarden')){
+    window.location.replace('garden-overworld.html');
+    return;
+  }
+  sessionStorage.removeItem('fromGarden');
+})();
+
+// ══════════════════════════════════════
+// DATA — words with syllable breakdowns
+// ══════════════════════════════════════
+const LEARN_STEPS = [
+  { type:'demo', word:'apple', syllables:['ap','ple'], count:2,
+    title:'Words are made of <em>syllables</em>.',
+    caption:'<strong>Apple</strong> has <strong>2</strong> syllables:<br>ap · ple.',
+    captionSpeak:'Apple has 2 syllables: ap, ple.' },
+  { type:'demo2', words:[
+      {word:'cat', syllables:['cat'], count:1},
+      {word:'butterfly', syllables:['but','ter','fly'], count:3}
+    ],
+    title:'Some words have <em>more</em> syllables than others.',
+    caption:'<strong>Cat</strong> has <strong>1</strong> syllable.<br><strong>Butterfly</strong> has <strong>3</strong> syllables:<br>but · ter · fly.',
+    captionSpeak:'Cat has 1 syllable. Butterfly has 3 syllables: but, ter, fly.' },
+  { type:'guided', word:'garden', syllables:['gar','den'], count:2,
+    title:'Can you count the syllables?',
+    captionBefore:'Listen to the word.<br>Then tap the right number.',
+    captionBeforeSpeak:'Listen to the word. Then tap the right number.',
+    captionCorrect:'Right! <strong>Garden</strong> has <strong>2</strong> syllables:<br>gar · den.',
+    captionCorrectSpeak:'Right! Garden has 2 syllables: gar, den.' },
+];
+
+const ROUNDS = [
+  { word:'pencil',    syllables:['pen','cil'],                count:2 },
+  { word:'butterfly', syllables:['but','ter','fly'],          count:3 },
+  { word:'invisible', syllables:['in','vis','i','ble'],       count:4 },
+];
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let roundIdx=0, hintTier=0, locked=false;
+let learnStep=0, learnLocked=false;
+let petalBloom=0; // current petal count being animated
+
+// ══════════════════════════════════════
+// AUDIO
+// ══════════════════════════════════════
+let cachedVoice=null;
+function cacheVoice(){
+  const voices=speechSynthesis.getVoices();
+  if(!voices.length) return;
+  const prefs=['samantha','karen','moira','tessa','fiona','victoria',
+    'google uk english female','google us english','microsoft zira','microsoft jenny'];
+  for(const name of prefs){
+    const v=voices.find(v=>v.name.toLowerCase().includes(name)&&v.lang.startsWith('en'));
+    if(v){cachedVoice=v;return;}
+  }
+  cachedVoice=voices.find(v=>v.lang.startsWith('en')&&v.localService)
+    ||voices.find(v=>v.lang.startsWith('en'))||voices[0];
+}
+speechSynthesis.onvoiceschanged=cacheVoice; cacheVoice();
+
+function speakWord(word,onEnd){
+  speechSynthesis.cancel();
+  setTimeout(()=>{
+    const u=new SpeechSynthesisUtterance(word);
+    u.rate=0.85;u.pitch=1.05;u.volume=1;
+    if(!cachedVoice)cacheVoice();
+    if(cachedVoice)u.voice=cachedVoice;
+    let ended=false;
+    const finish=()=>{if(!ended){ended=true;if(onEnd)onEnd();}};
+    u.onend=finish;u.onerror=finish;
+    const timeout=Math.max(4000, word.length*120);
+    setTimeout(finish, timeout);
+    speechSynthesis.speak(u);
+    if(speechSynthesis.paused)speechSynthesis.resume();
+  },60);
+}
+
+// Speak syllables one-by-one with petal blooms
+function speakSyllables(syllables, onPetal, onDone){
+  let i=0;
+  function next(){
+    if(i>=syllables.length){if(onDone)onDone();return;}
+    if(onPetal) onPetal(i);
+    speakWord(syllables[i], ()=>{
+      i++;
+      setTimeout(next, 250);
+    });
+  }
+  next();
+}
+
+let _ac;
+function getAC(){if(!_ac)_ac=new(window.AudioContext||window.webkitAudioContext)();if(_ac.state==='suspended')_ac.resume();return _ac;}
+function playCorrectChime(){
+  const ac=getAC(),now=ac.currentTime;
+  [[523.25,0],[659.25,0.12],[783.99,0.24],[1046.5,0.38]].forEach(([hz,t])=>{
+    const o=ac.createOscillator(),g=ac.createGain();
+    o.type='sine';o.frequency.value=hz;
+    g.gain.setValueAtTime(0,now+t);g.gain.linearRampToValueAtTime(0.22,now+t+0.04);
+    g.gain.exponentialRampToValueAtTime(0.0001,now+t+0.9);
+    o.connect(g);g.connect(ac.destination);o.start(now+t);o.stop(now+t+0.95);
+  });
+}
+function playWrongChime(){
+  const ac=getAC(),now=ac.currentTime;
+  const o=ac.createOscillator(),g=ac.createGain();
+  o.type='sine';o.frequency.setValueAtTime(280,now);
+  o.frequency.linearRampToValueAtTime(200,now+0.3);
+  g.gain.setValueAtTime(0.18,now);g.gain.exponentialRampToValueAtTime(0.0001,now+0.35);
+  o.connect(g);g.connect(ac.destination);o.start(now);o.stop(now+0.4);
+}
+function playPetalChime(idx){
+  const ac=getAC(),now=ac.currentTime;
+  const notes=[440,523.25,659.25,783.99,880];
+  const hz=notes[Math.min(idx,notes.length-1)];
+  const o=ac.createOscillator(),g=ac.createGain();
+  o.type='sine';o.frequency.value=hz;
+  g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(0.15,now+0.03);
+  g.gain.exponentialRampToValueAtTime(0.0001,now+0.4);
+  o.connect(g);g.connect(ac.destination);o.start(now);o.stop(now+0.5);
+}
+
+// ══════════════════════════════════════
+// FLOWER DRAWING
+// ══════════════════════════════════════
+function drawFlower(ctx, cx, cy, size, totalPetals, bloomCount, color){
+  const petalColor = color || '#ff7675';
+  const centerColor = '#ffe44d';
+  // Stem
+  ctx.strokeStyle='#2d8a4e';ctx.lineWidth=size*0.08;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(cx, cy+size*0.4);ctx.quadraticCurveTo(cx+size*0.05, cy+size*0.8, cx, cy+size*1.1);
+  ctx.stroke();
+  // Leaf
+  ctx.fillStyle='#5aac3a';
+  ctx.beginPath();
+  ctx.ellipse(cx-size*0.2, cy+size*0.75, size*0.18, size*0.09, -0.4, 0, Math.PI*2);
+  ctx.fill();
+
+  // Petals in circle
+  const petals = Math.max(1, totalPetals);
+  for(let i=0;i<petals;i++){
+    const ang = (i/petals)*Math.PI*2 - Math.PI/2;
+    const isBloomed = i < bloomCount;
+    const petalDist = size*0.42;
+    const petalRx = size*0.22, petalRy = size*0.14;
+    const px = cx + Math.cos(ang)*petalDist;
+    const py = cy + Math.sin(ang)*petalDist;
+
+    ctx.save();
+    ctx.translate(px, py);
+    ctx.rotate(ang + Math.PI/2);
+    if(isBloomed){
+      // Fully bloomed
+      ctx.fillStyle=petalColor;
+      ctx.beginPath();ctx.ellipse(0, 0, petalRx, petalRy, 0, 0, Math.PI*2);ctx.fill();
+      // Highlight
+      ctx.fillStyle='rgba(255,255,255,0.25)';
+      ctx.beginPath();ctx.ellipse(-petalRx*0.3, -petalRy*0.3, petalRx*0.4, petalRy*0.3, 0, 0, Math.PI*2);ctx.fill();
+    } else {
+      // Bud (smaller, darker)
+      ctx.fillStyle='rgba(100,140,60,0.5)';
+      ctx.beginPath();ctx.ellipse(0, 0, petalRx*0.4, petalRy*0.4, 0, 0, Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // Center
+  ctx.fillStyle=centerColor;
+  ctx.beginPath();ctx.arc(cx, cy, size*0.18, 0, Math.PI*2);ctx.fill();
+  ctx.fillStyle='#fdb347';
+  ctx.beginPath();ctx.arc(cx, cy, size*0.12, 0, Math.PI*2);ctx.fill();
+  // Face dots (center detail)
+  ctx.fillStyle='rgba(255,255,255,0.5)';
+  ctx.beginPath();ctx.arc(cx-size*0.05, cy-size*0.05, size*0.03, 0, Math.PI*2);ctx.fill();
+}
+
+function drawScene(ctx, w, h, totalPetals, bloomCount, color){
+  ctx.clearRect(0,0,w,h);
+  // Sky/grass gradient
+  const bg=ctx.createLinearGradient(0,0,0,h);
+  bg.addColorStop(0,'#a8e2f8');bg.addColorStop(0.5,'#72c84e');bg.addColorStop(1,'#3d8a28');
+  ctx.fillStyle=bg;
+  ctx.beginPath();ctx.arc(w/2,h/2,w/2-4,0,Math.PI*2);ctx.fill();
+  // Flower
+  drawFlower(ctx, w/2, h*0.4, w*0.35, totalPetals, bloomCount, color);
+}
+
+// ══════════════════════════════════════
+// SCREEN SWITCHING
+// ══════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.add('off'));
+  document.getElementById(id).classList.remove('off');
+}
+
+// ══════════════════════════════════════
+// LANDING DEMO
+// ══════════════════════════════════════
+const demoCanvas=document.getElementById('demo-canvas');
+const demoCtx=demoCanvas.getContext('2d');
+const DEMO_WORDS=[
+  {word:'apple',syllables:['ap','ple'],count:2,color:'#e74c3c'},
+  {word:'butterfly',syllables:['but','ter','fly'],count:3,color:'#fd79a8'},
+  {word:'cat',syllables:['cat'],count:1,color:'#ffb347'},
+];
+let demoIdx=0, demoActive=true;
+
+function runDemo(){
+  if(!demoActive)return;
+  const item=DEMO_WORDS[demoIdx%DEMO_WORDS.length];
+  drawScene(demoCtx, 220, 220, item.count, 0, item.color);
+  let bloomed=0;
+  const interval=setInterval(()=>{
+    if(!demoActive){clearInterval(interval);return;}
+    bloomed++;
+    drawScene(demoCtx, 220, 220, item.count, bloomed, item.color);
+    if(bloomed>=item.count){
+      clearInterval(interval);
+      setTimeout(()=>{
+        demoIdx++;
+        if(demoActive) runDemo();
+      }, 1400);
+    }
+  }, 700);
+}
+setTimeout(runDemo, 800);
+
+// ══════════════════════════════════════
+// LEARN PHASE
+// ══════════════════════════════════════
+const learnCanvas=document.getElementById('learn-canvas');
+const learnCtx=learnCanvas.getContext('2d');
+const learnTitleEl=document.getElementById('learn-title');
+const learnCaptionEl=document.getElementById('learn-caption');
+const learnNextBtn=document.getElementById('learn-next');
+const learnDots=document.querySelectorAll('.ldot');
+
+function startLearn(){learnStep=0;showScreen('s-learn');setTimeout(runLearnStep,200);}
+
+function runLearnStep(){
+  const step=LEARN_STEPS[learnStep];
+  learnLocked=true;
+  learnDots.forEach((d,i)=>{d.className='ldot';if(i<learnStep)d.classList.add('done');else if(i===learnStep)d.classList.add('active');});
+  learnNextBtn.classList.remove('show');
+  learnCaptionEl.classList.remove('show');
+  learnTitleEl.classList.add('fade');
+
+  const w=learnCanvas.width, h=learnCanvas.height;
+  drawScene(learnCtx, w, h, 0, 0);
+
+  setTimeout(()=>{
+    learnTitleEl.innerHTML=step.title;
+    learnTitleEl.classList.remove('fade');
+    speakWord(learnTitleEl.textContent, ()=>{
+      if(step.type==='demo') runLearnDemo(step,w,h);
+      else if(step.type==='demo2') runLearnDemo2(step,w,h);
+      else if(step.type==='guided') runLearnGuided(step,w,h);
+    });
+  },300);
+}
+
+function runLearnDemo(step,w,h){
+  drawScene(learnCtx, w, h, step.count, 0, '#e74c3c');
+  // Speak whole word first, then syllables one by one with blooms
+  speakWord(step.word, ()=>{
+    speakSyllables(step.syllables, (i)=>{
+      playPetalChime(i);
+      drawScene(learnCtx, w, h, step.count, i+1, '#e74c3c');
+    }, ()=>{
+      // Show caption
+      learnCaptionEl.innerHTML=step.caption;
+      learnCaptionEl.classList.add('show');
+      speakWord(step.captionSpeak, ()=>{
+        learnLocked=false;
+        learnNextBtn.classList.add('show');
+      });
+    });
+  });
+}
+
+function runLearnDemo2(step,w,h){
+  // Show first word (cat - 1 syllable) on left, then second word (butterfly - 3) on right
+  const item1=step.words[0], item2=step.words[1];
+  drawScene(learnCtx, w, h, 0, 0);
+  // Draw two small flowers side by side
+  function drawTwo(bloom1, bloom2){
+    learnCtx.clearRect(0,0,w,h);
+    const bg=learnCtx.createLinearGradient(0,0,0,h);
+    bg.addColorStop(0,'#a8e2f8');bg.addColorStop(0.5,'#72c84e');bg.addColorStop(1,'#3d8a28');
+    learnCtx.fillStyle=bg;
+    learnCtx.beginPath();learnCtx.arc(w/2,h/2,w/2-4,0,Math.PI*2);learnCtx.fill();
+    drawFlower(learnCtx, w*0.3, h*0.45, w*0.22, item1.count, bloom1, '#ffb347');
+    drawFlower(learnCtx, w*0.7, h*0.45, w*0.22, item2.count, bloom2, '#fd79a8');
+  }
+  drawTwo(0,0);
+  // Speak and bloom first
+  speakWord(item1.word, ()=>{
+    let b=0;
+    speakSyllables(item1.syllables, (i)=>{
+      playPetalChime(i);
+      drawTwo(i+1, 0);
+    }, ()=>{
+      // Now second
+      setTimeout(()=>{
+        speakWord(item2.word, ()=>{
+          speakSyllables(item2.syllables, (i)=>{
+            playPetalChime(i);
+            drawTwo(item1.count, i+1);
+          }, ()=>{
+            learnCaptionEl.innerHTML=step.caption;
+            learnCaptionEl.classList.add('show');
+            speakWord(step.captionSpeak, ()=>{
+              learnLocked=false;
+              learnNextBtn.classList.add('show');
+            });
+          });
+        });
+      }, 500);
+    });
+  });
+}
+
+function runLearnGuided(step,w,h){
+  drawScene(learnCtx, w, h, step.count, 0, '#a29bfe');
+  learnCaptionEl.innerHTML=step.captionBefore;
+  learnCaptionEl.classList.add('show');
+  speakWord(step.captionBeforeSpeak, ()=>{
+    // Speak the word and bloom petals as syllables play
+    speakWord(step.word, ()=>{
+      speakSyllables(step.syllables, (i)=>{
+        playPetalChime(i);
+        drawScene(learnCtx, w, h, step.count, i+1, '#a29bfe');
+      }, ()=>{
+        learnLocked=false;
+        // Player must tap number buttons — but in learn phase we just advance
+        // Show the prompt then show correct caption
+        speakWord('How many syllables?', ()=>{
+          // Auto-show correct answer after a beat (learn phase — no failure)
+          setTimeout(()=>{
+            playCorrectChime();
+            learnCaptionEl.innerHTML=step.captionCorrect;
+            learnCaptionEl.classList.add('show');
+            speakWord(step.captionCorrectSpeak, ()=>{
+              learnNextBtn.classList.add('show');
+            });
+          }, 1500);
+        });
+      });
+    });
+  });
+}
+
+// ══════════════════════════════════════
+// PRACTICE PHASE
+// ══════════════════════════════════════
+const gameCanvas=document.getElementById('game-canvas');
+const gameCtx=gameCanvas.getContext('2d');
+const wordDisplayEl=document.getElementById('word-display');
+const numBtns=document.querySelectorAll('.num-btn');
+let currentRound=null, canAnswer=false;
+
+function startPractice(){roundIdx=0;showScreen('s-game');setTimeout(()=>setupRound(0),120);}
+
+function setupRound(idx){
+  const r=ROUNDS[idx];
+  currentRound=r;
+  locked=false;hintTier=0;canAnswer=false;
+
+  document.querySelectorAll('.rdot').forEach((d,i)=>{
+    d.className='rdot';if(i<idx)d.classList.add('done');else if(i===idx)d.classList.add('cur');});
+  document.getElementById('round-label').textContent=`Round ${idx+1} of ${ROUNDS.length}`;
+
+  // Reset buttons
+  numBtns.forEach(b=>b.className='num-btn');
+
+  // Draw empty flower
+  const w=gameCanvas.width, h=gameCanvas.height;
+  drawScene(gameCtx, w, h, r.count, 0, '#fd79a8');
+  wordDisplayEl.textContent='';
+  wordDisplayEl.classList.add('hidden');
+
+  const introTxt='Listen to the word.';
+  setInstruction(introTxt, false, 2000);
+  speakWord(introTxt, ()=>{
+    // Hide overlay and play the word
+    hideInstruction();
+    setTimeout(()=>{
+      wordDisplayEl.textContent=r.word;
+      wordDisplayEl.classList.remove('hidden');
+      speakWord(r.word, ()=>{
+        // Bloom petals as syllables are spoken
+        speakSyllables(r.syllables, (i)=>{
+          playPetalChime(i);
+          drawScene(gameCtx, w, h, r.count, i+1, '#fd79a8');
+        }, ()=>{
+          // Reset bloom for user to answer
+          drawScene(gameCtx, w, h, r.count, 0, '#fd79a8');
+          const ask=`How many syllables?`;
+          setInstruction(ask, true, 2500);
+          speakWord(ask, ()=>{
+            canAnswer=true;
+          });
+        });
+      });
+    }, 400);
+  });
+}
+
+function checkAnswer(num){
+  if(!canAnswer || locked) return;
+  const r=currentRound;
+  locked=true;
+
+  if(num===r.count){
+    // CORRECT
+    const btn=document.querySelector(`.num-btn[data-num="${num}"]`);
+    if(btn) btn.classList.add('correct');
+    playCorrectChime();
+    // Bloom all petals
+    const w=gameCanvas.width, h=gameCanvas.height;
+    let b=0;
+    const bInt=setInterval(()=>{
+      b++;
+      drawScene(gameCtx, w, h, r.count, b, '#fd79a8');
+      if(b>=r.count) clearInterval(bInt);
+    }, 150);
+    const msg=`Right! <strong>${r.word}</strong> has <strong>${r.count}</strong> syllables.`;
+    setInstruction(msg, true, 5000);
+    speakWord(`Right! ${r.word} has ${r.count} syllables.`, ()=>{
+      setTimeout(advanceRound, 800);
+    });
+  } else {
+    // WRONG — hint escalation
+    hintTier++;
+    const btn=document.querySelector(`.num-btn[data-num="${num}"]`);
+    if(btn) btn.classList.add('wrong');
+    setTimeout(()=>{if(btn) btn.classList.remove('wrong');}, 500);
+    playWrongChime();
+
+    if(hintTier===1){
+      const msg=`Not quite! Listen again.<br>Count each part of the word.`;
+      setInstruction(msg, false, 4000);
+      speakWord('Not quite! Listen again. Count each part of the word.', ()=>{
+        // Replay syllables slowly
+        const w=gameCanvas.width, h=gameCanvas.height;
+        speakSyllables(r.syllables, (i)=>{
+          playPetalChime(i);
+          drawScene(gameCtx, w, h, r.count, i+1, '#fd79a8');
+        }, ()=>{
+          setTimeout(()=>{
+            drawScene(gameCtx, w, h, r.count, 0, '#fd79a8');
+            locked=false;
+          }, 800);
+        });
+      });
+    } else if(hintTier===2){
+      const syllablesText = r.syllables.join(', ');
+      const msg=`Listen to each part:<br><strong>${r.syllables.join(' · ')}</strong>.<br>How many parts?`;
+      setInstruction(msg, false, 5000);
+      speakWord(`Listen to each part. ${syllablesText}. How many parts?`, ()=>{
+        const w=gameCanvas.width, h=gameCanvas.height;
+        speakSyllables(r.syllables, (i)=>{
+          playPetalChime(i);
+          drawScene(gameCtx, w, h, r.count, i+1, '#fd79a8');
+        }, ()=>{
+          setTimeout(()=>{
+            drawScene(gameCtx, w, h, r.count, 0, '#fd79a8');
+            locked=false;
+          }, 800);
+        });
+      });
+    } else {
+      // Bottom-out: reveal answer
+      const correctBtn=document.querySelector(`.num-btn[data-num="${r.count}"]`);
+      if(correctBtn) correctBtn.classList.add('correct');
+      const msg=`The answer is <strong>${r.count}</strong>.<br><strong>${r.word}</strong> has <strong>${r.count}</strong> parts:<br>${r.syllables.join(' · ')}.`;
+      setInstruction(msg, true, 6000);
+      speakWord(`The answer is ${r.count}. ${r.word} has ${r.count} parts: ${r.syllables.join(', ')}.`, ()=>{
+        playCorrectChime();
+        // Bloom all
+        const w=gameCanvas.width, h=gameCanvas.height;
+        let b=0;
+        const bInt=setInterval(()=>{
+          b++;
+          drawScene(gameCtx, w, h, r.count, b, '#fd79a8');
+          if(b>=r.count) clearInterval(bInt);
+        }, 150);
+        setTimeout(advanceRound, 2000);
+      });
+    }
+  }
+}
+
+function advanceRound(){
+  roundIdx++;
+  if(roundIdx>=ROUNDS.length){showScreen('s-win');burstWin();}
+  else setupRound(roundIdx);
+}
+
+// Number button handlers
+numBtns.forEach(btn=>{
+  const num=parseInt(btn.dataset.num);
+  const handler=(e)=>{e.preventDefault();checkAnswer(num);};
+  btn.addEventListener('click',handler);
+  btn.addEventListener('pointerdown',handler);
+});
+
+// ══════════════════════════════════════
+// INSTRUCTION
+// ══════════════════════════════════════
+let instrTimer;
+function setInstruction(text,highlight,duration){
+  clearTimeout(instrTimer);
+  const el=document.getElementById('instruction');
+  el.classList.add('fade');el.classList.remove('hidden');
+  setTimeout(()=>{
+    el.innerHTML=text;
+    el.style.color=highlight?'#ffe44d':'#fff';
+    el.classList.remove('fade');
+    instrTimer=setTimeout(hideInstruction,duration||2500);
+  },300);
+}
+function hideInstruction(){
+  clearTimeout(instrTimer);
+  const el=document.getElementById('instruction');
+  el.classList.add('fade');setTimeout(()=>el.classList.add('hidden'),350);
+}
+
+// ══════════════════════════════════════
+// WIN PARTICLES
+// ══════════════════════════════════════
+function burstWin(){
+  const c=document.createElement('canvas');
+  c.width=window.innerWidth;c.height=window.innerHeight;
+  c.style.cssText='position:fixed;top:0;left:0;z-index:100;pointer-events:none';
+  document.body.appendChild(c);
+  const cx=c.getContext('2d');
+  const parts=[];
+  for(let i=0;i<80;i++){
+    const a=Math.random()*Math.PI*2,s=Math.random()*5+2;
+    parts.push({x:c.width/2,y:c.height/2,vx:Math.cos(a)*s,vy:Math.sin(a)*s-3,
+      r:Math.random()*4+2,color:`hsl(${Math.random()*360},80%,60%)`,alpha:1});
+  }
+  (function loop(){
+    cx.clearRect(0,0,c.width,c.height);
+    let alive=false;
+    parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.12;p.alpha-=0.015;
+      if(p.alpha>0){alive=true;cx.globalAlpha=p.alpha;cx.fillStyle=p.color;
+        cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fill();}});
+    cx.globalAlpha=1;
+    if(alive)requestAnimationFrame(loop);
+    else c.remove();
+  })();
+}
+
+// ══════════════════════════════════════
+// BUTTONS
+// ══════════════════════════════════════
+function onBtn(id, fn){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const handler=function(e){
+    if(e) e.preventDefault();
+    try{ fn(); }catch(err){ console.error('btn handler error:',err); }
+  };
+  el.addEventListener('click',handler);
+  el.addEventListener('pointerdown',handler);
+}
+
+function doStart(){
+  demoActive=false;
+  try{ speechSynthesis.cancel(); }catch(e){}
+  try{
+    const primer=new SpeechSynthesisUtterance('hi');
+    primer.volume=0;
+    speechSynthesis.speak(primer);
+  }catch(e){}
+  try{ getAC(); }catch(e){}
+  startLearn();
+}
+
+onBtn('startBtn', doStart);
+onBtn('practiceBtn', startPractice);
+onBtn('playAgainBtn', startPractice);
+onBtn('homeBtn', ()=>{ window.location.href='garden-overworld.html'; });
+
+function doLearnNext(){
+  learnStep++;
+  if(learnStep>=LEARN_STEPS.length) showScreen('s-transition');
+  else runLearnStep();
+}
+learnNextBtn.addEventListener('click',(e)=>{e.preventDefault();doLearnNext();});
+learnNextBtn.addEventListener('pointerdown',(e)=>{e.preventDefault();doLearnNext();});
+
+document.addEventListener('pointerdown',()=>{try{getAC();}catch(e){}},{once:true});
+setInterval(()=>{if(speechSynthesis.paused)speechSynthesis.resume();},500);
+</script>
+</body>
+</html>

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Quest Catcher — The Lost Treasure of Stonehollow</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a1a2e;overflow:hidden;font-family:'Nunito',sans-serif;
+  user-select:none;-webkit-user-select:none;height:100vh;width:100vw;color:#f0e6d3}
+.screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:20px}
+.screen.hidden{display:none}
+:root{--warm:#f5c469;--warm-dark:#d4a03c;--accent:#e87461;--accent-dark:#c0503e;
+  --panel:#2a2a4a;--panel-border:#4a4a6e;--text:#f0e6d3;--highlight:#ffe08a;--success:#5ec77a;}
+
+.bg-title{background:linear-gradient(180deg,#3a7bd5 0%,#6fb3f2 35%,#5a8f4a 60%,#3d6b32 100%)}
+.bg-quest{background:#1a1a2e}
+.bg-win{background:linear-gradient(180deg,var(--warm) 0%,#f7d794 40%,#6fb3f2 100%)}
+
+.title-hero{font-size:clamp(32px,8vw,56px);font-weight:900;color:#fff;text-align:center;
+  text-shadow:0 4px 0 rgba(0,0,0,0.2);line-height:1.1;margin-bottom:6px}
+.title-sub{font-size:clamp(14px,3.5vw,18px);font-weight:700;color:var(--warm);text-align:center;
+  margin-bottom:16px;letter-spacing:1px}
+.subtitle{font-size:clamp(12px,2.8vw,15px);color:rgba(255,255,255,0.75);text-align:center;
+  max-width:400px;line-height:1.7;margin-bottom:28px}
+.label{font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;
+  color:var(--warm);margin-bottom:12px}
+.btn{font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:#fff;
+  border:none;border-radius:12px;padding:16px 40px;cursor:pointer;position:relative;z-index:20;
+  transition:transform .1s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  text-transform:uppercase;letter-spacing:2px}
+.btn-primary{background:linear-gradient(180deg,var(--accent) 0%,var(--accent-dark) 100%);
+  box-shadow:0 4px 0 #9a3a2a,0 6px 12px rgba(0,0,0,0.2)}
+.btn-primary:active{transform:translateY(2px);box-shadow:0 2px 0 #9a3a2a}
+#scene{border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.4);display:block;max-width:95%}
+#speech{max-width:520px;width:95%;min-height:80px;margin-top:12px;
+  background:var(--panel);border:3px solid var(--panel-border);border-radius:14px;
+  padding:16px 50px 16px 20px;position:relative;box-shadow:0 4px 16px rgba(0,0,0,0.3)}
+#sp-name{font-size:11px;font-weight:800;color:var(--warm);letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:6px}
+#sp-text{font-size:clamp(14px,3.2vw,17px);color:var(--text);line-height:1.75;min-height:44px}
+#sp-text .vocab{color:var(--highlight);font-weight:900;
+  text-decoration:underline;text-decoration-color:rgba(255,224,138,0.4);text-underline-offset:3px}
+.replay-btn{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;
+  background:rgba(255,255,255,0.08);border:2px solid var(--panel-border);
+  display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:border-color .15s}
+.replay-btn:hover{border-color:var(--warm)}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:520px;width:95%;margin-top:14px}
+.options.hidden{display:none}
+.option{background:var(--panel);border:3px solid var(--panel-border);border-radius:12px;
+  padding:14px 12px;cursor:pointer;text-align:center;
+  font-size:clamp(13px,3vw,15px);font-weight:700;color:var(--text);
+  transition:border-color .15s,transform .1s,background .15s;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  min-height:52px;display:flex;align-items:center;justify-content:center}
+.option:hover{border-color:var(--warm);transform:translateY(-2px)}
+.option:active{transform:translateY(1px)}
+.option.correct{border-color:var(--success);background:rgba(94,199,122,0.15);color:var(--success)}
+.option.wrong{border-color:var(--accent);background:rgba(232,116,97,0.1);animation:shake .4s ease-out}
+.option.disabled{pointer-events:none;opacity:0.4}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+#cont-btn{margin-top:14px;opacity:0;pointer-events:none;transition:opacity .3s}
+#cont-btn.show{opacity:1;pointer-events:auto}
+.progress-bar{width:95%;max-width:520px;height:8px;background:rgba(255,255,255,0.1);
+  border-radius:4px;margin-bottom:14px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--success),var(--warm));
+  border-radius:4px;transition:width .6s ease-out}
+.p-label{font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.win-title{font-size:clamp(36px,9vw,58px);font-weight:900;color:#2a2a4a;
+  text-shadow:0 3px 0 rgba(255,255,255,0.3);margin-bottom:8px;text-align:center}
+.win-sub{font-size:clamp(13px,3vw,16px);color:#4a4a6a;text-align:center;
+  max-width:380px;line-height:1.7;margin-bottom:28px}
+.badge{background:#fff;border:3px solid var(--warm-dark);border-radius:16px;
+  padding:20px 32px;margin-bottom:28px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.badge-label{font-size:10px;font-weight:800;letter-spacing:3px;color:var(--warm-dark);text-transform:uppercase}
+.badge-name{font-size:16px;font-weight:800;color:#2a2a4a;margin-top:6px}
+</style>
+</head>
+<body>
+
+<!-- ══ TITLE ══ -->
+<div class="screen bg-title" id="s-title">
+  <div class="label">Language Comprehension</div>
+  <div class="title-hero">Quest Catcher</div>
+  <div class="title-sub">The Lost Treasure of Stonehollow</div>
+  <p class="subtitle">Scout Mira has discovered a hidden passage deep inside Stonehollow Mountain. She needs a hero brave enough — and smart enough — to help her find the legendary treasure within.</p>
+  <canvas id="title-cv" width="360" height="200" style="border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.2);margin-bottom:24px"></canvas>
+  <button class="btn btn-primary" onclick="beginQuest()">Accept the Quest</button>
+  <p style="position:absolute;bottom:20px;font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase">Vocabulary in Context · Ages 8–12</p>
+</div>
+
+<!-- ══ QUEST ══ -->
+<div class="screen hidden bg-quest" id="s-quest">
+  <div class="p-label" id="q-label">The Journey Begins</div>
+  <div class="progress-bar"><div class="progress-fill" id="q-bar" style="width:0%"></div></div>
+  <canvas id="scene" width="480" height="280" style="max-width:95%;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.4)"></canvas>
+  <div id="speech">
+    <div id="sp-name"></div>
+    <div id="sp-text"></div>
+    <button class="replay-btn" onclick="replay()" title="Replay">🔊</button>
+  </div>
+  <div class="options hidden" id="opts"></div>
+  <button class="btn btn-primary" id="cont-btn" onclick="advance()">Continue</button>
+</div>
+
+<!-- ══ WIN ══ -->
+<div class="screen hidden bg-win" id="s-win">
+  <div class="label" style="color:var(--accent-dark)">Quest Complete</div>
+  <div class="win-title">Hero of<br>Stonehollow</div>
+  <p class="win-sub">You squeezed through the crevice, navigated the dark tunnels, and braved the dilapidated chamber — all to find the lost treasure. Scout Mira and the whole village will remember your name.</p>
+  <div class="badge">
+    <div class="badge-label">Skill Unlocked</div>
+    <div class="badge-name">Context Clue Master ⚔️</div>
+  </div>
+  <button class="btn btn-primary" onclick="beginQuest()">Play Again</button>
+</div>
+
+<script>
+'use strict';
+
+// ══════════════════════════════════════
+// DRAWING
+// ═══��══════════════════════════════════
+function ell(c,cx,cy,rx,ry,col){c.fillStyle=col;c.beginPath();c.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);c.fill();}
+function rr(c,x,y,w,h,r,col){c.fillStyle=col;c.beginPath();c.roundRect(x,y,w,h,r);c.fill();}
+
+function drawP(c,x,y,s,o){
+  o=o||{};c.save();if(o.flip){c.translate(x,0);c.scale(-1,1);x=0;}
+  c.globalAlpha=0.15;ell(c,x,y+s*22,s*10,s*4,'#000');c.globalAlpha=1;
+  rr(c,x-s*7,y+s*16,s*6,s*6,s*2,o.boots||'#5a3820');rr(c,x+s*1,y+s*16,s*6,s*6,s*2,o.boots||'#5a3820');
+  rr(c,x-s*5,y+s*10,s*4,s*8,s*2,o.pants||'#4a6a8a');rr(c,x+s*1,y+s*10,s*4,s*8,s*2,o.pants||'#4a6a8a');
+  if(o.cape){c.fillStyle=o.cape;c.beginPath();c.moveTo(x-s*7,y-s*3);c.quadraticCurveTo(x-s*14,y+s*10,x-s*10,y+s*20);c.lineTo(x+s*10,y+s*20);c.quadraticCurveTo(x+s*14,y+s*10,x+s*7,y-s*3);c.closePath();c.fill();}
+  rr(c,x-s*8,y-s*4,s*16,s*16,s*3,o.shirt||'#3a7bd5');
+  if(o.belt!==false){rr(c,x-s*8,y+s*8,s*16,s*3,s*1,'#d4a03c');ell(c,x,y+s*9.5,s*2,s*2,'#f5c469');}
+  rr(c,x-s*12,y-s*2,s*5,s*12,s*2,o.shirt||'#3a7bd5');rr(c,x+s*7,y-s*2,s*5,s*12,s*2,o.shirt||'#3a7bd5');
+  ell(c,x-s*9.5,y+s*11,s*3,s*3,o.skin||'#f0c8a0');ell(c,x+s*9.5,y+s*11,s*3,s*3,o.skin||'#f0c8a0');
+  ell(c,x,y-s*10,s*9,s*9,o.skin||'#f0c8a0');
+  c.fillStyle=o.hair||'#5a3820';c.beginPath();c.ellipse(x,y-s*14,s*10,s*7,0,Math.PI,Math.PI*2);c.fill();
+  if(!o.hat)ell(c,x-s*8,y-s*12,s*3,s*5,o.hair||'#5a3820');
+  const ey=o.happy?-s*10.5:-s*11;
+  ell(c,x-s*3,ey+y,s*2,o.happy?s*1.5:s*2.5,'#2a2a4a');ell(c,x+s*3,ey+y,s*2,o.happy?s*1.5:s*2.5,'#2a2a4a');
+  ell(c,x-s*2,ey+y-s*1,s*0.8,s*0.8,'#fff');ell(c,x+s*4,ey+y-s*1,s*0.8,s*0.8,'#fff');
+  c.strokeStyle='#8a6a5a';c.lineWidth=s*1.2;c.lineCap='round';
+  if(o.happy){c.beginPath();c.arc(x,y-s*7,s*3.5,0.05*Math.PI,0.95*Math.PI);c.stroke();}
+  else{c.beginPath();c.arc(x,y-s*8,s*2.5,0.15*Math.PI,0.85*Math.PI);c.stroke();}
+  if(o.hat==='hood'){c.fillStyle=o.hatCol||'#4a6a3a';c.beginPath();c.moveTo(x-s*11,y-s*8);c.quadraticCurveTo(x,y-s*24,x+s*11,y-s*8);c.lineTo(x+s*12,y-s*5);c.lineTo(x-s*12,y-s*5);c.closePath();c.fill();}
+  if(o.urgent){c.fillStyle='#e87461';rr(c,x+s*10,y-s*26,s*5,s*12,s*2,'#e87461');ell(c,x+s*12.5,y-s*12,s*2.5,s*2.5,'#e87461');}
+  c.restore();
+}
+
+const HERO={shirt:'#3a7bd5',cape:'#c0503e',pants:'#4a6a8a',hair:'#5a3820'};
+const MIRA={shirt:'#4a6a3a',hair:'#6a4a30',hat:'hood',hatCol:'#4a6a3a',pants:'#5a5a4a',skin:'#e0b88a'};
+
+function sky(c,w,h,n){const s=c.createLinearGradient(0,0,0,h*0.5);s.addColorStop(0,n?'#1a2a4a':'#6fb3f2');s.addColorStop(1,n?'#2a3a5a':'#a8d8f0');c.fillStyle=s;c.fillRect(0,0,w,h*0.55);
+  if(!n){c.fillStyle='#f5c469';c.beginPath();c.arc(w*0.82,h*0.16,16,0,Math.PI*2);c.fill();c.fillStyle='rgba(255,255,255,0.5)';[[w*0.15,h*0.1,30,10],[w*0.55,h*0.08,40,12]].forEach(([cx,cy,rx,ry])=>{c.beginPath();c.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);c.fill();c.beginPath();c.ellipse(cx-rx*0.3,cy+ry*0.3,rx*0.5,ry*0.6,0,0,Math.PI*2);c.fill();});}
+  else{c.fillStyle='#e8e0d0';c.beginPath();c.arc(w*0.82,h*0.15,14,0,Math.PI*2);c.fill();c.fillStyle='#fff';[[w*0.1,h*0.08],[w*0.3,h*0.12],[w*0.5,h*0.06],[w*0.65,h*0.14],[w*0.9,h*0.1]].forEach(([sx,sy])=>{c.beginPath();c.arc(sx,sy,1.5,0,Math.PI*2);c.fill();});}}
+function grd(c,w,h,c1,c2){const g=c.createLinearGradient(0,h*0.5,0,h);g.addColorStop(0,c1||'#5a8f4a');g.addColorStop(1,c2||'#3d6b32');c.fillStyle=g;c.fillRect(0,h*0.5,w,h*0.5);}
+
+// ── SCENES ──
+function scnOutside(c,w,h){sky(c,w,h);grd(c,w,h);
+  c.fillStyle='#7a8a9a';c.beginPath();c.moveTo(w*0.25,h*0.5);c.lineTo(w*0.52,h*0.08);c.lineTo(w*0.82,h*0.5);c.closePath();c.fill();
+  c.fillStyle='#6a7a8a';c.beginPath();c.moveTo(w*0.52,h*0.08);c.lineTo(w*0.67,h*0.5);c.lineTo(w*0.82,h*0.5);c.closePath();c.fill();
+  c.fillStyle='#e8e8f0';c.beginPath();c.moveTo(w*0.46,h*0.2);c.lineTo(w*0.52,h*0.08);c.lineTo(w*0.58,h*0.2);c.closePath();c.fill();
+  c.strokeStyle='#3a3a4a';c.lineWidth=4;c.beginPath();c.moveTo(w*0.50,h*0.22);c.bezierCurveTo(w*0.49,h*0.3,w*0.51,h*0.38,w*0.48,h*0.5);c.stroke();
+  c.fillStyle='rgba(245,196,105,0.15)';c.beginPath();c.ellipse(w*0.49,h*0.36,16,40,0,0,Math.PI*2);c.fill();
+  [[w*0.15,h*0.52],[w*0.36,h*0.54],[w*0.76,h*0.53]].forEach(([tx,ty])=>{c.fillStyle='#3d6b32';c.beginPath();c.ellipse(tx,ty-10,10,14,0,0,Math.PI*2);c.fill();c.fillStyle='#5a3e1b';rr(c,tx-2,ty-2,4,10,1,'#5a3e1b');});
+  c.fillStyle='#c9a86c';c.beginPath();c.moveTo(0,h*0.85);c.quadraticCurveTo(w*0.5,h*0.72,w,h*0.85);c.lineTo(w,h);c.lineTo(0,h);c.closePath();c.fill();}
+
+function scnCave(c,w,h){c.fillStyle='#1a1a2e';c.fillRect(0,0,w,h);
+  let wg=c.createLinearGradient(0,0,w*0.15,0);wg.addColorStop(0,'#3a3a4a');wg.addColorStop(1,'#1a1a2e');c.fillStyle=wg;c.fillRect(0,0,w*0.15,h);
+  wg=c.createLinearGradient(w*0.85,0,w,0);wg.addColorStop(0,'#1a1a2e');wg.addColorStop(1,'#3a3a4a');c.fillStyle=wg;c.fillRect(w*0.85,0,w*0.15,h);
+  c.fillStyle='#2a2a3a';c.fillRect(0,h*0.7,w,h*0.3);
+  // Torches
+  [[w*0.12,h*0.35],[w*0.88,h*0.35]].forEach(([tx,ty])=>{
+    c.fillStyle='rgba(245,160,60,0.08)';c.beginPath();c.ellipse(tx,ty,60,80,0,0,Math.PI*2);c.fill();
+    c.fillStyle='#f5c469';ell(c,tx,ty-4,5,8,'#f5c469');ell(c,tx,ty-8,3,5,'#ffe08a');rr(c,tx-1.5,ty+4,3,20,1,'#5a3e1b');});
+  c.fillStyle='rgba(245,196,105,0.06)';c.beginPath();c.ellipse(w*0.5,h*0.3,40,60,0,0,Math.PI*2);c.fill();
+  [[w*0.3,0,8,25],[w*0.55,0,6,20],[w*0.7,0,10,30]].forEach(([sx,sy,sw,sh])=>{c.fillStyle='#3a3a4a';c.beginPath();c.moveTo(sx-sw,sy);c.lineTo(sx,sy+sh);c.lineTo(sx+sw,sy);c.closePath();c.fill();});
+  c.fillStyle='rgba(100,160,220,0.15)';ell(c,w*0.4,h*0.78,20,6,'rgba(100,160,220,0.15)');ell(c,w*0.65,h*0.82,15,5,'rgba(100,160,220,0.12)');}
+
+function scnChamber(c,w,h){c.fillStyle='#1a1a2e';c.fillRect(0,0,w,h);
+  rr(c,0,0,w*0.1,h,0,'#4a4a5a');rr(c,w*0.9,0,w*0.1,h,0,'#4a4a5a');
+  c.fillStyle='#3a3a4a';c.fillRect(0,0,w,h*0.12);
+  c.strokeStyle='#2a2a3a';c.lineWidth=2;[[w*0.2,0,w*0.25,h*0.15],[w*0.6,0,w*0.55,h*0.12],[w*0.8,h*0.05,w*0.75,h*0.18]].forEach(([x1,y1,x2,y2])=>{c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();});
+  c.fillStyle='#4a4a5a';[[w*0.2,h*0.75,10,6],[w*0.35,h*0.78,8,5],[w*0.7,h*0.73,12,7],[w*0.8,h*0.76,9,5]].forEach(([rx,ry,rw,rh])=>{c.beginPath();c.ellipse(rx,ry,rw,rh,0,0,Math.PI*2);c.fill();});
+  c.fillStyle='#2a2a3a';c.fillRect(0,h*0.72,w,h*0.28);
+  c.strokeStyle='#3d6a28';c.lineWidth=2;c.lineCap='round';
+  [[w*0.15,0,w*0.18,h*0.25],[w*0.45,0,w*0.42,h*0.3],[w*0.85,0,w*0.82,h*0.2]].forEach(([x1,y1,x2,y2])=>{c.beginPath();c.moveTo(x1,y1);c.quadraticCurveTo((x1+x2)/2+10,y2*0.5,x2,y2);c.stroke();});
+  c.strokeStyle='rgba(245,196,105,0.15)';c.lineWidth=1.5;c.beginPath();c.arc(w*0.5,h*0.35,25,0,Math.PI*2);c.stroke();
+  c.fillStyle='rgba(245,196,105,0.04)';c.beginPath();c.ellipse(w*0.5,h*0.5,80,60,0,0,Math.PI*2);c.fill();}
+
+function scnTreasure(c,w,h){
+  const bg=c.createRadialGradient(w*0.5,h*0.5,0,w*0.5,h*0.5,w*0.5);bg.addColorStop(0,'#3a3a5a');bg.addColorStop(1,'#1a1a2e');c.fillStyle=bg;c.fillRect(0,0,w,h);
+  c.fillStyle='rgba(245,196,105,0.1)';c.beginPath();c.ellipse(w*0.5,h*0.55,100,70,0,0,Math.PI*2);c.fill();
+  c.fillStyle='rgba(245,196,105,0.06)';c.beginPath();c.ellipse(w*0.5,h*0.5,150,100,0,0,Math.PI*2);c.fill();
+  c.fillStyle='#2a2a3a';c.fillRect(0,h*0.7,w,h*0.3);
+  rr(c,w*0.38,h*0.52,w*0.24,h*0.2,6,'#8a6a30');rr(c,w*0.36,h*0.48,w*0.28,h*0.1,4,'#a07a38');rr(c,w*0.35,h*0.38,w*0.3,h*0.12,4,'#b08a40');
+  c.fillStyle='#f5c469';[[w*0.42,h*0.5,5],[w*0.48,h*0.48,6],[w*0.54,h*0.5,5],[w*0.5,h*0.46,4],[w*0.46,h*0.52,4],[w*0.56,h*0.48,5]].forEach(([gx,gy,gr])=>{c.beginPath();c.arc(gx,gy,gr,0,Math.PI*2);c.fill();});
+  c.fillStyle='#fff';const t=Date.now()/400;
+  [[w*0.42,h*0.42],[w*0.58,h*0.44],[w*0.5,h*0.38],[w*0.44,h*0.48],[w*0.56,h*0.5]].forEach(([sx,sy],i)=>{const a=Math.sin(t+i*1.3)*0.5+0.5;c.globalAlpha=a*0.8;c.beginPath();c.arc(sx,sy,2,0,Math.PI*2);c.fill();});
+  c.globalAlpha=1;ell(c,w*0.5,h*0.56,4,4,'#d4a03c');}
+
+// ══════════════════════════════════════
+// CHAPTER DATA — one continuous quest
+// ══════════════════════════════════════
+// Each chapter has: setup (scene + narration) → challenge (vocab) → resolution (what happens after you get it right)
+const CH = [
+  // ── CHAPTER 0: THE BRIEFING (no vocab — pure story setup) ──
+  { label:'The Briefing', pct:0,
+    scene:scnOutside, npcX:.15, heroX:.85,
+    npcM:{...MIRA,urgent:true}, heroM:HERO,
+    beats:[
+      {who:'Scout Mira',
+       html:"Quest Catcher! I've been scouting Stonehollow Mountain for weeks, and I finally found something incredible. Deep in the rock face, there's a hidden passage — and I think it leads to the legendary lost treasure!",
+       speak:"Quest Catcher! I've been scouting Stonehollow Mountain for weeks, and I finally found something incredible. Deep in the rock face, there's a hidden passage — and I think it leads to the legendary lost treasure!"},
+      {who:'Scout Mira',
+       html:"But I can't do this alone. The passage is dangerous — dark tunnels, crumbling walls, who knows what else. I need someone brave and sharp. Someone who can figure things out when the going gets tough. Will you come with me?",
+       speak:"But I can't do this alone. The passage is dangerous — dark tunnels, crumbling walls, who knows what else. I need someone brave and sharp. Someone who can figure things out when the going gets tough. Will you come with me?"},
+    ],
+  },
+  // ── CHAPTER 1: THE ENTRANCE ──
+  { label:'The Entrance', pct:20,
+    scene:scnOutside, npcX:.15, heroX:.85,
+    npcM:{...MIRA}, heroM:HERO,
+    beats:[
+      {who:'Scout Mira',
+       html:"Here we are. See that thin crack in the mountain wall? That golden glow coming from inside? That's a <span class='vocab'>crevice</span> — and it's our only way in. We'll have to squeeze through it.",
+       speak:"Here we are. See that thin crack in the mountain wall? That golden glow coming from inside? That's a crevice — and it's our only way in. We'll have to squeeze through it."},
+    ],
+    vocab:{
+      who:'Scout Mira',
+      html:"Wait — before we go any further, I need to know you're ready. What exactly is a <span class='vocab'>crevice</span>? If we're squeezing into one, you'd better understand what we're dealing with.",
+      speak:"Wait — before we go any further, I need to know you're ready. What exactly is a crevice? If we're squeezing into one, you'd better understand what we're dealing with.",
+      options:['A narrow crack or opening','A deep cave','A steep cliff','A hidden treasure'],
+      correct:0,
+      hints:["Look at the mountain — see that thin dark line with the golden glow? What kind of opening would you need to squeeze through?",
+             "A crevice is a narrow gap or crack in a surface — like that thin split in the rock."],
+    },
+    resolution:[
+      {who:'Scout Mira',
+       html:"That's right! A narrow crack in the rock. Let's do this — stay close behind me!",
+       speak:"That's right! A narrow crack in the rock. Let's do this — stay close behind me!",
+       npcM:{...MIRA,happy:true}, heroM:{...HERO,happy:true}},
+      {who:'',
+       html:"<em>You squeeze through the narrow crevice. The rock scrapes against your shoulders, but ahead you can see flickering torchlight. The passage opens into a dark tunnel...</em>",
+       speak:"You squeeze through the narrow crevice. The rock scrapes against your shoulders, but ahead you can see flickering torchlight. The passage opens into a dark tunnel.",
+       pause:true},
+    ],
+  },
+  // ── CHAPTER 2: THE TUNNELS ──
+  { label:'The Tunnels', pct:40,
+    scene:scnCave, npcX:.2, heroX:.8,
+    npcM:{...MIRA}, heroM:HERO,
+    beats:[
+      {who:'Scout Mira',
+       html:"We're inside the mountain. Listen — dripping water, echoes. This tunnel splits into three paths up ahead. We need to <span class='vocab'>navigate</span> through without getting lost. I brought a torch and some chalk to mark our path.",
+       speak:"We're inside the mountain. Listen — dripping water, echoes. This tunnel splits into three paths up ahead. We need to navigate through without getting lost. I brought a torch and some chalk to mark our path."},
+    ],
+    vocab:{
+      who:'Scout Mira',
+      html:"Here's the thing — what does it actually mean to <span class='vocab'>navigate</span>? Because if we don't do it right, we could wander these tunnels forever.",
+      speak:"Here's the thing — what does it actually mean to navigate? Because if we don't do it right, we could wander these tunnels forever.",
+      options:['Swim underwater','Destroy the walls','Find your way through','Run as fast as possible'],
+      correct:2,
+      hints:["We have a torch and chalk to mark our path. We're trying to find our way through a maze of tunnels. What word describes that?",
+             "Navigate means to plan and follow a route through something. That's exactly what we need to do with these tunnels."],
+    },
+    resolution:[
+      {who:'Scout Mira',
+       html:"Exactly — find our way through! I'll mark the walls with chalk arrows so we don't double back. You watch for dead ends. We make a great team!",
+       speak:"Exactly — find our way through! I'll mark the walls with chalk arrows so we don't double back. You watch for dead ends. We make a great team!",
+       npcM:{...MIRA,happy:true}, heroM:{...HERO,happy:true}},
+      {who:'',
+       html:"<em>Together, you navigate the twisting tunnels, marking each turn. After what feels like an hour, the passage widens into a massive underground chamber. Ancient stone columns rise into the darkness above...</em>",
+       speak:"Together, you navigate the twisting tunnels, marking each turn. After what feels like an hour, the passage widens into a massive underground chamber. Ancient stone columns rise into the darkness above.",
+       pause:true},
+    ],
+  },
+  // ── CHAPTER 3: THE CHAMBER ──
+  { label:'The Ancient Chamber', pct:60,
+    scene:scnChamber, npcX:.2, heroX:.8,
+    npcM:{...MIRA}, heroM:HERO,
+    beats:[
+      {who:'Scout Mira',
+       html:"Whoa. Look at this place. It must have been incredible once, but now it's completely <span class='vocab'>dilapidated</span>. The ceiling is cracking, vines are pushing through the walls, and there's rubble everywhere. We need to cross to that doorway on the far side — but carefully.",
+       speak:"Whoa. Look at this place. It must have been incredible once, but now it's completely dilapidated. The ceiling is cracking, vines are pushing through the walls, and there's rubble everywhere. We need to cross to that doorway on the far side — but carefully."},
+    ],
+    vocab:{
+      who:'Scout Mira',
+      html:"What does <span class='vocab'>dilapidated</span> mean? I need to know you understand how dangerous this room is before we try to cross it.",
+      speak:"What does dilapidated mean? I need to know you understand how dangerous this room is before we try to cross it.",
+      options:['Brightly decorated','Falling apart from neglect','Extremely large','Recently built'],
+      correct:1,
+      hints:["Look around — crumbling ceiling, vines growing through cracks, rubble on the floor. No one has been here in centuries. What word describes something that's fallen apart like this?",
+             "Dilapidated means ruined from age and neglect. This whole chamber is crumbling because no one has maintained it."],
+    },
+    resolution:[
+      {who:'Scout Mira',
+       html:"Right — falling apart from neglect. Okay, we'll step where the floor looks solid and avoid the loose stones overhead. Follow my lead!",
+       speak:"Right — falling apart from neglect. Okay, we'll step where the floor looks solid and avoid the loose stones overhead. Follow my lead!",
+       npcM:{...MIRA,happy:true}, heroM:{...HERO,happy:true}},
+      {who:'',
+       html:"<em>You pick your way across the dilapidated chamber, testing each step. A piece of ceiling crumbles behind you — but you both make it through the doorway. And there, at the end of a short corridor, you see a golden glow...</em>",
+       speak:"You pick your way across the dilapidated chamber, testing each step. A piece of ceiling crumbles behind you — but you both make it through the doorway. And there, at the end of a short corridor, you see a golden glow.",
+       pause:true},
+    ],
+  },
+  // ── CHAPTER 4: THE TREASURE (celebration — no vocab) ──
+  { label:'The Treasure', pct:85,
+    scene:scnTreasure, npcX:.2, heroX:.8,
+    npcM:{...MIRA,happy:true}, heroM:{...HERO,happy:true},
+    beats:[
+      {who:'Scout Mira',
+       html:"QUEST CATCHER — DO YOU SEE THAT?! The lost treasure of Stonehollow! It's REAL! Gold coins, ancient artifacts, jewels — it's all here, right where the legends said it would be!",
+       speak:"Quest Catcher — do you see that?! The lost treasure of Stonehollow! It's real! Gold coins, ancient artifacts, jewels — it's all here, right where the legends said it would be!"},
+      {who:'Scout Mira',
+       html:"We squeezed through a <em>crevice</em> in the mountainside. We <em>navigated</em> pitch-black tunnels without getting lost. We crossed a <em>dilapidated</em> chamber that could have collapsed on us at any moment. And we made it.",
+       speak:"We squeezed through a crevice in the mountainside. We navigated pitch-black tunnels without getting lost. We crossed a dilapidated chamber that could have collapsed on us at any moment. And we made it."},
+      {who:'Scout Mira',
+       html:"None of this would have been possible without you. You understood every challenge we faced. You figured out every word that stood between us and this treasure. The village is going to celebrate for a WEEK when we bring this home!",
+       speak:"None of this would have been possible without you. You understood every challenge we faced. You figured out every word that stood between us and this treasure. The village is going to celebrate for a week when we bring this home!"},
+      {who:'Scout Mira',
+       html:"Thank you, Quest Catcher. You're a true hero of Stonehollow.",
+       speak:"Thank you, Quest Catcher. You're a true hero of Stonehollow.",
+       isEnd:true},
+    ],
+  },
+];
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let chIdx=0, beatIdx=0, phase='beats', hintN=0, locked=false, lastSp='', typing=null;
+
+// ══════════════════════════════════════
+// SPEECH
+// ══════════════════════════════════════
+let cv=null;
+function cacheV(){const v=speechSynthesis.getVoices();if(!v.length)return;
+  const p=['samantha','karen','moira','tessa','fiona','victoria','zira','jenny','google uk english female','google us english'];
+  for(const n of p){const f=v.find(x=>x.name.toLowerCase().includes(n)&&x.lang.startsWith('en'));if(f){cv=f;return;}}
+  cv=v.find(x=>x.lang.startsWith('en')&&x.localService)||v.find(x=>x.lang.startsWith('en'))||v[0];}
+speechSynthesis.onvoiceschanged=cacheV;cacheV();
+let sB=false;const sQ=[];
+function speak(t,cb){sQ.push({t,cb});pS();}
+function pS(){if(sB||!sQ.length)return;sB=true;const{t,cb}=sQ.shift();
+  try{speechSynthesis.cancel();}catch(e){}
+  setTimeout(()=>{let d=false;function fin(){if(d)return;d=true;sB=false;if(cb)try{cb();}catch(e){}pS();}
+    try{const u=new SpeechSynthesisUtterance(t);u.rate=0.9;u.pitch=1.08;u.volume=1;
+      if(!cv)cacheV();if(cv)u.voice=cv;u.onend=fin;u.onerror=fin;
+      speechSynthesis.speak(u);if(speechSynthesis.paused)speechSynthesis.resume();
+      const t0=Date.now(),cap=Math.max(14000,t.length*220);
+      const pl=setInterval(()=>{if(d){clearInterval(pl);return;}const e=Date.now()-t0;
+        if(e>800&&!speechSynthesis.speaking&&!speechSynthesis.pending){clearInterval(pl);fin();}
+        else if(e>cap){clearInterval(pl);try{speechSynthesis.cancel();}catch(e2){}fin();}
+        if(speechSynthesis.paused)speechSynthesis.resume();},300);
+    }catch(e){fin();}},100);}
+
+let _a;function gA(){if(!_a)_a=new(window.AudioContext||window.webkitAudioContext)();if(_a.state==='suspended')_a.resume();return _a;}
+function sfxOk(){try{const a=gA(),n=a.currentTime;[[523.25,0],[659.25,0.1],[783.99,0.2],[1046.5,0.32]].forEach(([h,t])=>{const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=h;g.gain.setValueAtTime(0,n+t);g.gain.linearRampToValueAtTime(0.2,n+t+0.03);g.gain.exponentialRampToValueAtTime(0.0001,n+t+0.7);o.connect(g);g.connect(a.destination);o.start(n+t);o.stop(n+t+0.8);});}catch(e){}}
+function sfxNo(){try{const a=gA(),n=a.currentTime;const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.setValueAtTime(300,n);o.frequency.linearRampToValueAtTime(220,n+0.25);g.gain.setValueAtTime(0.12,n);g.gain.exponentialRampToValueAtTime(0.0001,n+0.3);o.connect(g);g.connect(a.destination);o.start(n);o.stop(n+0.35);}catch(e){}}
+document.addEventListener('pointerdown',()=>{try{gA();}catch(e){}},{once:true});
+setInterval(()=>{if(speechSynthesis.paused)speechSynthesis.resume();},500);
+
+// Typewriter
+function tw(el,html,dur,cb){
+  const segs=[];const tmp=document.createElement('div');tmp.innerHTML=html;
+  tmp.childNodes.forEach(n=>{
+    if(n.nodeType===3)segs.push({t:n.textContent,cls:''});
+    else{const cls=n.className||'';segs.push({t:n.textContent||'',cls,tag:n.tagName});}});
+  const total=segs.reduce((a,s)=>a+s.t.length,0);const ms=Math.max(20,dur/Math.max(1,total));
+  let si=0,ci=0;el.innerHTML='';if(typing)clearInterval(typing);
+  typing=setInterval(()=>{if(si>=segs.length){clearInterval(typing);typing=null;if(cb)cb();return;}
+    const seg=segs[si];if(ci===0){const sp=document.createElement(seg.tag==='EM'?'em':'span');
+      if(seg.cls)sp.className=seg.cls;sp.dataset.si=si;el.appendChild(sp);}
+    ci++;const sp=el.querySelector(`[data-si="${si}"]`);if(sp)sp.textContent=seg.t.substring(0,ci);
+    if(ci>=seg.t.length){si++;ci=0;}},ms);}
+function stopTw(){if(typing){clearInterval(typing);typing=null;}}
+
+// Screens
+function show(id){['s-title','s-quest','s-win'].forEach(s=>{const el=document.getElementById(s);if(el){if(s===id)el.classList.remove('hidden');else el.classList.add('hidden');}});}
+
+// ══════════════════════════════════════
+// TITLE
+// ══════════════════════════════════════
+(function(){const c=document.getElementById('title-cv').getContext('2d');const w=360,h=200;
+  sky(c,w,h);grd(c,w,h);
+  c.fillStyle='#7a8a9a';c.beginPath();c.moveTo(w*0.2,h*0.5);c.lineTo(w*0.5,h*0.1);c.lineTo(w*0.8,h*0.5);c.closePath();c.fill();
+  c.strokeStyle='#3a3a4a';c.lineWidth=3;c.beginPath();c.moveTo(w*0.48,h*0.2);c.bezierCurveTo(w*0.47,h*0.3,w*0.49,h*0.38,w*0.46,h*0.5);c.stroke();
+  c.fillStyle='rgba(245,196,105,0.12)';c.beginPath();c.ellipse(w*0.47,h*0.35,12,30,0,0,Math.PI*2);c.fill();
+  c.fillStyle='#c9a86c';c.beginPath();c.moveTo(w*0.3,h);c.quadraticCurveTo(w*0.5,h*0.75,w*0.7,h);c.closePath();c.fill();
+  drawP(c,w*0.38,h*0.68,1.6,{...MIRA,urgent:true});drawP(c,w*0.58,h*0.68,1.6,{...HERO,flip:true});
+})();
+
+// ══════════════════════════════════════
+// QUEST ENGINE
+// ══════════════════════════════════════
+const sc=document.getElementById('scene').getContext('2d');
+
+function beginQuest(){
+  try{speechSynthesis.cancel();}catch(e){}try{gA();}catch(e){}
+  chIdx=0;show('s-quest');setTimeout(()=>runChapter(0),200);
+}
+
+function runChapter(idx){
+  const ch=CH[idx];beatIdx=0;phase='beats';hintN=0;locked=false;
+  document.getElementById('q-bar').style.width=ch.pct+'%';
+  document.getElementById('q-label').textContent=ch.label;
+  document.getElementById('opts').classList.add('hidden');
+  document.getElementById('opts').innerHTML='';
+  document.getElementById('cont-btn').classList.remove('show');
+
+  // Draw scene + characters
+  sc.clearRect(0,0,480,280);ch.scene(sc,480,280);
+  drawP(sc,480*ch.heroX,280*0.62,2.3,{...ch.heroM,flip:ch.heroX>0.5});
+  drawP(sc,480*ch.npcX,280*0.62,2.3,ch.npcM);
+
+  // Start first beat
+  playBeat();
+}
+
+function playBeat(){
+  const ch=CH[chIdx];
+  if(phase==='beats'){
+    if(beatIdx>=ch.beats.length){
+      // Done with narration beats — move to vocab or end
+      if(ch.vocab){phase='vocab';showVocab();}
+      else if(ch.beats[ch.beats.length-1].isEnd){
+        sfxOk();document.getElementById('q-bar').style.width='100%';
+        setTimeout(()=>{show('s-win');burstConfetti();},2000);
+      } else {
+        document.getElementById('cont-btn').classList.add('show');
+      }
+      return;
+    }
+    const beat=ch.beats[beatIdx];
+    locked=true;
+    document.getElementById('sp-name').textContent=beat.who;
+    const el=document.getElementById('sp-text');
+    lastSp=beat.speak;
+    tw(el,beat.html,beat.speak.length*60);
+    speak(beat.speak,()=>{
+      stopTw();el.innerHTML=beat.html;
+      beatIdx++;
+      // Auto-advance to next beat after a pause, or show continue
+      if(beatIdx<ch.beats.length){
+        setTimeout(playBeat,600);
+      } else {
+        playBeat(); // will trigger vocab or continue
+      }
+    });
+  } else if(phase==='resolution'){
+    const res=ch.resolution;
+    if(beatIdx>=res.length){
+      document.getElementById('cont-btn').classList.add('show');
+      return;
+    }
+    const beat=res[beatIdx];
+    // Update scene characters if mood changes
+    if(beat.npcM||beat.heroM){
+      sc.clearRect(0,0,480,280);CH[chIdx].scene(sc,480,280);
+      drawP(sc,480*CH[chIdx].heroX,280*0.62,2.3,{...(beat.heroM||CH[chIdx].heroM),flip:CH[chIdx].heroX>0.5});
+      drawP(sc,480*CH[chIdx].npcX,280*0.62,2.3,beat.npcM||CH[chIdx].npcM);
+    }
+    document.getElementById('sp-name').textContent=beat.who||'';
+    const el=document.getElementById('sp-text');
+    lastSp=beat.speak;
+    tw(el,beat.html,beat.speak.length*60);
+    speak(beat.speak,()=>{
+      stopTw();el.innerHTML=beat.html;
+      beatIdx++;
+      if(beat.pause){
+        // Dramatic pause before continuing
+        setTimeout(playBeat,1200);
+      } else {
+        setTimeout(playBeat,600);
+      }
+    });
+  }
+}
+
+function showVocab(){
+  const v=CH[chIdx].vocab;
+  document.getElementById('sp-name').textContent=v.who;
+  const el=document.getElementById('sp-text');
+  lastSp=v.speak;
+  tw(el,v.html,v.speak.length*60);
+  speak(v.speak,()=>{
+    stopTw();el.innerHTML=v.html;
+    // Show options
+    const a=document.getElementById('opts');a.classList.remove('hidden');
+    a.innerHTML=v.options.map((o,i)=>`<div class="option" onclick="ans(${i})">${o}</div>`).join('');
+  });
+}
+
+function ans(i){
+  if(locked)return;
+  const v=CH[chIdx].vocab;
+  const opts=document.querySelectorAll('#opts .option');
+  if(i===v.correct){
+    locked=true;sfxOk();
+    opts[i].classList.add('correct');opts.forEach((o,j)=>{if(j!==i)o.classList.add('disabled');});
+    // Move to resolution
+    phase='resolution';beatIdx=0;
+    setTimeout(()=>{
+      document.getElementById('opts').classList.add('hidden');
+      playBeat();
+    },800);
+  } else {
+    opts[i].classList.add('wrong');sfxNo();
+    setTimeout(()=>opts[i].classList.remove('wrong'),500);
+    hintN++;
+    if(hintN<=v.hints.length){
+      const el=document.getElementById('sp-text');
+      const hint=v.hints[hintN-1];tw(el,hint,hint.length*55);
+      speak(hint,()=>{stopTw();el.textContent=hint;});
+    } else {
+      locked=true;opts[v.correct].classList.add('correct');
+      opts.forEach((o,j)=>{if(j!==v.correct)o.classList.add('disabled');});
+      phase='resolution';beatIdx=0;
+      setTimeout(()=>{document.getElementById('opts').classList.add('hidden');playBeat();},800);
+    }
+  }
+}
+
+function advance(){
+  document.getElementById('cont-btn').classList.remove('show');
+  chIdx++;
+  if(chIdx>=CH.length){show('s-win');burstConfetti();}
+  else runChapter(chIdx);
+}
+
+function replay(){if(lastSp)speak(lastSp);}
+
+// Confetti
+function burstConfetti(){const c=document.createElement('canvas');c.width=window.innerWidth;c.height=window.innerHeight;
+  c.style.cssText='position:fixed;top:0;left:0;z-index:99;pointer-events:none';document.body.appendChild(c);const cx=c.getContext('2d');const p=[];
+  for(let i=0;i<120;i++){const a=Math.random()*Math.PI*2,s=Math.random()*7+2;
+    p.push({x:c.width/2,y:c.height*0.35,vx:Math.cos(a)*s,vy:Math.sin(a)*s-5,
+      r:Math.random()*5+2,col:['#f5c469','#e87461','#5ec77a','#6fb3f2','#fff','#a29bfe'][Math.floor(Math.random()*6)],al:1,ro:Math.random()*6});}
+  (function loop(){cx.clearRect(0,0,c.width,c.height);let alive=false;
+    p.forEach(q=>{q.x+=q.vx;q.y+=q.vy;q.vy+=0.1;q.al-=0.01;q.ro+=0.08;
+      if(q.al>0){alive=true;cx.globalAlpha=q.al;cx.fillStyle=q.col;
+        cx.save();cx.translate(q.x,q.y);cx.rotate(q.ro);cx.fillRect(-q.r,-q.r*0.5,q.r*2,q.r);cx.restore();}});
+    cx.globalAlpha=1;if(alive)requestAnimationFrame(loop);else c.remove();})();}
+
+window.beginQuest=beginQuest;window.ans=ans;window.advance=advance;window.replay=replay;
+</script>
+</body>
+</html>

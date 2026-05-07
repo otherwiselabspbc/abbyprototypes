@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Enchanted Gems</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d0a1a;overflow:hidden;font-family:'Cinzel',serif;
+  user-select:none;-webkit-user-select:none;height:100vh;width:100vw;color:#f0e6d3;
+  cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='28' y1='28' x2='10' y2='10' stroke='%238a6a40' stroke-width='3' stroke-linecap='round'/%3E%3Cline x1='28' y1='28' x2='10' y2='10' stroke='%23c9a86c' stroke-width='1.5' stroke-linecap='round'/%3E%3Ccircle cx='8' cy='8' r='4' fill='%23f5c469'/%3E%3Ccircle cx='8' cy='8' r='2.5' fill='%23fff' opacity='0.7'/%3E%3Ccircle cx='4' cy='4' r='1.5' fill='%23f5c469' opacity='0.6'/%3E%3Ccircle cx='12' cy='4' r='1' fill='%23f5c469' opacity='0.4'/%3E%3Ccircle cx='4' cy='12' r='1' fill='%23f5c469' opacity='0.4'/%3E%3C/svg%3E") 4 4, auto}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse at 30% 20%,rgba(100,50,180,0.1) 0%,transparent 50%),
+    radial-gradient(ellipse at 70% 70%,rgba(60,30,120,0.08) 0%,transparent 50%)}
+
+.screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:20px}
+.screen.off{display:none}
+
+#splash{background:radial-gradient(ellipse at 50% 40%,rgba(80,40,160,0.2),rgba(13,10,26,0.99));cursor:pointer}
+#splash h1{font-size:clamp(28px,7vw,46px);font-weight:900;color:#fff;
+  text-shadow:0 0 30px rgba(139,92,246,0.4);margin:12px 0 6px}
+#splash .tap{font-size:12px;color:rgba(255,255,255,0.3);letter-spacing:3px;
+  text-transform:uppercase;margin-top:20px;font-family:'Nunito',sans-serif}
+
+#game{background:radial-gradient(ellipse at 50% 50%,#1a1230,#0d0a1a)}
+
+.hud{position:fixed;top:16px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;z-index:20}
+.dots{display:flex;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.12);
+  border:2px solid rgba(255,255,255,0.2);transition:all .3s}
+.dot.done{background:#5ec77a;border-color:#5ec77a}
+.dot.cur{background:#f5c469;border-color:#f5c469;box-shadow:0 0 8px rgba(245,196,105,0.5)}
+.hud-label{font-size:11px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:3px;text-transform:uppercase}
+
+#timer{position:fixed;top:42px;left:50%;transform:translateX(-50%);
+  width:clamp(200px,50vw,320px);height:6px;border-radius:3px;
+  background:rgba(255,255,255,0.06);overflow:hidden;z-index:20}
+#timer-fill{height:100%;width:100%;border-radius:3px;background:#8b5cf6;
+  transition:width .2s linear,background-color .3s}
+#timer-fill.warn{background:#f5c469}
+#timer-fill.danger{background:#ef4444;animation:pulse .5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+
+/* Oracle — speaks the sound */
+.oracle{
+  width:100px;height:100px;border-radius:50%;border:none;
+  background:radial-gradient(circle at 40% 35%,#6a3aaa,#3a1a6a,#1a0a3a);
+  display:flex;align-items:center;justify-content:center;font-size:40px;
+  cursor:pointer;position:relative;margin-bottom:24px;
+  box-shadow:0 0 30px rgba(139,92,246,0.4),0 0 60px rgba(139,92,246,0.15),
+    inset 0 0 24px rgba(200,160,255,0.1);
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:transform .15s}
+.oracle::before{content:'';position:absolute;inset:-5px;border-radius:50%;
+  border:2px solid rgba(139,92,246,0.35);animation:ring 4s linear infinite}
+.oracle::after{content:'';position:absolute;top:12px;left:20px;width:20px;height:12px;
+  background:radial-gradient(ellipse,rgba(255,255,255,0.25),transparent);border-radius:50%;transform:rotate(-20deg)}
+.oracle:active{transform:scale(0.92)}
+.oracle.speaking{box-shadow:0 0 40px rgba(139,92,246,0.6),0 0 80px rgba(139,92,246,0.3),
+    inset 0 0 24px rgba(200,160,255,0.15);transform:scale(1.05)}
+@keyframes ring{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+/* Prompt below oracle */
+#prompt{font-size:clamp(13px,3.2vw,17px);font-weight:700;color:rgba(255,255,255,0.5);
+  margin-bottom:20px;text-align:center;min-height:24px;transition:all .25s}
+#prompt.correct{color:#5ec77a;text-shadow:0 0 12px rgba(94,199,122,0.4)}
+#prompt.wrong{color:#e87461}
+
+/* Gem field — full area where gems float */
+#field{position:relative;width:clamp(300px,85vw,500px);height:clamp(250px,50vh,350px)}
+
+/* Floating gem */
+.gem{
+  position:absolute;width:90px;height:90px;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  transition:transform .12s,opacity .3s}
+.gem:hover{transform:scale(1.1)!important}
+.gem:active{transform:scale(0.95)!important}
+.gem.correct{opacity:0;transform:scale(1.5)!important;transition:all .5s}
+.gem.wrong{animation:shake .4s ease-out}
+.gem.dim{opacity:0.2;pointer-events:none}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+.gem svg{width:100%;height:100%;filter:drop-shadow(0 4px 12px var(--gem-shadow))}
+.gem-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);
+  font-size:30px;font-weight:900;color:#fff;
+  text-shadow:0 0 12px var(--gem-glow),0 0 24px var(--gem-glow),0 2px 4px rgba(0,0,0,0.6);
+  letter-spacing:2px;pointer-events:none}
+
+.gem-ruby{--gem-shadow:rgba(140,26,48,0.4);--gem-glow:rgba(192,48,80,0.5)}
+.gem-sapphire{--gem-shadow:rgba(26,48,128,0.4);--gem-glow:rgba(48,80,176,0.5)}
+.gem-emerald{--gem-shadow:rgba(26,104,56,0.4);--gem-glow:rgba(48,136,80,0.5)}
+.gem-amber{--gem-shadow:rgba(122,80,16,0.4);--gem-glow:rgba(160,112,40,0.5)}
+
+/* Overlays */
+.ov{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;transition:opacity .4s}
+.ov.off{opacity:0;pointer-events:none}
+.ov h2{font-size:clamp(28px,7vw,44px);font-weight:900;color:#fff;
+  text-shadow:0 0 24px rgba(139,92,246,0.5);margin-bottom:8px}
+.ov p{font-size:clamp(12px,3vw,15px);color:rgba(255,255,255,0.5);margin-bottom:28px;font-family:'Nunito',sans-serif}
+.btn{font-family:'Cinzel',serif;font-weight:800;font-size:14px;color:#fff;
+  border:none;border-radius:12px;padding:14px 36px;cursor:pointer;
+  background:linear-gradient(180deg,#8b5cf6,#6d28d9);
+  box-shadow:0 4px 0 #4c1d95;text-transform:uppercase;letter-spacing:3px;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:transform .1s}
+.btn:active{transform:translateY(2px)}
+.btn.red{background:linear-gradient(180deg,#e87461,#c0503e);box-shadow:0 4px 0 #9a3a2a}
+#win-ov{background:radial-gradient(ellipse at 50% 40%,rgba(139,92,246,0.2),rgba(13,10,26,0.95))}
+#fail-ov{background:radial-gradient(ellipse at 50% 40%,rgba(232,116,97,0.1),rgba(13,10,26,0.95))}
+
+#stars,#trail,#fx{position:fixed;inset:0;pointer-events:none}
+#stars{z-index:0}#trail{z-index:50}#fx{z-index:30}
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<canvas id="trail"></canvas>
+<canvas id="fx"></canvas>
+
+<div class="screen" id="splash" onclick="startGame()">
+  <div style="font-size:56px;margin-bottom:8px">💎</div>
+  <h1>Enchanted Gems</h1>
+  <div class="tap">Tap to play</div>
+</div>
+
+<div class="screen off" id="game">
+  <div class="hud">
+    <div class="dots" id="dots"></div>
+    <div class="hud-label" id="hud-label"></div>
+  </div>
+  <div id="timer"><div id="timer-fill"></div></div>
+  <button class="oracle" id="oracle" onclick="replaySound()">🔮</button>
+  <div id="prompt">Tap the gem that matches the sound</div>
+  <div id="field"></div>
+</div>
+
+<div class="ov off" id="win-ov">
+  <h2>✨ Brilliant!</h2>
+  <p>You matched every sound</p>
+  <button class="btn" onclick="restart()">Again</button>
+</div>
+
+<div class="ov off" id="fail-ov">
+  <h2>⏱️ Time's Up</h2>
+  <p>The gems went dark — try again!</p>
+  <button class="btn red" onclick="restart()">Retry</button>
+</div>
+
+<script>
+'use strict';
+
+// ══════════════════════════════════════
+// DATA — one phoneme per round, 4 gem choices (1 correct + 3 distractors)
+// ══════════════════════════════════════
+const ROUNDS=[
+  {target:'p', choices:['p','k','f','b']},
+  {target:'a', choices:['o','a','u','e']},
+  {target:'m', choices:['n','s','m','t']},
+  {target:'f', choices:['f','p','k','s']},
+  {target:'i', choices:['e','o','i','a']},
+  {target:'t', choices:['k','t','b','n']},
+  {target:'s', choices:['f','n','s','m']},
+  {target:'o', choices:['u','a','o','e']},
+];
+
+const GEM_STYLES=['gem-sapphire','gem-sapphire','gem-sapphire','gem-sapphire'];
+const SECS=12;
+
+// Gem SVG
+function gemSVG(style){
+  const C={
+    'gem-ruby':   {f:'#8a1a30',l:'#c03050',d:'#5a0a18',m:'#6a1020',hi:'#e05070',edge:'#400810'},
+    'gem-sapphire':{f:'#1a3080',l:'#3050b0',d:'#0a1850',m:'#102060',hi:'#5070d0',edge:'#080e30'},
+    'gem-emerald': {f:'#1a6838',l:'#308850',d:'#0a3818',m:'#104828',hi:'#50b070',edge:'#082810'},
+    'gem-amber':   {f:'#7a5010',l:'#a07028',d:'#4a3008',m:'#5a3a0a',hi:'#c09040',edge:'#302008'},
+  }[style];
+  // Rough-cut gemstone — irregular hexagonal with visible facets
+  return `<svg viewBox="0 0 100 100" fill="none">
+    <!-- Outer dark edge -->
+    <polygon points="50,4 82,20 92,55 75,90 25,90 8,55 18,20" fill="${C.edge}"/>
+    <!-- Main body -->
+    <polygon points="50,8 78,22 88,55 72,86 28,86 12,55 22,22" fill="${C.d}"/>
+    <!-- Top facet -->
+    <polygon points="50,8 78,22 65,42 35,42 22,22" fill="${C.f}"/>
+    <!-- Center table -->
+    <polygon points="35,42 65,42 72,60 60,75 40,75 28,60" fill="${C.m}"/>
+    <!-- Lower facets -->
+    <polygon points="28,60 40,75 28,86 12,55" fill="${C.d}" opacity="0.8"/>
+    <polygon points="72,60 60,75 72,86 88,55" fill="${C.edge}" opacity="0.5"/>
+    <!-- Left upper facet -->
+    <polygon points="22,22 35,42 28,60 12,55" fill="${C.f}" opacity="0.7"/>
+    <!-- Right upper facet -->
+    <polygon points="78,22 65,42 72,60 88,55" fill="${C.d}" opacity="0.6"/>
+    <!-- Highlight on top facet -->
+    <polygon points="38,18 55,18 48,34 32,32" fill="${C.hi}" opacity="0.25"/>
+    <!-- Small bright catch -->
+    <polygon points="40,22 48,20 45,30 37,28" fill="${C.l}" opacity="0.4"/>
+    <!-- Subtle surface texture lines -->
+    <line x1="35" y1="42" x2="28" y2="60" stroke="${C.edge}" stroke-width="0.5" opacity="0.4"/>
+    <line x1="65" y1="42" x2="72" y2="60" stroke="${C.edge}" stroke-width="0.5" opacity="0.4"/>
+    <line x1="50" y1="8" x2="50" y2="42" stroke="${C.edge}" stroke-width="0.3" opacity="0.3"/>
+    <line x1="35" y1="42" x2="40" y2="75" stroke="${C.edge}" stroke-width="0.3" opacity="0.25"/>
+    <line x1="65" y1="42" x2="60" y2="75" stroke="${C.edge}" stroke-width="0.3" opacity="0.25"/>
+  </svg>`;
+}
+
+// ══════════════════════════════════════
+// AUDIO
+// ══════════════════════════════════════
+const AUD_PATH='audio/harp/';
+const aud={};
+['k','p','f','a','u','o','t','m','s','n','b','e','i'].forEach(p=>{
+  // Try WAV first, fall back to MP3
+  const a=new Audio();
+  a.preload='auto';
+  a.src=AUD_PATH+p+'.wav';
+  a.onerror=()=>{a.src=AUD_PATH+p+'.mp3';};
+  aud[p]=a;
+});
+
+function playPhoneme(p,cb){
+  const a=aud[p];
+  if(a){a.currentTime=0;a.onended=()=>{if(cb)cb();};
+    a.play().catch(()=>fallbackSpeak(p,cb));
+  } else fallbackSpeak(p,cb);
+}
+
+function fallbackSpeak(p,cb){
+  try{speechSynthesis.cancel();}catch(e){}
+  const u=new SpeechSynthesisUtterance(p);u.rate=0.7;u.volume=1;
+  let d=false;
+  u.onend=()=>{if(!d){d=true;if(cb)cb();}};
+  u.onerror=()=>{if(!d){d=true;if(cb)cb();}};
+  setTimeout(()=>{if(!d){d=true;if(cb)cb();}},1500);
+  speechSynthesis.speak(u);
+}
+
+let ac;
+function initAC(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();return ac;}
+function sfxCorrect(){try{const a=initAC(),n=a.currentTime;
+  [523,659,784].forEach((h,i)=>{const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=h;
+    g.gain.setValueAtTime(0,n+i*0.08);g.gain.linearRampToValueAtTime(0.14,n+i*0.08+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,n+i*0.08+0.5);
+    o.connect(g);g.connect(a.destination);o.start(n+i*0.08);o.stop(n+i*0.08+0.6);});}catch(e){}}
+function sfxWrong(){try{const a=initAC(),n=a.currentTime;const o=a.createOscillator(),g=a.createGain();
+  o.type='sawtooth';o.frequency.setValueAtTime(200,n);o.frequency.linearRampToValueAtTime(120,n+0.2);
+  g.gain.setValueAtTime(0.08,n);g.gain.exponentialRampToValueAtTime(0.001,n+0.25);
+  o.connect(g);g.connect(a.destination);o.start(n);o.stop(n+0.3);}catch(e){}}
+function sfxWin(){try{const a=initAC(),n=a.currentTime;
+  [523,587,659,784,880,1047].forEach((h,i)=>{const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=h;
+    g.gain.setValueAtTime(0,n+i*0.1);g.gain.linearRampToValueAtTime(0.1,n+i*0.1+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,n+i*0.1+0.7);
+    o.connect(g);g.connect(a.destination);o.start(n+i*0.1);o.stop(n+i*0.1+0.8);});}catch(e){}}
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let rIdx=0, active=false, tmr=null, floatFrame=null;
+let gemPositions=[]; // {x,y,vx,vy,letter,style,el}
+
+// ══════════════════════════════════════
+// FLOATING GEMS
+// ══════════════════════════════════════
+function buildGems(){
+  const round=ROUNDS[rIdx];
+  const field=document.getElementById('field');
+  field.innerHTML='';
+  gemPositions=[];
+
+  const fw=field.clientWidth||350;
+  const fh=field.clientHeight||280;
+
+  // Shuffle choices
+  const letters=[...round.choices];
+  for(let i=letters.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[letters[i],letters[j]]=[letters[j],letters[i]];}
+
+  letters.forEach((ch,i)=>{
+    const style=GEM_STYLES[i%GEM_STYLES.length];
+    const div=document.createElement('div');
+    div.className='gem '+style;
+    div.innerHTML=gemSVG(style)+`<div class="gem-label">${ch.toUpperCase()}</div>`;
+    div.onclick=()=>handleTap(i);
+    field.appendChild(div);
+
+    // Grid-based starting positions to avoid initial overlap
+    const cols=2, rows=2;
+    const col=i%cols, row=Math.floor(i/cols);
+    const cellW=(fw-100)/cols, cellH=(fh-100)/rows;
+    const x=20+col*cellW+Math.random()*40;
+    const y=10+row*cellH+Math.random()*30;
+
+    // Random drift velocity
+    const speed=0.25+Math.random()*0.25;
+    const angle=Math.random()*Math.PI*2;
+
+    gemPositions.push({
+      x, y,
+      vx:Math.cos(angle)*speed,
+      vy:Math.sin(angle)*speed,
+      letter:ch, style, el:div
+    });
+
+    div.style.left=x+'px';
+    div.style.top=y+'px';
+  });
+
+  startFloating();
+}
+
+function startFloating(){
+  stopFloating();
+  const field=document.getElementById('field');
+  const fw=field.clientWidth||350;
+  const fh=field.clientHeight||280;
+  const SIZE=90; // gem size
+  const MIN_DIST=SIZE+10; // minimum distance between gem centers
+
+  floatFrame=requestAnimationFrame(function loop(){
+    // Move
+    gemPositions.forEach(g=>{
+      g.x+=g.vx;g.y+=g.vy;
+
+      // Bounce off walls
+      if(g.x<0){g.x=0;g.vx=Math.abs(g.vx);}
+      if(g.x>fw-SIZE){g.x=fw-SIZE;g.vx=-Math.abs(g.vx);}
+      if(g.y<0){g.y=0;g.vy=Math.abs(g.vy);}
+      if(g.y>fh-SIZE){g.y=fh-SIZE;g.vy=-Math.abs(g.vy);}
+    });
+
+    // Repel overlapping gems
+    for(let i=0;i<gemPositions.length;i++){
+      for(let j=i+1;j<gemPositions.length;j++){
+        const a=gemPositions[i], b=gemPositions[j];
+        const cx1=a.x+SIZE/2, cy1=a.y+SIZE/2;
+        const cx2=b.x+SIZE/2, cy2=b.y+SIZE/2;
+        const dx=cx2-cx1, dy=cy2-cy1;
+        const dist=Math.hypot(dx,dy);
+        if(dist<MIN_DIST&&dist>0){
+          // Push apart
+          const overlap=(MIN_DIST-dist)/2;
+          const nx=dx/dist, ny=dy/dist;
+          a.x-=nx*overlap;a.y-=ny*overlap;
+          b.x+=nx*overlap;b.y+=ny*overlap;
+          // Deflect velocities slightly
+          a.vx-=nx*0.05;a.vy-=ny*0.05;
+          b.vx+=nx*0.05;b.vy+=ny*0.05;
+        }
+      }
+    }
+
+    // Apply positions
+    gemPositions.forEach(g=>{
+      g.el.style.left=g.x+'px';
+      g.el.style.top=g.y+'px';
+    });
+
+    floatFrame=requestAnimationFrame(loop);
+  });
+}
+
+function stopFloating(){if(floatFrame){cancelAnimationFrame(floatFrame);floatFrame=null;}}
+
+// ══════════════════════════════════════
+// GAME
+// ══════════════════════════════════════
+function handleTap(gemIdx){
+  if(!active)return;
+  const round=ROUNDS[rIdx];
+  const tapped=gemPositions[gemIdx].letter;
+
+  if(tapped===round.target){
+    // CORRECT
+    active=false;stopTimer();
+    sfxCorrect();
+    gemPositions[gemIdx].el.classList.add('correct');
+    gemPositions.forEach((g,i)=>{if(i!==gemIdx)g.el.classList.add('dim');});
+
+    document.getElementById('prompt').textContent='Correct!';
+    document.getElementById('prompt').className='correct';
+
+    burst();
+
+    setTimeout(()=>{
+      rIdx++;
+      if(rIdx>=ROUNDS.length){
+        stopFloating();
+        sfxWin();
+        document.getElementById('win-ov').classList.remove('off');
+        confetti();
+      } else {
+        loadRound();
+      }
+    },1000);
+  } else {
+    // WRONG
+    sfxWrong();
+    gemPositions[gemIdx].el.classList.add('wrong');
+    setTimeout(()=>gemPositions[gemIdx].el.classList.remove('wrong'),400);
+
+    document.getElementById('prompt').textContent='That\'s '+tapped.toUpperCase()+' — listen again';
+    document.getElementById('prompt').className='wrong';
+
+    // Replay the target sound
+    const oracle=document.getElementById('oracle');
+    oracle.classList.add('speaking');
+    setTimeout(()=>{
+      playPhoneme(round.target,()=>{oracle.classList.remove('speaking');});
+    },500);
+
+    setTimeout(()=>{
+      document.getElementById('prompt').textContent='Find the matching gem';
+      document.getElementById('prompt').className='';
+    },2000);
+  }
+}
+
+function speakTarget(cb){
+  const oracle=document.getElementById('oracle');
+  oracle.classList.add('speaking');
+  playPhoneme(ROUNDS[rIdx].target,()=>{
+    oracle.classList.remove('speaking');
+    if(cb)cb();
+  });
+}
+
+function replaySound(){
+  if(!active)return;
+  speakTarget();
+}
+
+function loadRound(){
+  active=false;
+  stopFloating();
+
+  // HUD
+  document.getElementById('dots').innerHTML=ROUNDS.map((_,i)=>
+    `<div class="dot${i<rIdx?' done':''}${i===rIdx?' cur':''}"></div>`).join('');
+  document.getElementById('hud-label').textContent=(rIdx+1)+' / '+ROUNDS.length;
+
+  document.getElementById('prompt').textContent='Listen to the sound...';
+  document.getElementById('prompt').className='';
+
+  buildGems();
+  startTimer();
+
+  // Oracle speaks the target phoneme immediately, then player can tap
+  try{initAC();}catch(e){}
+  speakTarget(()=>{
+    active=true;
+    document.getElementById('prompt').textContent='Tap the gem that matches!';
+  });
+}
+
+// ══════════════════════════════════════
+// TIMER
+// ══════════════════════════════════════
+function startTimer(){
+  stopTimer();
+  const fill=document.getElementById('timer-fill');
+  fill.style.width='100%';fill.className='';
+  const t0=Date.now();
+  tmr=setInterval(()=>{
+    const pct=Math.max(0,(1-(Date.now()-t0)/1000/SECS))*100;
+    fill.style.width=pct+'%';
+    if(pct<=20)fill.className='danger';
+    else if(pct<=40)fill.className='warn';
+    else fill.className='';
+    if(pct<=0){stopTimer();timeUp();}
+  },100);
+}
+function stopTimer(){if(tmr){clearInterval(tmr);tmr=null;}}
+function timeUp(){
+  if(!active)return;
+  active=false;stopFloating();
+  document.getElementById('prompt').textContent="Time's up!";
+  document.getElementById('prompt').className='wrong';
+  setTimeout(()=>document.getElementById('fail-ov').classList.remove('off'),800);
+}
+
+// ══════════════════════════════════════
+// SCREENS
+// ══════════════════════════════════════
+function show(id){['splash','game'].forEach(s=>document.getElementById(s).classList.add('off'));
+  document.getElementById(id).classList.remove('off');}
+
+function startGame(){
+  try{initAC();}catch(e){}
+  rIdx=0;
+  document.getElementById('win-ov').classList.add('off');
+  document.getElementById('fail-ov').classList.add('off');
+  show('game');loadRound();
+}
+function restart(){
+  document.getElementById('win-ov').classList.add('off');
+  document.getElementById('fail-ov').classList.add('off');
+  rIdx=0;show('game');loadRound();
+}
+
+// ══════════════════════════════════════
+// STARS
+// ══════════════════════════════════════
+const stC=document.getElementById('stars'),stX=stC.getContext('2d'),st=[];
+function rsz(){stC.width=innerWidth;stC.height=innerHeight;
+  document.getElementById('trail').width=innerWidth;
+  document.getElementById('trail').height=innerHeight;}
+rsz();addEventListener('resize',rsz);
+for(let i=0;i<50;i++)st.push({x:Math.random()*3e3,y:Math.random()*3e3,r:Math.random()*1+0.3,
+  a:Math.random()*0.5,p:Math.random()*6.28,s:Math.random()*0.012+0.004});
+(function sL(){stX.clearRect(0,0,stC.width,stC.height);st.forEach(s=>{s.p+=s.s;
+  stX.fillStyle=`rgba(180,160,255,${s.a*(0.3+0.7*Math.sin(s.p))})`;
+  stX.beginPath();stX.arc(s.x%stC.width,s.y%stC.height,s.r,0,6.28);stX.fill();});
+  requestAnimationFrame(sL)})();
+
+// ══════════════════════════════════════
+// SPARKLE TRAIL
+// ══════════════════════════════════════
+const trC=document.getElementById('trail'),trX=trC.getContext('2d'),sp=[];
+document.addEventListener('pointermove',e=>{
+  for(let i=0;i<2;i++)sp.push({x:e.clientX+(Math.random()-.5)*8,y:e.clientY+(Math.random()-.5)*8,
+    r:Math.random()*2.5+1,a:1,vx:(Math.random()-.5)*.5,vy:Math.random()*.5+.2,
+    c:['#f5c469','#a78bfa','#fff','#ef8b5b'][Math.floor(Math.random()*4)],f:Math.random()*.4+.6});
+  if(sp.length>100)sp.splice(0,sp.length-100);});
+(function tL(){trX.clearRect(0,0,trC.width,trC.height);
+  for(let i=sp.length-1;i>=0;i--){const s=sp[i];s.x+=s.vx;s.y+=s.vy;s.a-=0.025*s.f;s.r*=0.98;
+    if(s.a<=0){sp.splice(i,1);continue;}trX.globalAlpha=s.a;trX.fillStyle=s.c;
+    trX.beginPath();for(let p=0;p<5;p++){const a2=(p/5)*6.28-1.57,ox=Math.cos(a2)*s.r,oy=Math.sin(a2)*s.r,
+      a3=a2+.628,ix=Math.cos(a3)*s.r*.4,iy=Math.sin(a3)*s.r*.4;
+      if(!p)trX.moveTo(s.x+ox,s.y+oy);else trX.lineTo(s.x+ox,s.y+oy);trX.lineTo(s.x+ix,s.y+iy);}
+    trX.closePath();trX.fill();}trX.globalAlpha=1;requestAnimationFrame(tL)})();
+
+// ══════════════════════════════════════
+// EFFECTS
+// ══════════════════════════════════════
+function burst(){
+  const c=document.getElementById('fx');c.width=innerWidth;c.height=innerHeight;
+  const x=c.getContext('2d'),ps=[];
+  for(let i=0;i<50;i++){const a=Math.random()*6.28,s=Math.random()*4+1;
+    ps.push({x:innerWidth/2,y:innerHeight*.45,vx:Math.cos(a)*s,vy:Math.sin(a)*s-2,
+      r:Math.random()*3+1.5,c:['#e84060','#4060e8','#40b868','#e8a040','#fff'][Math.floor(Math.random()*5)],a:1});}
+  (function l(){x.clearRect(0,0,c.width,c.height);let alive=false;
+    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.05;p.a-=.02;
+      if(p.a>0){alive=true;x.globalAlpha=p.a;x.fillStyle=p.c;x.beginPath();x.arc(p.x,p.y,p.r,0,6.28);x.fill();}});
+    x.globalAlpha=1;if(alive)requestAnimationFrame(l);})();
+}
+function confetti(){
+  const c=document.createElement('canvas');c.width=innerWidth;c.height=innerHeight;
+  c.style.cssText='position:fixed;top:0;left:0;z-index:99;pointer-events:none';
+  document.body.appendChild(c);const x=c.getContext('2d'),ps=[];
+  for(let i=0;i<100;i++){const a=Math.random()*6.28,s=Math.random()*6+2;
+    ps.push({x:c.width/2,y:c.height*.4,vx:Math.cos(a)*s,vy:Math.sin(a)*s-4,
+      r:Math.random()*4+2,c:['#e84060','#4060e8','#40b868','#e8a040','#a78bfa','#fff'][Math.floor(Math.random()*6)],
+      a:1,ro:Math.random()*6});}
+  (function l(){x.clearRect(0,0,c.width,c.height);let alive=false;
+    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.1;p.a-=.01;p.ro+=.08;
+      if(p.a>0){alive=true;x.globalAlpha=p.a;x.fillStyle=p.c;
+        x.save();x.translate(p.x,p.y);x.rotate(p.ro);x.fillRect(-p.r,-p.r*.5,p.r*2,p.r);x.restore();}});
+    x.globalAlpha=1;if(alive)requestAnimationFrame(l);else c.remove();})();
+}
+
+document.addEventListener('pointerdown',()=>{try{initAC();}catch(e){}},{once:true});
+</script>
+</body>
+</html>

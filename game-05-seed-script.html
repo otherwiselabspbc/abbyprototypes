@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Seed Script — Letter Tracing</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#3d8a28;overflow:hidden;font-family:'Press Start 2P',monospace;
+  user-select:none;-webkit-user-select:none;height:100vh;width:100vw;
+  color:#fff}
+
+.screen{position:fixed;inset:0;z-index:10;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px;
+  background:linear-gradient(180deg,#89d4f5 0%,#a8e2f8 20%,#6cc14c 35%,#5aac3a 50%,#4a9830 100%)}
+.screen.hidden{display:none}
+
+/* ── Persistent Home button (top-right, always visible) ── */
+#home-btn{position:fixed;top:12px;right:12px;z-index:100;
+  background:rgba(42,30,15,0.85);border:3px solid #5a3e1b;border-radius:6px;
+  color:#fff;font-family:'Press Start 2P',monospace;font-size:8px;letter-spacing:2px;
+  padding:10px 14px;cursor:pointer;text-transform:uppercase;
+  box-shadow:inset -2px -2px 0 #3a2510,inset 2px 2px 0 #7a5a30,3px 3px 0 rgba(0,0,0,0.25);
+  text-shadow:1px 1px 0 #000;transition:transform .1s;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+#home-btn:active{transform:scale(0.94)}
+
+/* ── Common UI ── */
+.eyebrow{font-size:8px;letter-spacing:4px;color:#fff;text-transform:uppercase;margin-bottom:14px;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.3)}
+.big-title{font-size:clamp(26px,7vw,46px);color:#fff;text-align:center;line-height:1.3;
+  text-shadow:3px 3px 0 #2d6a1e;margin-bottom:12px}
+.tagline{font-size:clamp(9px,2.2vw,11px);color:#fff;text-align:center;
+  line-height:2.4;word-spacing:0.15em;margin-bottom:28px;text-shadow:1px 1px 0 rgba(0,0,0,0.25)}
+
+.demo-canvas{border-radius:16px;border:4px solid #5a3e1b;margin-bottom:24px;
+  box-shadow:4px 4px 0 rgba(0,0,0,0.2);pointer-events:none;position:relative;z-index:1;
+  background:#5a3820}
+
+/* ── Buttons ── */
+.btn{
+  background:linear-gradient(180deg,#ff6b6b 0%,#ee5a24 100%);color:#fff;
+  border:4px solid #b33a1a;padding:14px 36px;font-size:12px;
+  font-family:'Press Start 2P',monospace;border-radius:4px;cursor:pointer;letter-spacing:2px;
+  text-transform:uppercase;position:relative;z-index:20;
+  box-shadow:inset -3px -3px 0 #b33a1a,inset 3px 3px 0 #ff9a7a,6px 6px 0 rgba(0,0,0,0.2);
+  transition:transform .1s;animation:btn-bounce 2.2s ease-in-out infinite;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  display:inline-block;text-align:center;text-decoration:none}
+.btn:active{animation:none;transform:scale(0.96)!important}
+.btn-green{background:linear-gradient(180deg,#7cfc00 0%,#32cd32 100%);
+  border-color:#1a5010;
+  box-shadow:inset -3px -3px 0 #1a5010,inset 3px 3px 0 #a0ff60,6px 6px 0 rgba(0,0,0,0.2)}
+.btn-small{font-size:10px;padding:10px 26px}
+@keyframes btn-bounce{0%,100%{transform:translateY(0)}45%{transform:translateY(-6px)}65%{transform:translateY(-3px)}}
+
+.skill-tag{position:absolute;bottom:20px;font-size:7px;letter-spacing:2px;
+  color:rgba(255,255,255,0.6);text-transform:uppercase;text-shadow:1px 1px 0 rgba(0,0,0,0.2)}
+
+/* ── Learn/Practice UI ── */
+#learn-dots{display:flex;gap:10px;margin-bottom:10px}
+.ldot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.2);
+  border:2px solid rgba(255,255,255,0.4);transition:all .3s}
+.ldot.active{background:#ffe44d;border-color:#cc8800}
+.ldot.done{background:#7cfc00;border-color:#2a5020}
+.step-label{font-size:8px;letter-spacing:3px;color:#fff;text-transform:uppercase;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.25);margin-bottom:20px}
+
+.caption-card{font-size:clamp(11px,2.8vw,14px);color:#fff;text-align:center;
+  line-height:2.6;word-spacing:0.15em;
+  background:rgba(42,30,15,0.9);border:4px solid #5a3e1b;border-radius:8px;
+  padding:clamp(14px,3.5vw,20px) clamp(18px,4.5vw,24px);max-width:420px;
+  box-shadow:4px 4px 0 rgba(0,0,0,0.25);text-shadow:1px 1px 0 #000;
+  margin-bottom:20px;min-height:60px}
+.caption-card strong{color:#ffe44d;padding:0 0.15em}
+.caption-card em{color:#ffe44d;font-style:normal;padding:0 0.15em}
+
+.trace-canvas{border-radius:16px;border:4px solid #5a3e1b;
+  box-shadow:4px 4px 0 rgba(0,0,0,0.2);touch-action:none;position:relative;z-index:1;
+  margin-bottom:20px;background:#5a3820}
+
+/* HUD for practice */
+.hud{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:16px}
+.phase-label{font-size:7px;letter-spacing:4px;color:#ffe44d;text-transform:uppercase;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.3)}
+.round-dots{display:flex;gap:10px}
+.rdot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.2);
+  border:2px solid rgba(255,255,255,0.4);transition:all .4s}
+.rdot.done{background:#7cfc00;border-color:#2a5020}
+.rdot.cur{background:#ffe44d;border-color:#cc8800}
+.round-label{font-size:7px;letter-spacing:3px;color:#fff;text-transform:uppercase;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.2)}
+
+/* Win screen */
+.win-title{font-size:clamp(28px,8vw,50px);color:#fff;
+  text-shadow:4px 4px 0 #2d6a1e;margin-bottom:12px;text-align:center}
+.win-sub{font-size:clamp(9px,2.2vw,11px);color:#fff;text-align:center;
+  max-width:300px;line-height:2.2;word-spacing:0.15em;margin-bottom:24px;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.2)}
+.badge{background:#fff;border:4px solid #5a3e1b;border-radius:12px;
+  padding:16px 28px;margin-bottom:28px;text-align:center;
+  box-shadow:4px 4px 0 rgba(0,0,0,0.15)}
+.badge-label{font-size:7px;letter-spacing:3px;color:#5a3e1b;text-transform:uppercase}
+.badge-name{font-size:12px;color:#2d6a1e;margin-top:8px}
+.win-screen{background:linear-gradient(180deg,#89d4f5 0%,#ffe44d 60%,#ffaa00 100%)!important}
+.btn-col{display:flex;flex-direction:column;gap:12px;align-items:center}
+
+.spacer{height:12px}
+</style>
+</head>
+<body>
+
+<!-- Persistent Home button -->
+<button id="home-btn" onclick="goHome()">🏡 Garden</button>
+
+<!-- ══ LANDING ══ -->
+<div class="screen" id="s-landing">
+  <p class="eyebrow">Letter Knowledge</p>
+  <h1 class="big-title">Seed<br>Script</h1>
+  <p class="tagline">Every letter is a seed pattern.<br>Trace it into the soil<br>and watch it grow!</p>
+  <canvas id="demo-canvas" class="demo-canvas" width="200" height="200"></canvas>
+  <button class="btn" onclick="doStart()">Begin</button>
+  <p class="skill-tag">Letter Tracing · Ages 5–10</p>
+</div>
+
+<!-- ══ LEARN ══ -->
+<div class="screen hidden" id="s-learn">
+  <div id="learn-dots"><div class="ldot active"></div><div class="ldot"></div><div class="ldot"></div></div>
+  <div class="step-label">Learn</div>
+  <div class="caption-card" id="learn-title">Every letter has a <em>shape</em> you can trace.</div>
+  <canvas id="learn-canvas" class="trace-canvas" width="240" height="240"></canvas>
+  <div class="caption-card" id="learn-caption" style="opacity:0;transition:opacity .3s">&nbsp;</div>
+  <button class="btn btn-small" id="learn-next-btn" style="opacity:0;pointer-events:none;transition:opacity .3s" onclick="doLearnNext()">Continue</button>
+</div>
+
+<!-- ══ TRANSITION ══ -->
+<div class="screen hidden" id="s-transition">
+  <p class="eyebrow">Learn Complete</p>
+  <div class="win-title" style="font-size:clamp(22px,5vw,32px)">Ready to Practice?</div>
+  <p class="tagline">Trace each letter into the soil.<br>Follow the dotted path!</p>
+  <button class="btn" onclick="startPractice()">Start Practice</button>
+</div>
+
+<!-- ══ PRACTICE ══ -->
+<div class="screen hidden" id="s-practice">
+  <div class="hud">
+    <div class="phase-label">Practice</div>
+    <div class="round-dots" id="round-dots">
+      <div class="rdot cur"></div><div class="rdot"></div><div class="rdot"></div>
+    </div>
+    <div class="round-label" id="round-label">Round 1 of 3</div>
+  </div>
+  <div class="caption-card" id="practice-caption">Trace the letter!</div>
+  <canvas id="practice-canvas" class="trace-canvas" width="280" height="280"></canvas>
+</div>
+
+<!-- ══ WIN ══ -->
+<div class="screen hidden win-screen" id="s-win">
+  <p class="eyebrow">Quest Complete</p>
+  <div class="win-title">Well Done!</div>
+  <p class="win-sub">You can trace letter shapes!<br>New seeds are planted in your garden.</p>
+  <div class="badge">
+    <div class="badge-label">Skill Unlocked</div>
+    <div class="badge-name">Letter Tracing 🌱</div>
+  </div>
+  <div class="btn-col">
+    <button class="btn btn-green" onclick="goHome()">Back to Garden</button>
+    <button class="btn btn-small" onclick="startPractice()">Play Again</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ══════════════════════════════════════
+// REFRESH GUARD
+// ══════════════════════════════════════
+if(!sessionStorage.getItem('fromGarden')){
+  sessionStorage.setItem('fromGarden','1'); // allow this load
+  // On first direct visit, don't redirect — let them play
+}
+// Clear on refresh so next refresh goes to garden
+window.addEventListener('beforeunload',()=>{
+  sessionStorage.removeItem('fromGarden');
+});
+
+function goHome(){
+  sessionStorage.removeItem('fromGarden');
+  window.location.href='garden-overworld.html';
+}
+
+// ══════════════════════════════════════
+// SCREEN SWITCHING
+// ══════════════════════════════════════
+function showScreen(id){
+  ['s-landing','s-learn','s-transition','s-practice','s-win'].forEach(s=>{
+    const el=document.getElementById(s);
+    if(el){
+      if(s===id) el.classList.remove('hidden');
+      else el.classList.add('hidden');
+    }
+  });
+}
+
+// ══════════════════════════════════════
+// SPEECH — bulletproof with polling
+// ══════════════════════════════════════
+let cachedVoice=null;
+function cacheVoice(){
+  const voices=speechSynthesis.getVoices();
+  if(!voices.length) return;
+  const prefs=['samantha','karen','moira','tessa','fiona','victoria',
+    'google uk english female','google us english','microsoft zira','microsoft jenny'];
+  for(const name of prefs){
+    const v=voices.find(v=>v.name.toLowerCase().includes(name)&&v.lang.startsWith('en'));
+    if(v){cachedVoice=v;return;}
+  }
+  cachedVoice=voices.find(v=>v.lang.startsWith('en')&&v.localService)
+    ||voices.find(v=>v.lang.startsWith('en'))||voices[0];
+}
+speechSynthesis.onvoiceschanged=cacheVoice;
+cacheVoice();
+
+// Global speech queue — ensures no speech gets clipped
+let speechBusy=false;
+const speechQueue=[];
+
+function speak(text, onEnd){
+  speechQueue.push({text, onEnd});
+  processSpeechQueue();
+}
+
+function processSpeechQueue(){
+  if(speechBusy || speechQueue.length===0) return;
+  speechBusy=true;
+  const {text, onEnd} = speechQueue.shift();
+
+  try{ speechSynthesis.cancel(); }catch(e){}
+
+  setTimeout(()=>{
+    let finished=false;
+    function done(){
+      if(finished) return;
+      finished=true;
+      speechBusy=false;
+      if(onEnd) try{onEnd();}catch(e){console.error(e);}
+      processSpeechQueue();
+    }
+
+    try{
+      const u=new SpeechSynthesisUtterance(text);
+      u.rate=0.85; u.pitch=1.05; u.volume=1;
+      if(!cachedVoice) cacheVoice();
+      if(cachedVoice) u.voice=cachedVoice;
+      u.onend=done;
+      u.onerror=done;
+
+      speechSynthesis.speak(u);
+      if(speechSynthesis.paused) speechSynthesis.resume();
+
+      // Poll: wait for actual speech to finish
+      const startTime=Date.now();
+      const hardCap=Math.max(12000, text.length*250);
+      const poll=setInterval(()=>{
+        if(finished){ clearInterval(poll); return; }
+        const elapsed=Date.now()-startTime;
+        // After a brief warmup, if speech is no longer active, finish
+        if(elapsed>600 && !speechSynthesis.speaking && !speechSynthesis.pending){
+          clearInterval(poll);
+          done();
+        } else if(elapsed>hardCap){
+          clearInterval(poll);
+          try{ speechSynthesis.cancel(); }catch(e){}
+          done();
+        }
+        // Chrome workaround: nudge if paused
+        if(speechSynthesis.paused) speechSynthesis.resume();
+      }, 250);
+    }catch(err){
+      console.error('speak error:',err);
+      done();
+    }
+  }, 80);
+}
+
+// ══════════════════════════════════════
+// AUDIO CHIMES
+// ══════════════════════════════════════
+let _ac;
+function getAC(){
+  if(!_ac) _ac=new(window.AudioContext||window.webkitAudioContext)();
+  if(_ac.state==='suspended') _ac.resume();
+  return _ac;
+}
+function playCorrectChime(){
+  try{
+    const ac=getAC(),now=ac.currentTime;
+    [[523.25,0],[659.25,0.12],[783.99,0.24],[1046.5,0.38]].forEach(([hz,t])=>{
+      const o=ac.createOscillator(),g=ac.createGain();
+      o.type='sine';o.frequency.value=hz;
+      g.gain.setValueAtTime(0,now+t);
+      g.gain.linearRampToValueAtTime(0.22,now+t+0.04);
+      g.gain.exponentialRampToValueAtTime(0.0001,now+t+0.9);
+      o.connect(g);g.connect(ac.destination);
+      o.start(now+t);o.stop(now+t+0.95);
+    });
+  }catch(e){}
+}
+document.addEventListener('pointerdown',()=>{try{getAC();}catch(e){}},{once:true});
+setInterval(()=>{ if(speechSynthesis.paused) speechSynthesis.resume(); }, 500);
+
+// ══════════════════════════════════════
+// LETTER DATA
+// ══════════════════════════════════════
+const LETTERS={
+  L:{strokes:[
+    [{x:.3,y:.15},{x:.3,y:.25},{x:.3,y:.35},{x:.3,y:.45},{x:.3,y:.55},{x:.3,y:.65},{x:.3,y:.75},{x:.3,y:.85}],
+    [{x:.3,y:.85},{x:.4,y:.85},{x:.5,y:.85},{x:.6,y:.85},{x:.7,y:.85}]
+  ]},
+  C:{strokes:[
+    (()=>{const p=[];for(let a=0.3;a<=2.0;a+=0.1) p.push({x:.55+.28*Math.cos(a),y:.5-.32*Math.sin(a)});return p;})()
+  ]},
+  T:{strokes:[
+    [{x:.2,y:.18},{x:.3,y:.18},{x:.4,y:.18},{x:.5,y:.18},{x:.6,y:.18},{x:.7,y:.18},{x:.8,y:.18}],
+    [{x:.5,y:.18},{x:.5,y:.3},{x:.5,y:.42},{x:.5,y:.54},{x:.5,y:.66},{x:.5,y:.78},{x:.5,y:.85}]
+  ]},
+  A:{strokes:[
+    [{x:.15,y:.85},{x:.22,y:.68},{x:.3,y:.5},{x:.38,y:.32},{x:.44,y:.18},{x:.5,y:.1}],
+    [{x:.5,y:.1},{x:.56,y:.18},{x:.62,y:.32},{x:.7,y:.5},{x:.78,y:.68},{x:.85,y:.85}],
+    [{x:.3,y:.55},{x:.4,y:.55},{x:.5,y:.55},{x:.6,y:.55},{x:.7,y:.55}]
+  ]},
+  M:{strokes:[
+    [{x:.12,y:.85},{x:.12,y:.7},{x:.12,y:.55},{x:.12,y:.4},{x:.12,y:.25},{x:.12,y:.15}],
+    [{x:.12,y:.15},{x:.24,y:.3},{x:.35,y:.45},{x:.5,y:.55}],
+    [{x:.5,y:.55},{x:.65,y:.45},{x:.76,y:.3},{x:.88,y:.15}],
+    [{x:.88,y:.15},{x:.88,y:.3},{x:.88,y:.45},{x:.88,y:.6},{x:.88,y:.75},{x:.88,y:.85}]
+  ]},
+  S:{strokes:[
+    (()=>{const p=[];
+      for(let t=0;t<=1;t+=0.06){const a=0.5+t*Math.PI;p.push({x:.5+.22*Math.cos(a),y:.3-.15*Math.sin(a)});}
+      for(let t=0;t<=1;t+=0.06){const a=-0.5+t*Math.PI;p.push({x:.5-.22*Math.cos(a),y:.65+.17*Math.sin(a)});}
+      return p;
+    })()
+  ]},
+};
+
+// ══════════════════════════════════════
+// DRAWING
+// ══════════════════════════════════════
+function drawSoil(ctx,w,h){
+  const g=ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0,'#6b4226');g.addColorStop(0.5,'#5a3820');g.addColorStop(1,'#4a2e18');
+  ctx.fillStyle=g;
+  ctx.beginPath();ctx.roundRect(0,0,w,h,16);ctx.fill();
+  ctx.strokeStyle='#7a5030';ctx.lineWidth=3;
+  ctx.beginPath();ctx.roundRect(0,0,w,h,16);ctx.stroke();
+  // Furrows
+  ctx.strokeStyle='rgba(0,0,0,0.08)';ctx.lineWidth=1;
+  for(let i=1;i<5;i++){
+    const fy=h*i/5;
+    ctx.beginPath();ctx.moveTo(16,fy);
+    ctx.bezierCurveTo(w*0.3,fy+3,w*0.7,fy-3,w-16,fy);
+    ctx.stroke();
+  }
+}
+
+function drawGuide(ctx,letter,w,h,alpha){
+  const data=LETTERS[letter];
+  if(!data) return;
+  ctx.save();
+  ctx.globalAlpha=alpha||0.45;
+  ctx.setLineDash([6,8]);
+  ctx.lineCap='round';ctx.lineJoin='round';
+  ctx.strokeStyle='#d9c08a';ctx.lineWidth=10;
+  data.strokes.forEach(stroke=>{
+    ctx.beginPath();
+    stroke.forEach((p,i)=>{
+      const px=p.x*w, py=p.y*h;
+      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    });
+    ctx.stroke();
+  });
+  ctx.setLineDash([]);
+  // Start circles (numbered)
+  data.strokes.forEach((stroke,si)=>{
+    const p=stroke[0];
+    ctx.globalAlpha=alpha||0.7;
+    ctx.fillStyle=si===0?'#7cfc00':'#ffe44d';
+    ctx.beginPath();ctx.arc(p.x*w,p.y*h,11,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=si===0?'#fff':'#5a3e1b';
+    ctx.font='bold 11px sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(si+1,p.x*w,p.y*h);
+  });
+  ctx.restore();
+}
+
+function drawTrail(ctx,segments,w,h){
+  ctx.save();
+  ctx.lineCap='round';ctx.lineJoin='round';
+  segments.forEach(seg=>{
+    if(seg.length<2) return;
+    // Glow
+    ctx.strokeStyle='rgba(124,252,0,0.5)';
+    ctx.lineWidth=16;ctx.beginPath();
+    seg.forEach((p,i)=>{if(i===0)ctx.moveTo(p.x*w,p.y*h);else ctx.lineTo(p.x*w,p.y*h);});
+    ctx.stroke();
+    // Main
+    ctx.strokeStyle='#5aac3a';
+    ctx.lineWidth=7;ctx.beginPath();
+    seg.forEach((p,i)=>{if(i===0)ctx.moveTo(p.x*w,p.y*h);else ctx.lineTo(p.x*w,p.y*h);});
+    ctx.stroke();
+  });
+  ctx.restore();
+}
+
+function drawSprout(ctx,w,h,progress){
+  const cx=w/2, by=h*0.92;
+  const p=Math.min(1,progress);
+  if(p<=0) return;
+  ctx.fillStyle='#8b6914';
+  ctx.beginPath();ctx.ellipse(cx,by,20,8,0,0,Math.PI*2);ctx.fill();
+  if(p>0.25){
+    const sh=45*Math.min(1,(p-0.25)/0.5);
+    ctx.strokeStyle='#2d8a4e';ctx.lineWidth=5;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(cx,by);
+    ctx.quadraticCurveTo(cx+4,by-sh*0.5,cx,by-sh);ctx.stroke();
+  }
+  if(p>0.6){
+    const lp=Math.min(1,(p-0.6)/0.4);
+    const ly=by-45;
+    ctx.fillStyle='#5aac3a';
+    ctx.beginPath();ctx.ellipse(cx-14*lp,ly+4,11*lp,6*lp,-0.4,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#4a9830';
+    ctx.beginPath();ctx.ellipse(cx+12*lp,ly,10*lp,5*lp,0.3,0,Math.PI*2);ctx.fill();
+  }
+  if(p>=1){
+    ctx.fillStyle='#ffe44d';
+    ctx.beginPath();ctx.arc(cx,by-54,6,0,Math.PI*2);ctx.fill();
+    for(let i=0;i<5;i++){
+      const a=(i/5)*Math.PI*2;
+      ctx.fillStyle='#ff7675';
+      ctx.beginPath();ctx.arc(cx+Math.cos(a)*8,by-54+Math.sin(a)*8,3,0,Math.PI*2);ctx.fill();
+    }
+  }
+}
+
+// Auto-trace animation (for demos)
+function autoTrace(ctx,letter,w,h,onDone){
+  const data=LETTERS[letter];
+  if(!data){if(onDone)onDone();return;}
+  const all=[];
+  data.strokes.forEach(s=>all.push(...s));
+  const segments=[];
+  let currentSeg=[];
+  let i=0, strokeIdx=0;
+  function step(){
+    if(i>=all.length){
+      if(currentSeg.length) segments.push(currentSeg);
+      if(onDone) setTimeout(onDone,400);
+      return;
+    }
+    // Detect stroke boundaries
+    let cumulativeLen=0;
+    let thisStrokeStart=0;
+    for(let s=0;s<data.strokes.length;s++){
+      if(i>=cumulativeLen && i<cumulativeLen+data.strokes[s].length){
+        if(i===cumulativeLen && currentSeg.length){
+          segments.push(currentSeg);
+          currentSeg=[];
+        }
+        break;
+      }
+      cumulativeLen+=data.strokes[s].length;
+    }
+    currentSeg.push(all[i]);
+    ctx.clearRect(0,0,w,h);
+    drawSoil(ctx,w,h);
+    drawGuide(ctx,letter,w,h,0.3);
+    const displaySegs=[...segments];
+    if(currentSeg.length) displaySegs.push(currentSeg);
+    drawTrail(ctx,displaySegs,w,h);
+    drawSprout(ctx,w,h,i/all.length);
+    i++;
+    setTimeout(step,60);
+  }
+  step();
+}
+
+// ══════════════════════════════════════
+// TRACE INPUT
+// ══════════════════════════════════════
+function createTracer(canvas, letter, onComplete){
+  const data=LETTERS[letter];
+  if(!data) return ()=>{};
+  const w=canvas.width, h=canvas.height;
+  const allTargets=[];
+  data.strokes.forEach(s=>allTargets.push(...s));
+  let nextIdx=0;
+  const segments=[]; // completed trail segments (persistent)
+  let currentSeg=[];
+  let isDrawing=false;
+  const tolerance=0.10;
+
+  function redraw(){
+    const ctx=canvas.getContext('2d');
+    ctx.clearRect(0,0,w,h);
+    drawSoil(ctx,w,h);
+    drawGuide(ctx,letter,w,h,0.45);
+    const displaySegs=[...segments];
+    if(currentSeg.length) displaySegs.push(currentSeg);
+    drawTrail(ctx,displaySegs,w,h);
+    // Next target highlight
+    if(nextIdx<allTargets.length){
+      const t=allTargets[nextIdx];
+      ctx.fillStyle='rgba(124,252,0,0.25)';
+      ctx.beginPath();ctx.arc(t.x*w,t.y*h,tolerance*w,0,Math.PI*2);ctx.fill();
+    }
+    drawSprout(ctx,w,h,nextIdx/allTargets.length);
+  }
+
+  function getPos(e){
+    const rect=canvas.getBoundingClientRect();
+    return{
+      x:(e.clientX-rect.left)/rect.width,
+      y:(e.clientY-rect.top)/rect.height
+    };
+  }
+
+  function onDown(e){
+    e.preventDefault();
+    isDrawing=true;
+    currentSeg=[getPos(e)];
+    checkProgress(currentSeg[0]);
+    redraw();
+  }
+  function onMove(e){
+    if(!isDrawing) return;
+    e.preventDefault();
+    const p=getPos(e);
+    currentSeg.push(p);
+    checkProgress(p);
+    redraw();
+  }
+  function onUp(e){
+    if(!isDrawing) return;
+    isDrawing=false;
+    if(currentSeg.length>1) segments.push(currentSeg);
+    currentSeg=[];
+    redraw();
+    // Letter must be FULLY traced — no shortcut
+  }
+
+  function checkProgress(p){
+    while(nextIdx<allTargets.length){
+      const t=allTargets[nextIdx];
+      const d=Math.hypot(p.x-t.x, p.y-t.y);
+      if(d<tolerance){
+        nextIdx++;
+        if(nextIdx>=allTargets.length){
+          isDrawing=false;
+          if(currentSeg.length>1) segments.push(currentSeg);
+          currentSeg=[];
+          redraw();
+          if(onComplete) onComplete();
+          return;
+        }
+      } else break;
+    }
+  }
+
+  canvas.addEventListener('pointerdown',onDown);
+  canvas.addEventListener('pointermove',onMove);
+  canvas.addEventListener('pointerup',onUp);
+  canvas.addEventListener('pointerleave',onUp);
+  redraw();
+
+  return ()=>{
+    canvas.removeEventListener('pointerdown',onDown);
+    canvas.removeEventListener('pointermove',onMove);
+    canvas.removeEventListener('pointerup',onUp);
+    canvas.removeEventListener('pointerleave',onUp);
+  };
+}
+
+// ══════════════════════════════════════
+// LANDING DEMO
+// ══════════════════════════════════════
+const demoCanvas=document.getElementById('demo-canvas');
+const demoCtx=demoCanvas.getContext('2d');
+const demoLetters=['L','A','S','T','C'];
+let demoIdx=0, demoActive=true;
+
+function runDemo(){
+  if(!demoActive) return;
+  const letter=demoLetters[demoIdx%demoLetters.length];
+  demoCtx.clearRect(0,0,200,200);
+  drawSoil(demoCtx,200,200);
+  drawGuide(demoCtx,letter,200,200,0.35);
+  autoTrace(demoCtx,letter,200,200,()=>{
+    demoIdx++;
+    if(demoActive) setTimeout(runDemo,1500);
+  });
+}
+setTimeout(runDemo,800);
+
+// ══════════════════════════════════════
+// LEARN PHASE
+// ══════════════════════════════════════
+const LEARN_STEPS=[
+  { type:'demo', letter:'L',
+    title:'Every letter has a <em>shape</em> you can trace.',
+    titleSpeak:'Every letter has a shape you can trace.',
+    caption:'This is the letter <strong>L</strong>.<br>Trace its shape to plant a seed.',
+    captionSpeak:'This is the letter L. Trace its shape to plant a seed.' },
+  { type:'demo2', letters:['L','C'],
+    title:'Each letter has a <em>different</em> shape.',
+    titleSpeak:'Each letter has a different shape.',
+    caption:'<strong>L</strong> goes down and across.<br><strong>C</strong> goes around in a curve.<br>Different shapes, different letters.',
+    captionSpeak:'L goes down and across. C goes around in a curve. Different shapes, different letters.' },
+  { type:'guided', letter:'T',
+    title:'Can you trace this letter?',
+    titleSpeak:'Can you trace this letter?',
+    captionBefore:'Follow the dotted path with your finger.',
+    captionBeforeSpeak:'Follow the dotted path with your finger.',
+    captionCorrect:'You traced <strong>T</strong>!<br>The seed is planted.',
+    captionCorrectSpeak:'You traced T! The seed is planted.' },
+];
+
+let learnStep=0, learnCleanup=null;
+const learnCanvas=document.getElementById('learn-canvas');
+const learnCtx=learnCanvas.getContext('2d');
+const learnDots=document.querySelectorAll('#learn-dots .ldot');
+
+function runLearnStep(){
+  const step=LEARN_STEPS[learnStep];
+  if(learnCleanup){ learnCleanup(); learnCleanup=null; }
+  learnDots.forEach((d,i)=>{
+    d.className='ldot';
+    if(i<learnStep) d.classList.add('done');
+    else if(i===learnStep) d.classList.add('active');
+  });
+
+  // Reset UI
+  const titleEl=document.getElementById('learn-title');
+  const capEl=document.getElementById('learn-caption');
+  const nextBtn=document.getElementById('learn-next-btn');
+  titleEl.innerHTML=step.title;
+  capEl.innerHTML='&nbsp;';
+  capEl.style.opacity='0';
+  nextBtn.style.opacity='0';
+  nextBtn.style.pointerEvents='none';
+
+  const w=learnCanvas.width, h=learnCanvas.height;
+  learnCtx.clearRect(0,0,w,h);
+  drawSoil(learnCtx,w,h);
+
+  // Speak the title first, wait for it to finish completely, then run demo
+  speak(step.titleSpeak, ()=>{
+    if(step.type==='demo'){
+      drawGuide(learnCtx,step.letter,w,h,0.4);
+      // Speak the letter name, wait, then auto-trace
+      speak(step.letter, ()=>{
+        autoTrace(learnCtx,step.letter,w,h,()=>{
+          capEl.innerHTML=step.caption;
+          capEl.style.opacity='1';
+          // Speak caption fully, then show Continue
+          speak(step.captionSpeak, ()=>{
+            nextBtn.style.opacity='1';
+            nextBtn.style.pointerEvents='auto';
+          });
+        });
+      });
+    } else if(step.type==='demo2'){
+      // Show two letters side by side
+      const [a,b]=step.letters;
+      learnCtx.save();
+      learnCtx.beginPath();learnCtx.rect(0,0,w/2-4,h);learnCtx.clip();
+      drawGuide(learnCtx,a,w/2-4,h,0.4);
+      learnCtx.restore();
+      learnCtx.save();
+      learnCtx.translate(w/2+4,0);
+      learnCtx.beginPath();learnCtx.rect(0,0,w/2-4,h);learnCtx.clip();
+      drawGuide(learnCtx,b,w/2-4,h,0.4);
+      learnCtx.restore();
+      // Divider
+      learnCtx.strokeStyle='rgba(255,255,255,0.15)';
+      learnCtx.lineWidth=2;
+      learnCtx.beginPath();learnCtx.moveTo(w/2,24);learnCtx.lineTo(w/2,h-24);learnCtx.stroke();
+      // Labels
+      learnCtx.fillStyle='#ffe44d';
+      learnCtx.font='bold 20px "Press Start 2P",monospace';
+      learnCtx.textAlign='center';learnCtx.textBaseline='bottom';
+      learnCtx.fillText(a,w*0.25,h-16);
+      learnCtx.fillText(b,w*0.75,h-16);
+      // Speak each letter fully, then the caption, then show Continue
+      speak(a, ()=>{
+        speak(b, ()=>{
+          capEl.innerHTML=step.caption;
+          capEl.style.opacity='1';
+          speak(step.captionSpeak, ()=>{
+            nextBtn.style.opacity='1';
+            nextBtn.style.pointerEvents='auto';
+          });
+        });
+      });
+    } else if(step.type==='guided'){
+      drawGuide(learnCtx,step.letter,w,h,0.5);
+      capEl.innerHTML=step.captionBefore;
+      capEl.style.opacity='1';
+      // Speak the instruction fully, then enable tracing
+      speak(step.captionBeforeSpeak, ()=>{
+        learnCleanup=createTracer(learnCanvas, step.letter, ()=>{
+          playCorrectChime();
+          if(learnCleanup){ learnCleanup(); learnCleanup=null; }
+          capEl.innerHTML=step.captionCorrect;
+          speak(step.captionCorrectSpeak, ()=>{
+            nextBtn.style.opacity='1';
+            nextBtn.style.pointerEvents='auto';
+          });
+        });
+      });
+    }
+  });
+}
+
+function doLearnNext(){
+  learnStep++;
+  if(learnStep>=LEARN_STEPS.length){
+    showScreen('s-transition');
+  } else {
+    runLearnStep();
+  }
+}
+
+// ══════════════════════════════════════
+// PRACTICE
+// ══════════════════════════════════════
+const ROUNDS=[
+  {letter:'A'},
+  {letter:'M'},
+  {letter:'S'},
+];
+let roundIdx=0, practiceCleanup=null;
+const practiceCanvas=document.getElementById('practice-canvas');
+const practiceCtx=practiceCanvas.getContext('2d');
+
+function startPractice(){
+  roundIdx=0;
+  showScreen('s-practice');
+  setTimeout(()=>setupRound(0),200);
+}
+
+function setupRound(idx){
+  const r=ROUNDS[idx];
+  if(practiceCleanup){ practiceCleanup(); practiceCleanup=null; }
+
+  document.querySelectorAll('#round-dots .rdot').forEach((d,i)=>{
+    d.className='rdot';
+    if(i<idx) d.classList.add('done');
+    else if(i===idx) d.classList.add('cur');
+  });
+  document.getElementById('round-label').textContent=`Round ${idx+1} of ${ROUNDS.length}`;
+
+  const capEl=document.getElementById('practice-caption');
+  capEl.innerHTML=`Trace the letter <strong>${r.letter}</strong>.`;
+
+  const w=practiceCanvas.width, h=practiceCanvas.height;
+  practiceCtx.clearRect(0,0,w,h);
+  drawSoil(practiceCtx,w,h);
+  drawGuide(practiceCtx,r.letter,w,h,0.5);
+
+  // Speak the instruction FULLY, then enable tracing
+  speak(`Trace the letter ${r.letter}.`, ()=>{
+    practiceCleanup=createTracer(practiceCanvas, r.letter, ()=>{
+      if(practiceCleanup){ practiceCleanup(); practiceCleanup=null; }
+      onCorrect(r);
+    });
+  });
+}
+
+function onCorrect(r){
+  playCorrectChime();
+  const capEl=document.getElementById('practice-caption');
+  capEl.innerHTML=`You traced <strong>${r.letter}</strong>!<br>The seed is planted.`;
+  speak(`You traced ${r.letter}! The seed is planted.`, ()=>{
+    setTimeout(advanceRound, 800);
+  });
+}
+
+function advanceRound(){
+  roundIdx++;
+  if(roundIdx>=ROUNDS.length){
+    showScreen('s-win');
+    burstWin();
+  } else {
+    setupRound(roundIdx);
+  }
+}
+
+// ══════════════════════════════════════
+// WIN PARTICLES
+// ══════════════════════════════════════
+function burstWin(){
+  const c=document.createElement('canvas');
+  c.width=window.innerWidth;c.height=window.innerHeight;
+  c.style.cssText='position:fixed;top:0;left:0;z-index:99;pointer-events:none';
+  document.body.appendChild(c);
+  const cx=c.getContext('2d');
+  const parts=[];
+  for(let i=0;i<80;i++){
+    const a=Math.random()*Math.PI*2, s=Math.random()*5+2;
+    parts.push({x:c.width/2,y:c.height/2,vx:Math.cos(a)*s,vy:Math.sin(a)*s-3,
+      r:Math.random()*4+2,color:`hsl(${Math.random()*360},80%,60%)`,alpha:1});
+  }
+  (function loop(){
+    cx.clearRect(0,0,c.width,c.height);
+    let alive=false;
+    parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.12;p.alpha-=0.015;
+      if(p.alpha>0){alive=true;cx.globalAlpha=p.alpha;cx.fillStyle=p.color;
+        cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fill();}});
+    cx.globalAlpha=1;
+    if(alive) requestAnimationFrame(loop);
+    else c.remove();
+  })();
+}
+
+// ══════════════════════════════════════
+// BUTTON ENTRY POINTS (called from inline onclick)
+// ══════════════════════════════════════
+function doStart(){
+  console.log('doStart called');
+  demoActive=false;
+  try{ speechSynthesis.cancel(); }catch(e){}
+  try{
+    // Prime speech synthesis with user gesture
+    const primer=new SpeechSynthesisUtterance(' ');
+    primer.volume=0;
+    speechSynthesis.speak(primer);
+  }catch(e){}
+  try{ getAC(); }catch(e){}
+  learnStep=0;
+  showScreen('s-learn');
+  setTimeout(runLearnStep, 200);
+}
+
+// Expose globals for inline handlers
+window.doStart=doStart;
+window.doLearnNext=doLearnNext;
+window.startPractice=startPractice;
+window.goHome=goHome;
+</script>
+</body>
+</html>
