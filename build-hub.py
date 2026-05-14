@@ -151,7 +151,7 @@ def generate():
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Otherwise Labs — Project Hub</title>
+<title>OL Project HQ</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 *{{margin:0;padding:0;box-sizing:border-box}}
@@ -179,9 +179,9 @@ main{{max-width:920px;margin:0 auto;padding:28px 20px}}
 .sb-pill{{font-size:10px;font-weight:600;padding:3px 10px;border-radius:10px;
   background:rgba(155,193,188,0.3);color:#4a6a66}}
 
-/* Team profiles */
-.profiles{{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px}}
-.profile{{flex:1;min-width:260px;background:#fff;border:2px solid #eae8e2;border-radius:14px;overflow:hidden}}
+/* Team profiles — stacked vertically */
+.profiles{{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}}
+.profile{{background:#fff;border:2px solid #eae8e2;border-radius:14px;overflow:hidden}}
 .profile-header{{padding:16px 18px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
   -webkit-tap-highlight-color:transparent}}
 .profile-header:hover{{background:#faf8f2}}
@@ -192,9 +192,9 @@ main{{max-width:920px;margin:0 auto;padding:28px 20px}}
 .profile-role{{font-size:10px;color:#999}}
 .profile-arrow{{font-size:14px;color:#ccc;transition:transform .2s}}
 .profile.open .profile-arrow{{transform:rotate(180deg)}}
-.profile-body{{max-height:0;overflow:hidden;transition:max-height .35s ease-out}}
-.profile.open .profile-body{{max-height:2000px;transition:max-height .5s ease-in}}
-.profile-content{{padding:0 18px 18px;border-top:1px solid #f0ede8}}
+.profile-body{{display:none}}
+.profile.open .profile-body{{display:block}}
+.profile-content{{padding:12px 18px 18px;border-top:1px solid #f0ede8}}
 .profile-empty{{font-size:12px;color:#bbb;padding:20px 0;text-align:center;font-style:italic}}
 .profile-table{{width:100%;border-collapse:collapse;font-size:11px;margin-top:12px}}
 .profile-table th{{text-align:left;padding:8px 10px;background:#ed6a5a;color:#fff;font-weight:600;
@@ -226,12 +226,36 @@ tr:hover td{{background:#faf8f2}}
 .status-done{{background:rgba(155,193,188,0.25);color:#4a6a66}}
 .status-wip{{background:rgba(237,106,90,0.12);color:#c04a3a}}
 
+/* Roadmap */
+.roadmap{{position:relative;padding-left:36px}}
+.roadmap::before{{content:'';position:absolute;left:14px;top:0;bottom:0;width:3px;background:#eae8e2}}
+.rm-stage{{position:relative;margin-bottom:24px}}
+.rm-dot{{position:absolute;left:-30px;top:6px;width:18px;height:18px;border-radius:50%;border:3px solid #eae8e2;background:#faf9f5;z-index:2}}
+.rm-stage.done .rm-dot{{background:#9bc1bc;border-color:#9bc1bc}}
+.rm-stage.active .rm-dot{{background:#ed6a5a;border-color:#ed6a5a;box-shadow:0 0 0 4px rgba(237,106,90,0.2)}}
+.rm-stage.future .rm-dot{{background:#faf9f5;border-color:#ddd}}
+.rm-header{{display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 0;-webkit-tap-highlight-color:transparent}}
+.rm-header:hover .rm-title{{color:#ed6a5a}}
+.rm-badge{{font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:1px}}
+.rm-badge-done{{background:rgba(155,193,188,0.25);color:#4a6a66}}
+.rm-badge-active{{background:rgba(237,106,90,0.12);color:#c04a3a}}
+.rm-badge-future{{background:#eae8e2;color:#999}}
+.rm-title{{font-family:'Lora',serif;font-size:15px;font-weight:700;color:#3a3a3a;transition:color .15s}}
+.rm-body{{display:none}}
+.rm-stage.open .rm-body{{display:block}}
+.rm-content{{padding:10px 0 4px;margin-left:8px;padding-left:16px;border-left:2px solid #eae8e2}}
+.rm-items{{list-style:none;padding:0}}
+.rm-items li{{font-size:12px;color:#5a5a5a;line-height:1.7;padding:2px 0;display:flex;align-items:flex-start;gap:8px}}
+.rm-items li::before{{content:'';display:inline-block;width:14px;height:14px;border-radius:3px;border:2px solid #ddd;flex-shrink:0;margin-top:2px}}
+.rm-items li.done::before{{background:#9bc1bc;border-color:#9bc1bc;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 7l3 3 5-5' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}}
+.rm-items li.done{{color:#999;text-decoration:line-through;text-decoration-color:#ccc}}
+
 footer{{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lora',serif}}
 </style>
 </head>
 <body>
 <header>
-  <h1>Otherwise Labs</h1>
+  <h1>OL Project HQ</h1>
   <p>An RPG that adapts evidence-based dyslexia tutoring into playful game mechanics.</p>
   <div class="meta">Last updated: {esc(now)} · {len(games)} prototypes · {len(skills)} skills · {len(decisions)} decisions</div>
 </header>
@@ -344,12 +368,109 @@ footer{{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lo
 <!-- Decisions -->
 {"" if not decisions else '<div class="section"><div class="section-title">Decision Log ('+str(len(decisions))+')</div><div class="table-wrap"><table><tr><th>ID</th><th>Decision</th><th>Domain</th><th>Date</th><th>Status</th></tr>'+decision_rows+'</table></div></div>'}
 
+<!-- Roadmap -->
+<div class="section">
+  <div class="section-title">Project Roadmap</div>
+  <div style="font-size:12px;color:#888;margin-bottom:14px;display:flex;gap:12px;flex-wrap:wrap">
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#9bc1bc;display:inline-block"></span> Complete</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#ed6a5a;display:inline-block"></span> In Progress</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#e4e0da;display:inline-block"></span> Upcoming</span>
+    <span style="font-size:10px;color:#aaa">Click to expand</span>
+  </div>
+  <div class="roadmap">
+
+    <div class="rm-stage done" onclick="this.classList.toggle('open')">
+      <div class="rm-dot"></div>
+      <div class="rm-header"><span class="rm-badge rm-badge-done">Complete</span><span class="rm-title">Stage 0 — Vision &amp; Strategy</span></div>
+      <div class="rm-body"><div class="rm-content">
+        <ul class="rm-items">
+          <li class="done">Product vision document</li>
+          <li class="done">Target audience defined</li>
+          <li class="done">Curriculum backbone mapped (CSV)</li>
+          <li class="done">Platform: browser-first, mobile touch</li>
+          <li class="done">Design principles established</li>
+        </ul>
+      </div></div>
+    </div>
+
+    <div class="rm-stage done" onclick="this.classList.toggle('open')">
+      <div class="rm-dot"></div>
+      <div class="rm-header"><span class="rm-badge rm-badge-done">Complete</span><span class="rm-title">Stage 1 — Discover (Research)</span></div>
+      <div class="rm-body"><div class="rm-content">
+        <ul class="rm-items">
+          <li class="done">Handbook of Game-Based Learning (R-001)</li>
+          <li class="done">Actionable Gamification / Octalysis (R-002)</li>
+          <li class="done">MDA Framework (R-003)</li>
+          <li class="done">Meeting: Explicit &amp; Systematic Instruction (R-004)</li>
+          <li class="done">WRS Lesson Plan Structure (R-005)</li>
+          <li>Interview OG tutors</li>
+          <li>Interview parents/caregivers</li>
+          <li>Observe live tutoring sessions</li>
+        </ul>
+      </div></div>
+    </div>
+
+    <div class="rm-stage done" onclick="this.classList.toggle('open')">
+      <div class="rm-dot"></div>
+      <div class="rm-header"><span class="rm-badge rm-badge-done">Complete</span><span class="rm-title">Stage 2 — Define (Frameworks)</span></div>
+      <div class="rm-body"><div class="rm-content">
+        <ul class="rm-items">
+          <li class="done">{len(skills)} design skills created</li>
+          <li class="done">{len(decisions)} key decisions logged</li>
+          <li class="done">80/20 instruction ratio established</li>
+          <li class="done">3-stage lesson structure (Tutorial → Guided → Sprint)</li>
+          <li class="done">Hint escalation replacing lives</li>
+          <li>User personas (Learner, Tutor, Parent)</li>
+        </ul>
+      </div></div>
+    </div>
+
+    <div class="rm-stage active open" onclick="this.classList.toggle('open')">
+      <div class="rm-dot"></div>
+      <div class="rm-header"><span class="rm-badge rm-badge-active">In Progress</span><span class="rm-title">Stage 3 — Develop (Build &amp; Test)</span></div>
+      <div class="rm-body"><div class="rm-content">
+        <ul class="rm-items">
+          <li class="done">{len(games)} mini-game prototypes built</li>
+          <li class="done">Full lesson prototype (Locked Door)</li>
+          <li class="done">Interactive storyboard created</li>
+          <li class="done">Audio assets (ElevenLabs phonemes + words)</li>
+          <li>Print Concepts game</li>
+          <li>Encoding game</li>
+          <li>Phoneme blending game</li>
+          <li>Playtest with target users</li>
+          <li>Font readability audit</li>
+        </ul>
+      </div></div>
+    </div>
+
+    <div class="rm-stage future" onclick="this.classList.toggle('open')">
+      <div class="rm-dot"></div>
+      <div class="rm-header"><span class="rm-badge rm-badge-future">Upcoming</span><span class="rm-title">Stage 4 — Deliver (Polish &amp; Ship)</span></div>
+      <div class="rm-body"><div class="rm-content">
+        <ul class="rm-items">
+          <li>Full session playtest (3+ games in sequence)</li>
+          <li>Curriculum alignment sign-off</li>
+          <li>Accessibility audit</li>
+          <li>Device testing</li>
+          <li>Analytics instrumentation</li>
+        </ul>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
 </main>
-<footer>Otherwise Labs · Auto-generated</footer>
+<footer>OL Project HQ · Auto-generated</footer>
 
 <script>
 function toggleProfile(id){{
-  document.getElementById(id).classList.toggle('open');
+  const el=document.getElementById(id);
+  const isOpen=el.classList.contains('open');
+  // Close all profiles first
+  document.querySelectorAll('.profile').forEach(p=>p.classList.remove('open'));
+  // Open this one if it wasn't already open
+  if(!isOpen) el.classList.add('open');
 }}
 </script>
 </body>
