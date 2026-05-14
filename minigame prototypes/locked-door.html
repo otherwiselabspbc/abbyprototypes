@@ -15,27 +15,49 @@ body{background:#0a0814;overflow:hidden;font-family:'Cinzel',serif;
 #scene{position:fixed;inset:0;z-index:0}
 
 /* UI overlay layer */
-#ui{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;
-  align-items:center;justify-content:flex-end;padding:20px;pointer-events:none}
+#ui{position:fixed;inset:0;z-index:10;pointer-events:none}
 #ui>*{pointer-events:auto}
 
-/* Speech panel at bottom */
-#speech{width:clamp(300px,90vw,520px);background:rgba(16,12,28,0.92);
-  border:2px solid rgba(139,92,246,0.25);border-radius:16px;
-  padding:16px 20px;margin-bottom:12px;position:relative;
-  box-shadow:0 4px 20px rgba(0,0,0,0.4);backdrop-filter:blur(4px)}
-#sp-name{font-size:10px;font-weight:800;color:#a78bfa;letter-spacing:3px;
+/* Speech bubble — positioned near the NPC */
+#speech{
+  position:fixed;
+  left:clamp(16px,8vw,120px);
+  top:clamp(60px,12vh,140px);
+  width:clamp(260px,45vw,380px);
+  background:rgba(255,255,255,0.95);
+  border:2px solid rgba(139,92,246,0.2);border-radius:18px;
+  padding:16px 44px 16px 18px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.15);
+  backdrop-filter:blur(4px);
+  color:#2a2a3a}
+/* Speech bubble tail pointing down-left toward NPC */
+#speech::after{
+  content:'';position:absolute;bottom:-14px;left:40px;
+  width:0;height:0;
+  border-left:12px solid transparent;
+  border-right:12px solid transparent;
+  border-top:14px solid rgba(255,255,255,0.95)}
+#speech::before{
+  content:'';position:absolute;bottom:-17px;left:39px;
+  width:0;height:0;
+  border-left:13px solid transparent;
+  border-right:13px solid transparent;
+  border-top:15px solid rgba(139,92,246,0.2)}
+#sp-name{font-size:10px;font-weight:800;color:#6d5cae;letter-spacing:3px;
   text-transform:uppercase;margin-bottom:6px}
-#sp-text{font-size:clamp(14px,3.2vw,17px);color:#e8dcc8;line-height:1.75;
-  font-family:'Nunito',sans-serif;min-height:44px}
-#sp-text em{color:#f5c469;font-style:normal;font-weight:800}
-.sp-btn{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;
-  background:rgba(139,92,246,0.1);border:2px solid rgba(139,92,246,0.25);
-  display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;
+#sp-text{font-size:clamp(13px,3vw,16px);color:#3a3a4a;line-height:1.75;
+  font-family:'Nunito',sans-serif;min-height:36px}
+#sp-text em{color:#7c5cb8;font-style:normal;font-weight:800}
+.sp-btn{position:absolute;top:12px;right:10px;width:32px;height:32px;border-radius:50%;
+  background:rgba(139,92,246,0.08);border:2px solid rgba(139,92,246,0.2);
+  display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;
   -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.sp-btn:hover{background:rgba(139,92,246,0.15)}
 
-/* Action buttons row */
-#actions{display:flex;gap:12px;margin-bottom:16px}
+/* Action buttons — positioned below the bubble */
+#actions{position:fixed;left:clamp(16px,8vw,120px);
+  top:auto;bottom:clamp(16px,4vh,40px);
+  display:flex;gap:12px}
 .btn{font-family:'Cinzel',serif;font-weight:800;font-size:14px;color:#fff;
   border:none;border-radius:12px;padding:14px 36px;cursor:pointer;
   text-transform:uppercase;letter-spacing:2px;transition:transform .1s;
@@ -46,8 +68,9 @@ body{background:#0a0814;overflow:hidden;font-family:'Cinzel',serif;
 .btn-red{background:linear-gradient(180deg,#e87461,#c0503e);box-shadow:0 4px 0 #9a3a2a}
 .btn.off{display:none}
 
-/* Gem choices (for guided + sprint) */
-#gems{display:flex;gap:clamp(12px,4vw,24px);justify-content:center;margin-bottom:16px}
+/* Gem choices (for guided + sprint) — centered on screen */
+#gems{position:fixed;bottom:clamp(80px,15vh,140px);left:50%;transform:translateX(-50%);
+  display:flex;gap:clamp(12px,4vw,24px);justify-content:center;z-index:12}
 #gems.off{display:none}
 .gem{width:clamp(64px,16vw,80px);height:clamp(64px,16vw,80px);border-radius:14px;
   background:linear-gradient(145deg,#1e1a2e,#2a2340);border:3px solid rgba(139,92,246,0.2);
@@ -79,8 +102,9 @@ body{background:#0a0814;overflow:hidden;font-family:'Cinzel',serif;
 .f-gem.wrong{animation:shake .4s ease-out}
 
 /* Timer */
-#timer{width:clamp(200px,50vw,320px);height:6px;border-radius:3px;
-  background:rgba(255,255,255,0.06);overflow:hidden;margin-bottom:12px;display:none}
+#timer{position:fixed;top:72px;left:50%;transform:translateX(-50%);
+  width:clamp(200px,50vw,320px);height:6px;border-radius:3px;
+  background:rgba(255,255,255,0.06);overflow:hidden;display:none;z-index:12}
 #timer-fill{height:100%;width:100%;border-radius:3px;background:#8b5cf6;
   transition:width .2s linear,background-color .3s}
 #timer-fill.warn{background:#f5c469}
@@ -88,7 +112,8 @@ body{background:#0a0814;overflow:hidden;font-family:'Cinzel',serif;
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
 
 /* Sprint dots */
-#dots{display:flex;gap:6px;margin-bottom:8px;display:none}
+#dots{position:fixed;top:56px;left:50%;transform:translateX(-50%);
+  display:flex;gap:6px;display:none;z-index:12}
 .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.1);
   border:2px solid rgba(255,255,255,0.15);transition:all .3s}
 .dot.done{background:#5ec77a;border-color:#5ec77a}
@@ -103,19 +128,17 @@ body{background:#0a0814;overflow:hidden;font-family:'Cinzel',serif;
 <canvas id="scene"></canvas>
 <canvas id="trail"></canvas>
 
-<div id="ui">
-  <div id="dots"></div>
-  <div id="timer"><div id="timer-fill"></div></div>
-  <div id="gems" class="off"></div>
-  <div id="speech">
-    <div id="sp-name"></div>
-    <div id="sp-text"></div>
-    <button class="sp-btn" onclick="replayAudio()">🔊</button>
-  </div>
-  <div id="actions">
-    <button class="btn btn-magic off" id="btn-continue" onclick="nextBeat()">Continue</button>
-    <button class="btn btn-gold off" id="btn-go" onclick="startSprint()">I'm Ready</button>
-  </div>
+<div id="dots"></div>
+<div id="timer"><div id="timer-fill"></div></div>
+<div id="gems" class="off"></div>
+<div id="speech">
+  <div id="sp-name"></div>
+  <div id="sp-text"></div>
+  <button class="sp-btn" onclick="replayAudio()">🔊</button>
+</div>
+<div id="actions">
+  <button class="btn btn-magic off" id="btn-continue" onclick="nextBeat()">Continue</button>
+  <button class="btn btn-gold off" id="btn-go" onclick="startSprint()">I'm Ready</button>
 </div>
 
 <div id="sprint-field"></div>
