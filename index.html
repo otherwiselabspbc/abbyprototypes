@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OL Prototypes — Project Hub</title>
+<title>Otherwise Labs — Project Hub</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -15,27 +15,48 @@ header p{font-size:14px;color:rgba(255,255,255,0.88);max-width:520px;margin:0 au
 header .meta{font-size:11px;color:rgba(255,255,255,0.55);margin-top:10px}
 
 main{max-width:920px;margin:0 auto;padding:28px 20px}
-
 .section{margin-bottom:40px}
 .section-title{font-family:'Lora',serif;font-size:20px;font-weight:700;color:#3a3a3a;
   margin-bottom:16px;padding-bottom:10px;border-bottom:3px solid #ed6a5a}
 
-/* Storyboard preview */
-.storyboard-link{display:block;background:#f4f1bb;border:2px solid #e0dda0;border-radius:14px;
+/* Storyboard link */
+.sb-link{display:block;background:#f4f1bb;border:2px solid #e0dda0;border-radius:14px;
   padding:24px;text-decoration:none;color:#2a2a2a;transition:all .15s;margin-bottom:32px}
-.storyboard-link:hover{border-color:#ed6a5a;box-shadow:0 4px 16px rgba(237,106,90,0.12)}
+.sb-link:hover{border-color:#ed6a5a;box-shadow:0 4px 16px rgba(237,106,90,0.12)}
 .sb-head{display:flex;align-items:center;gap:14px;margin-bottom:10px}
 .sb-icon{font-size:28px}
 .sb-title{font-family:'Lora',serif;font-size:18px;font-weight:700;color:#3a3a3a}
 .sb-desc{font-size:13px;color:#5a5a5a;line-height:1.55}
-.sb-domains{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.sb-domain{font-size:10px;font-weight:600;padding:3px 10px;border-radius:10px;
+.sb-pills{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.sb-pill{font-size:10px;font-weight:600;padding:3px 10px;border-radius:10px;
   background:rgba(155,193,188,0.3);color:#4a6a66}
+
+/* Team profiles */
+.profiles{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px}
+.profile{flex:1;min-width:260px;background:#fff;border:2px solid #eae8e2;border-radius:14px;overflow:hidden}
+.profile-header{padding:16px 18px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+  -webkit-tap-highlight-color:transparent}
+.profile-header:hover{background:#faf8f2}
+.profile-info{display:flex;align-items:center;gap:12px}
+.profile-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;color:#fff}
+.profile-name{font-family:'Lora',serif;font-size:15px;font-weight:700;color:#3a3a3a}
+.profile-role{font-size:10px;color:#999}
+.profile-arrow{font-size:14px;color:#ccc;transition:transform .2s}
+.profile.open .profile-arrow{transform:rotate(180deg)}
+.profile-body{max-height:0;overflow:hidden;transition:max-height .35s ease-out}
+.profile.open .profile-body{max-height:2000px;transition:max-height .5s ease-in}
+.profile-content{padding:0 18px 18px;border-top:1px solid #f0ede8}
+.profile-empty{font-size:12px;color:#bbb;padding:20px 0;text-align:center;font-style:italic}
+.profile-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:12px}
+.profile-table th{text-align:left;padding:8px 10px;background:#ed6a5a;color:#fff;font-weight:600;
+  font-size:9px;text-transform:uppercase;letter-spacing:1px;font-family:'Lora',serif}
+.profile-table td{padding:8px 10px;border-bottom:1px solid #f0ede8;color:#3a3a3a}
+.profile-count{font-size:10px;color:#999;font-weight:600}
 
 /* Cards */
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
-.card{background:#fff;border-radius:12px;padding:18px;border:2px solid #eae8e2;
-  transition:border-color .15s,box-shadow .15s}
+.card{background:#fff;border-radius:12px;padding:18px;border:2px solid #eae8e2;transition:border-color .15s,box-shadow .15s}
 .card:hover{border-color:#9bc1bc;box-shadow:0 3px 12px rgba(155,193,188,0.15)}
 .card-title{font-family:'Lora',serif;font-weight:700;font-size:15px;color:#3a3a3a;margin-bottom:5px}
 .card-desc{font-size:12px;color:#6a6a6a;line-height:1.55}
@@ -43,7 +64,6 @@ main{max-width:920px;margin:0 auto;padding:28px 20px}
 
 .tag{background:#f4f1bb;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;color:#7a7040}
 .tag-teal{background:rgba(155,193,188,0.25);color:#4a6a66}
-.tag-red{background:rgba(237,106,90,0.12);color:#c04a3a}
 
 /* Tables */
 .table-wrap{overflow-x:auto}
@@ -53,7 +73,6 @@ th{text-align:left;padding:10px 12px;background:#ed6a5a;color:#fff;font-weight:6
 td{padding:10px 12px;border-bottom:1px solid #eae8e2;color:#3a3a3a}
 tr:hover td{background:#faf8f2}
 
-/* Status badges */
 .status{display:inline-block;padding:3px 10px;border-radius:8px;font-size:9px;
   font-weight:700;text-transform:uppercase;letter-spacing:1px}
 .status-done{background:rgba(155,193,188,0.25);color:#4a6a66}
@@ -64,137 +83,158 @@ footer{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lor
 </head>
 <body>
 <header>
-  <h1>OL Prototypes</h1>
-  <p>An RPG that adapts evidence-based dyslexia tutoring into playful game mechanics. Mini-games, world-building, and a curriculum backbone that makes learning feel like an adventure.</p>
-  <div class="meta">Last built: May 14, 2026 · 11 games · 10 skills · 7 decisions · 6 resources</div>
+  <h1>Otherwise Labs</h1>
+  <p>An RPG that adapts evidence-based dyslexia tutoring into playful game mechanics.</p>
+  <div class="meta">Last updated: May 14, 2026 · 11 prototypes · 10 skills · 7 decisions</div>
 </header>
 <main>
 
-<!-- Storyboard Link -->
-<a class="storyboard-link" href="storyboard.html">
+<!-- Storyboard -->
+<a class="sb-link" href="storyboard.html">
   <div class="sb-head">
     <span class="sb-icon">🗺️</span>
     <span class="sb-title">Game Storyboard</span>
   </div>
-  <div class="sb-desc">Interactive zoomable board showing the full curriculum flow. Click to expand domains, lessons, and phases. Click any game to see its beat-by-beat storyboard with editable notes.</div>
-  <div class="sb-domains">
-    <span class="sb-domain">Print Concepts</span>
-    <span class="sb-domain">Letter Knowledge</span>
-    <span class="sb-domain">Phonological Awareness</span>
-    <span class="sb-domain">Alphabetic Principle</span>
-    <span class="sb-domain">Decoding</span>
-    <span class="sb-domain">Encoding</span>
-    <span class="sb-domain">Comprehension</span>
+  <div class="sb-desc">Interactive zoomable board showing the full curriculum flow. Click domains to expand lessons, click games to see beat-by-beat storyboards with editable notes.</div>
+  <div class="sb-pills">
+    <span class="sb-pill">Print Concepts</span>
+    <span class="sb-pill">Letter Knowledge</span>
+    <span class="sb-pill">Phonological Awareness</span>
+    <span class="sb-pill">Alphabetic Principle</span>
+    <span class="sb-pill">Decoding</span>
+    <span class="sb-pill">Encoding</span>
+    <span class="sb-pill">Comprehension</span>
   </div>
 </a>
 
-<!-- Mini-Games -->
+<!-- Team Profiles -->
 <div class="section">
-  <div class="section-title">Mini-Games (11)</div>
-  <div class="table-wrap"><table>
-    <tr><th>#</th><th>Game</th><th>Domain</th><th>Skill</th><th>Status</th></tr>
-    <tr><td>—</td><td>Enchanted Gems</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
-    <tr><td>01</td><td>The Rune Stones</td><td>Phoneme Quest · Stage I</td><td>Phonological Awareness · Sequence Detection</td><td><span class="status status-wip">In Progress</span></td></tr>
-    <tr><td>02</td><td>The Enchanted Harp</td><td>Phoneme Quest · Stage II</td><td>Phonological Awareness · Sequence Detection</td><td><span class="status status-wip">In Progress</span></td></tr>
-    <tr><td>03</td><td>The Whispering Stones</td><td>Phonological Awareness</td><td>Rhyme Detection · Ages 6–12</td><td><span class="status status-wip">In Progress</span></td></tr>
-    <tr><td>04</td><td>Block Breaker</td><td>Letter Knowledge</td><td>Letter Recognition · Ages 5–10</td><td><span class="status status-wip">In Progress</span></td></tr>
-    <tr><td>05</td><td>Seed Script</td><td>Letter Knowledge</td><td>Letter Tracing · Ages 5–10</td><td><span class="status status-wip">In Progress</span></td></tr>
-    <tr><td>06</td><td>Syllable Sprout</td><td>Phonological Awareness</td><td>Syllable Counting · Ages 5–10</td><td><span class="status status-wip">In Progress</span></td></tr>
-    <tr><td>—</td><td>Lesson: Every Letter Has a Sound</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
-    <tr><td>—</td><td>The Locked Door</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
-    <tr><td>—</td><td>Quest Catcher</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
-    <tr><td>—</td><td>Spell Caster</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
-  </table></div>
+  <div class="section-title">Team</div>
+  <div class="profiles">
+
+    <!-- Abby -->
+    <div class="profile" id="profile-abby">
+      <div class="profile-header" onclick="toggleProfile('profile-abby')">
+        <div class="profile-info">
+          <div class="profile-avatar" style="background:#ed6a5a">A</div>
+          <div>
+            <div class="profile-name">Abby</div>
+            <div class="profile-role">Game Design · Prototyping</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="profile-count">11 prototypes</span>
+          <span class="profile-arrow">▾</span>
+        </div>
+      </div>
+      <div class="profile-body">
+        <div class="profile-content">
+          <table class="profile-table">
+            <tr><th>#</th><th>Prototype</th><th>Domain</th><th>Skill</th><th>Status</th></tr>
+            <tr><td>—</td><td>Enchanted Gems</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
+          <tr><td>01</td><td>The Rune Stones</td><td>Phoneme Quest · Stage I</td><td>Phonological Awareness · Sequence Detection</td><td><span class="status status-wip">In Progress</span></td></tr>
+          <tr><td>02</td><td>The Enchanted Harp</td><td>Phoneme Quest · Stage II</td><td>Phonological Awareness · Sequence Detection</td><td><span class="status status-wip">In Progress</span></td></tr>
+          <tr><td>03</td><td>The Whispering Stones</td><td>Phonological Awareness</td><td>Rhyme Detection · Ages 6–12</td><td><span class="status status-wip">In Progress</span></td></tr>
+          <tr><td>04</td><td>Block Breaker</td><td>Letter Knowledge</td><td>Letter Recognition · Ages 5–10</td><td><span class="status status-wip">In Progress</span></td></tr>
+          <tr><td>05</td><td>Seed Script</td><td>Letter Knowledge</td><td>Letter Tracing · Ages 5–10</td><td><span class="status status-wip">In Progress</span></td></tr>
+          <tr><td>06</td><td>Syllable Sprout</td><td>Phonological Awareness</td><td>Syllable Counting · Ages 5–10</td><td><span class="status status-wip">In Progress</span></td></tr>
+          <tr><td>—</td><td>Lesson: Every Letter Has a Sound</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
+          <tr><td>—</td><td>The Locked Door</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
+          <tr><td>—</td><td>Quest Catcher</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
+          <tr><td>—</td><td>Spell Caster</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bob -->
+    <div class="profile" id="profile-bob">
+      <div class="profile-header" onclick="toggleProfile('profile-bob')">
+        <div class="profile-info">
+          <div class="profile-avatar" style="background:#9bc1bc">B</div>
+          <div>
+            <div class="profile-name">Bob</div>
+            <div class="profile-role">—</div>
+          </div>
+        </div>
+        <span class="profile-arrow">▾</span>
+      </div>
+      <div class="profile-body">
+        <div class="profile-content">
+          <div class="profile-empty">No prototypes yet</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tyler -->
+    <div class="profile" id="profile-tyler">
+      <div class="profile-header" onclick="toggleProfile('profile-tyler')">
+        <div class="profile-info">
+          <div class="profile-avatar" style="background:#f4c952">T</div>
+          <div>
+            <div class="profile-name">Tyler</div>
+            <div class="profile-role">Curriculum · Instruction</div>
+          </div>
+        </div>
+        <span class="profile-arrow">▾</span>
+      </div>
+      <div class="profile-body">
+        <div class="profile-content">
+          <div class="profile-empty">No prototypes yet</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <!-- Documents -->
 <div class="section">
   <div class="section-title">Project Documents (3)</div>
-  <div class="cards"><div class="card">
-      <div class="card-title">Product Vision</div>
-      <div class="card-desc">Core concept, three-phase roadmap, design principles.</div>
-    </div>
-    <div class="card">
-      <div class="card-title">Decision Log</div>
-      <div class="card-desc">7 design decisions with rationale and evidence.</div>
-    </div>
-    <div class="card">
-      <div class="card-title">Curriculum Map</div>
-      <div class="card-desc">~50 Orton-Gillingham activities with modalities and sample items.</div>
-    </div></div>
+  <div class="cards"><div class="card"><div class="card-title">Product Vision</div><div class="card-desc">Core concept, three-phase roadmap, design principles.</div></div>
+    <div class="card"><div class="card-title">Decision Log</div><div class="card-desc">7 design decisions with rationale and evidence.</div></div>
+    <div class="card"><div class="card-title">Curriculum Map</div><div class="card-desc">~50 Orton-Gillingham activities with modalities and sample items.</div></div></div>
 </div>
 
 <!-- Skills -->
 <div class="section">
   <div class="section-title">Design Frameworks (10)</div>
-  <div class="cards"><div class="card">
-      <div class="card-title">curriculum-mapping</div>
-      <div class="card-desc">Use before designing any mini-game to ensure it correctly targets a specific reading skill from the Lindamood Bell-informed curriculum. Alwa...</div>
-      <div class="card-meta"><span class="tag tag-teal">/curriculum-mapping</span></div>
-    </div>
-    <div class="card">
-      <div class="card-title">explicit-instruction</div>
-      <div class="card-desc">Defines how instruction within each mini-game should be structured. Based on evidence-based reading curriculum principles (OG, Lindamood-Bel...</div>
-      <div class="card-meta"><span class="tag tag-teal">/explicit-instruction</span></div>
-    </div>
-    <div class="card">
-      <div class="card-title">game-based-learning</div>
-      <div class="card-desc">Review or apply evidence-based game-based learning principles when designing, auditing, or iterating on any mini-game. Covers cognitive load...</div>
-      <div class="card-meta"><span class="tag tag-teal">/game-based-learning</span></div>
-    </div>
-    <div class="card">
-      <div class="card-title">game-storyboard</div>
-      <div class="card-desc">Use when designing a new mini-game from scratch. Provides the complete screen-by-screen structure every game must follow, including the Lear...</div>
-      <div class="card-meta"><span class="tag tag-teal">/game-storyboard</span></div>
-    </div>
-    <div class="card">
-      <div class="card-title">game-vision</div>
-      <div class="card-desc">Reference the core product vision, design principles, and three-phase roadmap for OL Prototypes before building any game or feature. Use whe...</div>
-      <div class="card-meta"><span class="tag tag-teal">/game-vision</span></div>
-    </div>
-    <div class="card">
-      <div class="card-title">mda</div>
-      <div class="card-desc">Evaluate a game&#x27;s effectiveness using the MDA Framework (Mechanics, Dynamics, Aesthetics). Use when auditing whether a mini-game achieves it...</div>
-      <div class="card-meta"><span class="tag tag-teal">/mda</span></div>
-    </div>
-    <div class="card">
-      <div class="card-title">octalysis</div>
-      <div class="card-desc">Audit or design a game feature against the Octalysis Framework (Yu-kai Chou). Ensures the game engages all 8 Core Drives, balances White Hat...</div>
-      <div class="card-meta"><span class="tag tag-teal">/octalysis</span></div>
-    </div>
-    <div class="card">
-      <div class="card-title">product-management</div>
-      <div class="card-desc">Manage the end-to-end design process for OL Prototypes. Covers design stages (Double Diamond), decision logging, user research, prototyping,...</div>
-      <div class="card-meta"><span class="tag tag-teal">/product-management</span></div>
-    </div>
-    <div class="card">
-      <div class="card-title">resources</div>
-      <div class="card-desc">Central library of all research sources, readings, and references used in the OL Prototypes design process. Search by topic, type, or skill....</div>
-      <div class="card-meta"><span class="tag tag-teal">/resources</span></div>
-    </div>
-    <div class="card">
-      <div class="card-title">ui-ux</div>
-      <div class="card-desc">Review or apply UI/UX design principles to a game screen, component, or interaction. Covers general design principles plus literacy-specific...</div>
-      <div class="card-meta"><span class="tag tag-teal">/ui-ux</span></div>
-    </div></div>
+  <div class="cards"><div class="card"><div class="card-title">curriculum-mapping</div><div class="card-desc">Use before designing any mini-game to ensure it correctly targets a specific reading skill from the Lindamood Bell-informed curric...</div><div class="card-meta"><span class="tag tag-teal">/curriculum-mapping</span></div></div>
+    <div class="card"><div class="card-title">explicit-instruction</div><div class="card-desc">Defines how instruction within each mini-game should be structured. Based on evidence-based reading curriculum principles (OG, Lin...</div><div class="card-meta"><span class="tag tag-teal">/explicit-instruction</span></div></div>
+    <div class="card"><div class="card-title">game-based-learning</div><div class="card-desc">Review or apply evidence-based game-based learning principles when designing, auditing, or iterating on any mini-game. Covers cogn...</div><div class="card-meta"><span class="tag tag-teal">/game-based-learning</span></div></div>
+    <div class="card"><div class="card-title">game-storyboard</div><div class="card-desc">Use when designing a new mini-game from scratch. Provides the complete screen-by-screen structure every game must follow, includin...</div><div class="card-meta"><span class="tag tag-teal">/game-storyboard</span></div></div>
+    <div class="card"><div class="card-title">game-vision</div><div class="card-desc">Reference the core product vision, design principles, and three-phase roadmap for OL Prototypes before building any game or featur...</div><div class="card-meta"><span class="tag tag-teal">/game-vision</span></div></div>
+    <div class="card"><div class="card-title">mda</div><div class="card-desc">Evaluate a game&#x27;s effectiveness using the MDA Framework (Mechanics, Dynamics, Aesthetics). Use when auditing whether a mini-game a...</div><div class="card-meta"><span class="tag tag-teal">/mda</span></div></div>
+    <div class="card"><div class="card-title">octalysis</div><div class="card-desc">Audit or design a game feature against the Octalysis Framework (Yu-kai Chou). Ensures the game engages all 8 Core Drives, balances...</div><div class="card-meta"><span class="tag tag-teal">/octalysis</span></div></div>
+    <div class="card"><div class="card-title">product-management</div><div class="card-desc">Manage the end-to-end design process for OL Prototypes. Covers design stages (Double Diamond), decision logging, user research, pr...</div><div class="card-meta"><span class="tag tag-teal">/product-management</span></div></div>
+    <div class="card"><div class="card-title">resources</div><div class="card-desc">Central library of all research sources, readings, and references used in the OL Prototypes design process. Search by topic, type,...</div><div class="card-meta"><span class="tag tag-teal">/resources</span></div></div>
+    <div class="card"><div class="card-title">ui-ux</div><div class="card-desc">Review or apply UI/UX design principles to a game screen, component, or interaction. Covers general design principles plus literac...</div><div class="card-meta"><span class="tag tag-teal">/ui-ux</span></div></div></div>
 </div>
 
-<div class='section'><div class='section-title'>Research Sources (6)</div><div class='table-wrap'><table><tr><th>ID</th><th>Title</th><th>Authors</th><th>Type</th><th>Topics</th><th>Skill</th></tr><tr><td>R-001</td><td>Handbook of Game-Based Learning</td><td>Jan L. Plass, Richard E. Mayer, Bruce D. Homer |</td><td><span class="tag">Academic textbook |</span></td><td>Cognitive load, feedback design, motivation (SDT),...</td><td><span class="tag tag-teal">/game-based-learning |</span></td></tr>
-    <tr><td>R-002</td><td>Actionable Gamification — Beyond Points, Badges, and Leaderboards</td><td>Yu-kai Chou |</td><td><span class="tag">Practitioner book |</span></td><td>8 Core Drives of motivation, White Hat vs Black Ha...</td><td><span class="tag tag-teal">/octalysis |</span></td></tr>
-    <tr><td>R-003</td><td>MDA — A Formal Approach to Game Design and Game Research</td><td>Robin Hunicke, Marc LeBlanc, Robert Zubek |</td><td><span class="tag">Academic paper |</span></td><td>Game design decomposition, mechanics vs dynamics v...</td><td><span class="tag tag-teal">/mda |</span></td></tr>
-    <tr><td>R-004</td><td>Otherwise Labs Check-in — Explicit &amp; Systematic Instruction</td><td>Tyler Ogata, Abigail Garewal, Robert Borges |</td><td><span class="tag">Meeting notes |</span></td><td>Explicit instruction, systematic teaching, 80/20 r...</td><td><span class="tag tag-teal">/explicit-instruction |</span></td></tr>
-    <tr><td>R-005</td><td>WRS Lesson Plan Poster</td><td>Wilson Reading System |</td><td><span class="tag">Reference poster / infographic |</span></td><td>Lesson plan structure, 10-step lesson sequence, re...</td><td><span class="tag tag-teal">Added to /explicit-instruction |</span></td></tr>
-    <tr><td>?</td><td></td><td>|</td><td><span class="tag">[Academic paper / Textbook / Practitioner book / Article / Video / Talk] |</span></td><td>[Comma-separated keywords] |</td><td><span class="tag tag-teal">[Which /skill was created from it, if any] |</span></td></tr></table></div></div>
+<!-- Resources -->
+<div class="section"><div class="section-title">Research Sources (6)</div><div class="table-wrap"><table><tr><th>ID</th><th>Title</th><th>Authors</th><th>Type</th><th>Topics</th></tr><tr><td>R-001</td><td>Handbook of Game-Based Learning</td><td>Jan L. Plass, Richard E. Mayer, Bruce D. Homer |</td><td><span class="tag">Academic textbook |</span></td><td>Cognitive load, feedback design, motivation (SDT),...</td></tr>
+      <tr><td>R-002</td><td>Actionable Gamification — Beyond Points, Badges, and Leaderboards</td><td>Yu-kai Chou |</td><td><span class="tag">Practitioner book |</span></td><td>8 Core Drives of motivation, White Hat vs Black Ha...</td></tr>
+      <tr><td>R-003</td><td>MDA — A Formal Approach to Game Design and Game Research</td><td>Robin Hunicke, Marc LeBlanc, Robert Zubek |</td><td><span class="tag">Academic paper |</span></td><td>Game design decomposition, mechanics vs dynamics v...</td></tr>
+      <tr><td>R-004</td><td>Otherwise Labs Check-in — Explicit &amp; Systematic Instruction</td><td>Tyler Ogata, Abigail Garewal, Robert Borges |</td><td><span class="tag">Meeting notes |</span></td><td>Explicit instruction, systematic teaching, 80/20 r...</td></tr>
+      <tr><td>R-005</td><td>WRS Lesson Plan Poster</td><td>Wilson Reading System |</td><td><span class="tag">Reference poster / infographic |</span></td><td>Lesson plan structure, 10-step lesson sequence, re...</td></tr>
+      <tr><td>?</td><td></td><td>|</td><td><span class="tag">[Academic paper / Textbook / Practitioner book / Article / Video / Talk] |</span></td><td>[Comma-separated keywords] |</td></tr></table></div></div>
 
-<div class='section'><div class='section-title'>Decision Log (7)</div><div class='table-wrap'><table><tr><th>ID</th><th>Decision</th><th>Domain</th><th>Date</th><th>Status</th></tr><tr><td>DEC-001</td><td>Garden overworld as hub</td><td>Overworld</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
-    <tr><td>DEC-002</td><td>Plants pause but never die</td><td>Overworld</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
-    <tr><td>DEC-003</td><td>Learn &amp; Practice two-phase game structure</td><td>Mini-games</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
-    <tr><td>DEC-004</td><td>3-tier hint escalation replaces lives</td><td>Mini-games</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
-    <tr><td>DEC-005</td><td>Cozy pixel-to-illustrated aesthetic (Stardew Valley / PvZ)</td><td>Brand</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
-    <tr><td>DEC-006</td><td>Seeds + Sunshine dual currency</td><td>Overworld</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
-    <tr><td>DEC-007</td><td>One literacy skill per game</td><td>Curriculum</td><td>2026-04-13</td><td><span class="status status-done">Active</span></td></tr></table></div></div>
+<!-- Decisions -->
+<div class="section"><div class="section-title">Decision Log (7)</div><div class="table-wrap"><table><tr><th>ID</th><th>Decision</th><th>Domain</th><th>Date</th><th>Status</th></tr><tr><td>DEC-001</td><td>Garden overworld as hub</td><td>Overworld</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
+      <tr><td>DEC-002</td><td>Plants pause but never die</td><td>Overworld</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
+      <tr><td>DEC-003</td><td>Learn &amp; Practice two-phase game structure</td><td>Mini-games</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
+      <tr><td>DEC-004</td><td>3-tier hint escalation replaces lives</td><td>Mini-games</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
+      <tr><td>DEC-005</td><td>Cozy pixel-to-illustrated aesthetic (Stardew Valley / PvZ)</td><td>Brand</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
+      <tr><td>DEC-006</td><td>Seeds + Sunshine dual currency</td><td>Overworld</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
+      <tr><td>DEC-007</td><td>One literacy skill per game</td><td>Curriculum</td><td>2026-04-13</td><td><span class="status status-done">Active</span></td></tr></table></div></div>
 
 </main>
-<footer>OL Prototypes · Auto-generated by build-hub.py</footer>
+<footer>Otherwise Labs · Auto-generated</footer>
+
+<script>
+function toggleProfile(id){
+  document.getElementById(id).classList.toggle('open');
+}
+</script>
 </body>
 </html>

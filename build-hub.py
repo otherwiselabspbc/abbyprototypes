@@ -55,7 +55,7 @@ def scan_skills():
             dm = re.search(r'description:\s*(.+)', fm.group(1))
             if nm: name = nm.group(1).strip()
             if dm: desc = dm.group(1).strip()
-        skills.append(dict(dir=d, name=name, description=desc, path=f'.claude/skills/{d}/SKILL.md'))
+        skills.append(dict(dir=d, name=name, description=desc))
     return skills
 
 def scan_decisions():
@@ -82,8 +82,7 @@ def scan_resources():
     blocks = re.split(r'\n### R-', content)[1:]
     res = []
     for block in blocks:
-        lines = block.strip().split('\n')
-        im = re.match(r'^(\d+):\s*(.+)', lines[0] if lines else '')
+        im = re.match(r'^(\d+):\s*(.+)', block.strip().split('\n')[0])
         rid = f'R-{im.group(1)}' if im else '?'
         title = im.group(2).strip() if im else ''
         def grab(key):
@@ -96,12 +95,12 @@ def scan_resources():
 def scan_docs():
     docs = []
     if os.path.isfile(os.path.join(ROOT, 'game vision.md')):
-        docs.append(dict(file='game vision.md', title='Product Vision', desc='Core concept, three-phase roadmap, design principles.'))
+        docs.append(dict(title='Product Vision', desc='Core concept, three-phase roadmap, design principles.'))
     decs = scan_decisions()
     if os.path.isfile(os.path.join(ROOT, 'decisions.md')):
-        docs.append(dict(file='decisions.md', title='Decision Log', desc=f'{len(decs)} design decisions with rationale and evidence.'))
+        docs.append(dict(title='Decision Log', desc=f'{len(decs)} design decisions with rationale and evidence.'))
     if os.path.isfile(os.path.join(ROOT, 'Reading Exercise to Game Mechanic.csv')):
-        docs.append(dict(file='Reading Exercise to Game Mechanic.csv', title='Curriculum Map', desc='~50 Orton-Gillingham activities with modalities and sample items.'))
+        docs.append(dict(title='Curriculum Map', desc='~50 Orton-Gillingham activities with modalities and sample items.'))
     return docs
 
 # ═══ GENERATE ═══
@@ -113,41 +112,35 @@ def generate():
     resources = scan_resources()
     now = datetime.now().strftime('%B %d, %Y')
 
-    # Game rows — no clickable links, "In Progress" default status
-    game_rows = '\n    '.join(
-        f'<tr><td>{esc(g["num"])}</td>'
-        f'<td>{esc(g["title"])}</td>'
+    # Abby's game rows (no links by default)
+    abby_game_rows = '\n          '.join(
+        f'<tr><td>{esc(g["num"])}</td><td>{esc(g["title"])}</td>'
         f'<td>{esc(g["domain"])}</td><td>{esc(g["skill"])}</td>'
         f'<td><span class="status status-wip">In Progress</span></td></tr>'
         for g in games
     )
 
     doc_cards = '\n    '.join(
-        f'''<div class="card">
-      <div class="card-title">{esc(d["title"])}</div>
-      <div class="card-desc">{esc(d["desc"])}</div>
-    </div>''' for d in docs
+        f'<div class="card"><div class="card-title">{esc(d["title"])}</div>'
+        f'<div class="card-desc">{esc(d["desc"])}</div></div>' for d in docs
     )
 
     skill_cards = '\n    '.join(
-        f'''<div class="card">
-      <div class="card-title">{esc(s["name"])}</div>
-      <div class="card-desc">{esc(s["description"][:140])}{"..." if len(s["description"])>140 else ""}</div>
-      <div class="card-meta"><span class="tag tag-teal">/{esc(s["name"])}</span></div>
-    </div>''' for s in skills
+        f'<div class="card"><div class="card-title">{esc(s["name"])}</div>'
+        f'<div class="card-desc">{esc(s["description"][:130])}{"..." if len(s["description"])>130 else ""}</div>'
+        f'<div class="card-meta"><span class="tag tag-teal">/{esc(s["name"])}</span></div></div>'
+        for s in skills
     )
 
-    resource_rows = '\n    '.join(
+    resource_rows = '\n      '.join(
         f'<tr><td>{esc(r["id"])}</td><td>{esc(r["title"])}</td><td>{esc(r["authors"])}</td>'
         f'<td><span class="tag">{esc(r["type"])}</span></td>'
-        f'<td>{esc(r["topics"][:50])}{"..." if len(r["topics"])>50 else ""}</td>'
-        f'<td><span class="tag tag-teal">{esc(r["skill"])}</span></td></tr>'
+        f'<td>{esc(r["topics"][:50])}{"..." if len(r["topics"])>50 else ""}</td></tr>'
         for r in resources
     )
 
-    decision_rows = '\n    '.join(
-        f'<tr><td>{esc(d["id"])}</td>'
-        f'<td>{esc(d["title"])}</td>'
+    decision_rows = '\n      '.join(
+        f'<tr><td>{esc(d["id"])}</td><td>{esc(d["title"])}</td>'
         f'<td>{esc(d["domain"])}</td><td>{esc(d["date"])}</td>'
         f'<td><span class="status status-done">{esc(d["status"])}</span></td></tr>'
         for d in decisions
@@ -158,7 +151,7 @@ def generate():
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OL Prototypes — Project Hub</title>
+<title>Otherwise Labs — Project Hub</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 *{{margin:0;padding:0;box-sizing:border-box}}
@@ -170,27 +163,48 @@ header p{{font-size:14px;color:rgba(255,255,255,0.88);max-width:520px;margin:0 a
 header .meta{{font-size:11px;color:rgba(255,255,255,0.55);margin-top:10px}}
 
 main{{max-width:920px;margin:0 auto;padding:28px 20px}}
-
 .section{{margin-bottom:40px}}
 .section-title{{font-family:'Lora',serif;font-size:20px;font-weight:700;color:#3a3a3a;
   margin-bottom:16px;padding-bottom:10px;border-bottom:3px solid #ed6a5a}}
 
-/* Storyboard preview */
-.storyboard-link{{display:block;background:#f4f1bb;border:2px solid #e0dda0;border-radius:14px;
+/* Storyboard link */
+.sb-link{{display:block;background:#f4f1bb;border:2px solid #e0dda0;border-radius:14px;
   padding:24px;text-decoration:none;color:#2a2a2a;transition:all .15s;margin-bottom:32px}}
-.storyboard-link:hover{{border-color:#ed6a5a;box-shadow:0 4px 16px rgba(237,106,90,0.12)}}
+.sb-link:hover{{border-color:#ed6a5a;box-shadow:0 4px 16px rgba(237,106,90,0.12)}}
 .sb-head{{display:flex;align-items:center;gap:14px;margin-bottom:10px}}
 .sb-icon{{font-size:28px}}
 .sb-title{{font-family:'Lora',serif;font-size:18px;font-weight:700;color:#3a3a3a}}
 .sb-desc{{font-size:13px;color:#5a5a5a;line-height:1.55}}
-.sb-domains{{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}}
-.sb-domain{{font-size:10px;font-weight:600;padding:3px 10px;border-radius:10px;
+.sb-pills{{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}}
+.sb-pill{{font-size:10px;font-weight:600;padding:3px 10px;border-radius:10px;
   background:rgba(155,193,188,0.3);color:#4a6a66}}
+
+/* Team profiles */
+.profiles{{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px}}
+.profile{{flex:1;min-width:260px;background:#fff;border:2px solid #eae8e2;border-radius:14px;overflow:hidden}}
+.profile-header{{padding:16px 18px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+  -webkit-tap-highlight-color:transparent}}
+.profile-header:hover{{background:#faf8f2}}
+.profile-info{{display:flex;align-items:center;gap:12px}}
+.profile-avatar{{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;color:#fff}}
+.profile-name{{font-family:'Lora',serif;font-size:15px;font-weight:700;color:#3a3a3a}}
+.profile-role{{font-size:10px;color:#999}}
+.profile-arrow{{font-size:14px;color:#ccc;transition:transform .2s}}
+.profile.open .profile-arrow{{transform:rotate(180deg)}}
+.profile-body{{max-height:0;overflow:hidden;transition:max-height .35s ease-out}}
+.profile.open .profile-body{{max-height:2000px;transition:max-height .5s ease-in}}
+.profile-content{{padding:0 18px 18px;border-top:1px solid #f0ede8}}
+.profile-empty{{font-size:12px;color:#bbb;padding:20px 0;text-align:center;font-style:italic}}
+.profile-table{{width:100%;border-collapse:collapse;font-size:11px;margin-top:12px}}
+.profile-table th{{text-align:left;padding:8px 10px;background:#ed6a5a;color:#fff;font-weight:600;
+  font-size:9px;text-transform:uppercase;letter-spacing:1px;font-family:'Lora',serif}}
+.profile-table td{{padding:8px 10px;border-bottom:1px solid #f0ede8;color:#3a3a3a}}
+.profile-count{{font-size:10px;color:#999;font-weight:600}}
 
 /* Cards */
 .cards{{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}}
-.card{{background:#fff;border-radius:12px;padding:18px;border:2px solid #eae8e2;
-  transition:border-color .15s,box-shadow .15s}}
+.card{{background:#fff;border-radius:12px;padding:18px;border:2px solid #eae8e2;transition:border-color .15s,box-shadow .15s}}
 .card:hover{{border-color:#9bc1bc;box-shadow:0 3px 12px rgba(155,193,188,0.15)}}
 .card-title{{font-family:'Lora',serif;font-weight:700;font-size:15px;color:#3a3a3a;margin-bottom:5px}}
 .card-desc{{font-size:12px;color:#6a6a6a;line-height:1.55}}
@@ -198,7 +212,6 @@ main{{max-width:920px;margin:0 auto;padding:28px 20px}}
 
 .tag{{background:#f4f1bb;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;color:#7a7040}}
 .tag-teal{{background:rgba(155,193,188,0.25);color:#4a6a66}}
-.tag-red{{background:rgba(237,106,90,0.12);color:#c04a3a}}
 
 /* Tables */
 .table-wrap{{overflow-x:auto}}
@@ -208,7 +221,6 @@ th{{text-align:left;padding:10px 12px;background:#ed6a5a;color:#fff;font-weight:
 td{{padding:10px 12px;border-bottom:1px solid #eae8e2;color:#3a3a3a}}
 tr:hover td{{background:#faf8f2}}
 
-/* Status badges */
 .status{{display:inline-block;padding:3px 10px;border-radius:8px;font-size:9px;
   font-weight:700;text-transform:uppercase;letter-spacing:1px}}
 .status-done{{background:rgba(155,193,188,0.25);color:#4a6a66}}
@@ -219,37 +231,99 @@ footer{{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lo
 </head>
 <body>
 <header>
-  <h1>OL Prototypes</h1>
-  <p>An RPG that adapts evidence-based dyslexia tutoring into playful game mechanics. Mini-games, world-building, and a curriculum backbone that makes learning feel like an adventure.</p>
-  <div class="meta">Last built: {esc(now)} · {len(games)} games · {len(skills)} skills · {len(decisions)} decisions · {len(resources)} resources</div>
+  <h1>Otherwise Labs</h1>
+  <p>An RPG that adapts evidence-based dyslexia tutoring into playful game mechanics.</p>
+  <div class="meta">Last updated: {esc(now)} · {len(games)} prototypes · {len(skills)} skills · {len(decisions)} decisions</div>
 </header>
 <main>
 
-<!-- Storyboard Link -->
-<a class="storyboard-link" href="storyboard.html">
+<!-- Storyboard -->
+<a class="sb-link" href="storyboard.html">
   <div class="sb-head">
     <span class="sb-icon">🗺️</span>
     <span class="sb-title">Game Storyboard</span>
   </div>
-  <div class="sb-desc">Interactive zoomable board showing the full curriculum flow. Click to expand domains, lessons, and phases. Click any game to see its beat-by-beat storyboard with editable notes.</div>
-  <div class="sb-domains">
-    <span class="sb-domain">Print Concepts</span>
-    <span class="sb-domain">Letter Knowledge</span>
-    <span class="sb-domain">Phonological Awareness</span>
-    <span class="sb-domain">Alphabetic Principle</span>
-    <span class="sb-domain">Decoding</span>
-    <span class="sb-domain">Encoding</span>
-    <span class="sb-domain">Comprehension</span>
+  <div class="sb-desc">Interactive zoomable board showing the full curriculum flow. Click domains to expand lessons, click games to see beat-by-beat storyboards with editable notes.</div>
+  <div class="sb-pills">
+    <span class="sb-pill">Print Concepts</span>
+    <span class="sb-pill">Letter Knowledge</span>
+    <span class="sb-pill">Phonological Awareness</span>
+    <span class="sb-pill">Alphabetic Principle</span>
+    <span class="sb-pill">Decoding</span>
+    <span class="sb-pill">Encoding</span>
+    <span class="sb-pill">Comprehension</span>
   </div>
 </a>
 
-<!-- Mini-Games -->
+<!-- Team Profiles -->
 <div class="section">
-  <div class="section-title">Mini-Games ({len(games)})</div>
-  <div class="table-wrap"><table>
-    <tr><th>#</th><th>Game</th><th>Domain</th><th>Skill</th><th>Status</th></tr>
-    {game_rows}
-  </table></div>
+  <div class="section-title">Team</div>
+  <div class="profiles">
+
+    <!-- Abby -->
+    <div class="profile" id="profile-abby">
+      <div class="profile-header" onclick="toggleProfile('profile-abby')">
+        <div class="profile-info">
+          <div class="profile-avatar" style="background:#ed6a5a">A</div>
+          <div>
+            <div class="profile-name">Abby</div>
+            <div class="profile-role">Game Design · Prototyping</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="profile-count">{len(games)} prototypes</span>
+          <span class="profile-arrow">▾</span>
+        </div>
+      </div>
+      <div class="profile-body">
+        <div class="profile-content">
+          <table class="profile-table">
+            <tr><th>#</th><th>Prototype</th><th>Domain</th><th>Skill</th><th>Status</th></tr>
+            {abby_game_rows}
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bob -->
+    <div class="profile" id="profile-bob">
+      <div class="profile-header" onclick="toggleProfile('profile-bob')">
+        <div class="profile-info">
+          <div class="profile-avatar" style="background:#9bc1bc">B</div>
+          <div>
+            <div class="profile-name">Bob</div>
+            <div class="profile-role">—</div>
+          </div>
+        </div>
+        <span class="profile-arrow">▾</span>
+      </div>
+      <div class="profile-body">
+        <div class="profile-content">
+          <div class="profile-empty">No prototypes yet</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tyler -->
+    <div class="profile" id="profile-tyler">
+      <div class="profile-header" onclick="toggleProfile('profile-tyler')">
+        <div class="profile-info">
+          <div class="profile-avatar" style="background:#f4c952">T</div>
+          <div>
+            <div class="profile-name">Tyler</div>
+            <div class="profile-role">Curriculum · Instruction</div>
+          </div>
+        </div>
+        <span class="profile-arrow">▾</span>
+      </div>
+      <div class="profile-body">
+        <div class="profile-content">
+          <div class="profile-empty">No prototypes yet</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <!-- Documents -->
@@ -264,12 +338,20 @@ footer{{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lo
   <div class="cards">{skill_cards}</div>
 </div>
 
-{"" if not resources else "<div class='section'><div class='section-title'>Research Sources ("+str(len(resources))+")</div><div class='table-wrap'><table><tr><th>ID</th><th>Title</th><th>Authors</th><th>Type</th><th>Topics</th><th>Skill</th></tr>"+resource_rows+"</table></div></div>"}
+<!-- Resources -->
+{"" if not resources else '<div class="section"><div class="section-title">Research Sources ('+str(len(resources))+')</div><div class="table-wrap"><table><tr><th>ID</th><th>Title</th><th>Authors</th><th>Type</th><th>Topics</th></tr>'+resource_rows+'</table></div></div>'}
 
-{"" if not decisions else "<div class='section'><div class='section-title'>Decision Log ("+str(len(decisions))+")</div><div class='table-wrap'><table><tr><th>ID</th><th>Decision</th><th>Domain</th><th>Date</th><th>Status</th></tr>"+decision_rows+"</table></div></div>"}
+<!-- Decisions -->
+{"" if not decisions else '<div class="section"><div class="section-title">Decision Log ('+str(len(decisions))+')</div><div class="table-wrap"><table><tr><th>ID</th><th>Decision</th><th>Domain</th><th>Date</th><th>Status</th></tr>'+decision_rows+'</table></div></div>'}
 
 </main>
-<footer>OL Prototypes · Auto-generated by build-hub.py</footer>
+<footer>Otherwise Labs · Auto-generated</footer>
+
+<script>
+function toggleProfile(id){{
+  document.getElementById(id).classList.toggle('open');
+}}
+</script>
 </body>
 </html>'''
 
