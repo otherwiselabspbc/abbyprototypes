@@ -7,95 +7,99 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#1a1a2e;overflow:hidden;font-family:'Inter',sans-serif;height:100vh;width:100vw;color:#e0dce8}
+body{background:#f5f3f0;overflow:hidden;font-family:'Inter',sans-serif;height:100vh;width:100vw;color:#2a2a3a}
 
 /* Toolbar */
 #toolbar{position:fixed;top:0;left:0;right:0;height:48px;z-index:100;
-  background:rgba(26,26,46,0.95);border-bottom:1px solid rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.95);border-bottom:1px solid #e0ddd8;
   display:flex;align-items:center;padding:0 16px;gap:16px;backdrop-filter:blur(8px)}
-#toolbar h1{font-size:14px;font-weight:700;color:#a78bfa;letter-spacing:1px}
-.tb-sep{width:1px;height:24px;background:rgba(255,255,255,0.08)}
-.tb-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
-  border-radius:6px;padding:6px 12px;font-size:11px;font-weight:600;color:#a0a0b8;
+#toolbar h1{font-size:14px;font-weight:700;color:#6d5cae;letter-spacing:1px}
+.tb-sep{width:1px;height:24px;background:#e0ddd8}
+.tb-btn{background:#fff;border:1px solid #d8d5d0;
+  border-radius:6px;padding:6px 12px;font-size:11px;font-weight:600;color:#6a6a7a;
   cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
-.tb-btn:hover{background:rgba(255,255,255,0.1);color:#fff}
-#zoom-label{font-size:11px;color:#666;min-width:50px;text-align:center}
-.tb-help{font-size:10px;color:#555;margin-left:auto}
+.tb-btn:hover{background:#f0eef8;color:#5a4a9a;border-color:#c0bcd0}
+#zoom-label{font-size:11px;color:#8a8a9a;min-width:50px;text-align:center}
+.tb-help{font-size:10px;color:#aaa;margin-left:auto}
 
 /* Canvas area */
-#viewport{position:fixed;top:48px;left:0;right:0;bottom:0;overflow:hidden;cursor:grab}
+#viewport{position:fixed;top:48px;left:0;right:0;bottom:0;overflow:hidden;cursor:grab;
+  background:#f5f3f0;
+  background-image:radial-gradient(circle,#e8e5e0 1px,transparent 1px);
+  background-size:24px 24px}
 #viewport:active{cursor:grabbing}
 #board{position:absolute;transform-origin:0 0;will-change:transform}
 
 /* Domain cards */
 .domain{
-  position:absolute;width:240px;
-  background:rgba(30,28,50,0.95);border:2px solid var(--domain-color,#555);
-  border-radius:16px;padding:20px;cursor:pointer;
+  position:absolute;width:260px;
+  background:#fff;border:2px solid var(--domain-color,#ccc);
+  border-radius:14px;padding:20px;cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
   transition:box-shadow .2s;user-select:none}
-.domain:hover{box-shadow:0 0 20px var(--domain-glow,rgba(100,100,100,0.2))}
+.domain:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1)}
 .domain-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.domain-num{width:28px;height:28px;border-radius:50%;background:var(--domain-color,#555);
+.domain-num{width:28px;height:28px;border-radius:50%;background:var(--domain-color,#ccc);
   display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff}
-.domain-title{font-size:14px;font-weight:700;color:#fff}
-.domain-sub{font-size:11px;color:#888;line-height:1.5;margin-bottom:10px}
-.domain-meta{font-size:10px;color:#555;display:flex;gap:8px}
-.domain-tag{background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:10px}
-.domain-expand{font-size:10px;color:var(--domain-color,#888);margin-top:10px;
+.domain-title{font-size:14px;font-weight:700;color:#2a2a3a}
+.domain-sub{font-size:11px;color:#7a7a8a;line-height:1.5;margin-bottom:10px}
+.domain-meta{font-size:10px;color:#9a9aa0;display:flex;gap:8px}
+.domain-tag{background:#f5f3f0;padding:2px 8px;border-radius:10px;color:#7a7a8a}
+.domain-expand{font-size:10px;color:var(--domain-color,#999);margin-top:10px;
   font-weight:600;letter-spacing:1px;text-transform:uppercase}
 
 /* Lesson cards */
 .lesson{
-  position:absolute;width:200px;
-  background:rgba(26,24,44,0.95);border:2px solid rgba(255,255,255,0.08);
+  position:absolute;width:220px;
+  background:#fff;border:2px solid #e8e5e0;
   border-radius:12px;padding:14px;cursor:pointer;
-  transition:all .2s;user-select:none;opacity:0;transform:translateY(10px)}
+  box-shadow:0 1px 4px rgba(0,0,0,0.04);
+  transition:all .25s;user-select:none;opacity:0;transform:translateY(8px)}
 .lesson.show{opacity:1;transform:translateY(0)}
-.lesson:hover{border-color:var(--domain-color,#555);box-shadow:0 0 12px var(--domain-glow,rgba(100,100,100,0.1))}
-.lesson-title{font-size:12px;font-weight:700;color:#ddd;margin-bottom:4px}
-.lesson-desc{font-size:10px;color:#777;line-height:1.5;margin-bottom:6px}
+.lesson:hover{border-color:var(--domain-color,#ccc);box-shadow:0 2px 12px rgba(0,0,0,0.08)}
+.lesson-title{font-size:12px;font-weight:700;color:#2a2a3a;margin-bottom:4px}
+.lesson-desc{font-size:10px;color:#8a8a9a;line-height:1.5;margin-bottom:8px}
 .lesson-status{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
   padding:2px 8px;border-radius:8px;display:inline-block}
-.status-concept{background:rgba(168,139,250,0.15);color:#a78bfa}
-.status-built{background:rgba(94,199,122,0.15);color:#5ec77a}
-.status-planned{background:rgba(245,196,105,0.15);color:#f5c469}
-.lesson-expand{font-size:9px;color:#555;margin-top:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.status-concept{background:#f0eef8;color:#8b7ac0}
+.status-built{background:#e8f5ed;color:#4a9a6a}
+.status-planned{background:#fef5e0;color:#b89030}
+.lesson-expand{font-size:9px;color:#aaa;margin-top:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
 
 /* Phase cards */
 .phase{
-  position:absolute;width:170px;
-  background:rgba(22,20,40,0.95);border:2px solid rgba(255,255,255,0.06);
+  position:absolute;width:180px;
+  background:#fff;border:2px solid #eeebe8;
   border-radius:10px;padding:12px;
-  transition:all .2s;opacity:0;transform:scale(0.9);user-select:none}
+  box-shadow:0 1px 4px rgba(0,0,0,0.03);
+  transition:all .25s;opacity:0;transform:scale(0.95);user-select:none}
 .phase.show{opacity:1;transform:scale(1)}
-.phase-label{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
-  margin-bottom:6px}
-.phase-teach{color:#a78bfa}
-.phase-guided{color:#f5c469}
-.phase-sprint{color:#5ec77a}
-.phase-wrapup{color:#6fb3f2}
-.phase-title{font-size:11px;font-weight:600;color:#ccc;margin-bottom:4px}
-.phase-desc{font-size:9px;color:#666;line-height:1.5}
-.phase-game{font-size:10px;color:#888;margin-top:6px;font-style:italic}
-.phase-notes{width:100%;margin-top:8px;background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:6px 8px;
-  font-size:9px;color:#888;font-family:'Inter',sans-serif;resize:vertical;min-height:32px;
+.phase-label{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.phase-teach{color:#7c6bb5}
+.phase-guided{color:#c89030}
+.phase-sprint{color:#4a9a6a}
+.phase-wrapup{color:#4a8ab5}
+.phase-title{font-size:11px;font-weight:600;color:#3a3a4a;margin-bottom:4px}
+.phase-desc{font-size:9px;color:#8a8a9a;line-height:1.5}
+.phase-game{font-size:10px;color:#6d5cae;margin-top:6px;font-weight:600}
+.phase-notes{width:100%;margin-top:8px;background:#faf9f8;
+  border:1px solid #e8e5e0;border-radius:6px;padding:6px 8px;
+  font-size:9px;color:#6a6a7a;font-family:'Inter',sans-serif;resize:vertical;min-height:32px;
   outline:none}
-.phase-notes:focus{border-color:rgba(139,92,246,0.4);color:#aaa}
-.phase-notes::placeholder{color:#444}
+.phase-notes:focus{border-color:#b0a8d0;color:#3a3a4a}
+.phase-notes::placeholder{color:#c0c0c8}
 
-/* Connectors (SVG) */
+/* Connectors */
 #connectors{position:absolute;top:0;left:0;pointer-events:none;z-index:-1}
-.connector{stroke:rgba(255,255,255,0.08);stroke-width:2;fill:none}
-.connector-domain{stroke:rgba(139,92,246,0.3);stroke-width:2;stroke-dasharray:8 4}
-.connector-lesson{stroke:rgba(255,255,255,0.06);stroke-width:1.5}
+.connector-domain{stroke:#d0cdc8;stroke-width:2;fill:none;stroke-dasharray:8 4}
+.connector-lesson{stroke:#e0ddd8;stroke-width:1.5;fill:none}
 
 /* Minimap */
-#minimap{position:fixed;bottom:16px;right:16px;width:180px;height:100px;
-  background:rgba(20,18,36,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:8px;
-  z-index:100;overflow:hidden}
-#minimap-view{position:absolute;border:1px solid rgba(139,92,246,0.5);background:rgba(139,92,246,0.08);
-  pointer-events:none}
+#minimap{position:fixed;bottom:16px;right:16px;width:200px;height:110px;
+  background:rgba(255,255,255,0.95);border:1px solid #e0ddd8;border-radius:10px;
+  z-index:100;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+#minimap-view{position:absolute;border:2px solid #6d5cae;background:rgba(109,92,174,0.06);
+  border-radius:2px;pointer-events:none}
 .mm-domain{position:absolute;border-radius:2px}
 </style>
 </head>
@@ -107,7 +111,7 @@ body{background:#1a1a2e;overflow:hidden;font-family:'Inter',sans-serif;height:10
   <button class="tb-btn" onclick="zoomIn()">Zoom +</button>
   <button class="tb-btn" onclick="zoomOut()">Zoom −</button>
   <button class="tb-btn" onclick="resetView()">Reset</button>
-  <span id="zoom-label">100%</span>
+  <span id="zoom-label">85%</span>
   <div class="tb-sep"></div>
   <button class="tb-btn" onclick="collapseAll()">Collapse All</button>
   <button class="tb-btn" onclick="expandAll()">Expand All</button>
@@ -115,7 +119,7 @@ body{background:#1a1a2e;overflow:hidden;font-family:'Inter',sans-serif;height:10
 </div>
 
 <div id="viewport">
-  <svg id="connectors" width="8000" height="5000"></svg>
+  <svg id="connectors" width="12000" height="8000"></svg>
   <div id="board"></div>
 </div>
 
@@ -125,169 +129,190 @@ body{background:#1a1a2e;overflow:hidden;font-family:'Inter',sans-serif;height:10
 'use strict';
 
 // ══════════════════════════════════════
-// STORYBOARD DATA
+// STORYBOARD DATA (same as before)
 // ══════════════════════════════════════
 const DOMAINS = [
-  { id:'print', num:1, title:'Print Concepts', color:'#6b7280', sub:'Words go left to right. Letters make up words. Sentences make up stories.',
+  { id:'print', num:1, title:'Print Concepts', color:'#7a8a9a', sub:'Words go left to right. Letters make up words. Sentences make up stories.',
     lessons:[
       {title:'Lesson 1: Environmental Print', desc:'Recognize meaningful signs, symbols, and words in context.', status:'concept',
         phases:[
-          {type:'teach',title:'What is print?',desc:'Show signs (STOP, EXIT, arrows). Explain: these symbols have meaning.',notes:''},
-          {type:'guided',title:'Find the signs',desc:'Present signs mixed with non-signs. Student identifies which have meaning.',notes:''},
-          {type:'sprint',title:'Sign Match',desc:'Rapid matching: tap the sign that matches the spoken word.',game:'',notes:''},
-          {type:'wrapup',title:'Review',desc:'Recap: print carries meaning. Every sign tells you something.',notes:''},
+          {type:'teach',title:'What is print?',desc:'Show signs (STOP, EXIT). These symbols have meaning.',notes:''},
+          {type:'guided',title:'Find the signs',desc:'Student identifies which symbols carry meaning.',notes:''},
+          {type:'sprint',title:'Sign Match',desc:'Tap the sign that matches the spoken word.',game:'',notes:''},
+          {type:'wrapup',title:'Review',desc:'Print carries meaning.',notes:''},
         ]},
-      {title:'Lesson 2: Book Handling', desc:'Pages turn left to right. Words are read top to bottom.', status:'concept',
+      {title:'Lesson 2: Book Handling', desc:'Pages turn left to right. Top to bottom.', status:'concept',
         phases:[
-          {type:'teach',title:'How books work',desc:'Show a book. Point: cover, pages, left-to-right, top-to-bottom.',notes:''},
-          {type:'guided',title:'Page navigator',desc:'Student swipes pages in correct direction with guidance.',notes:''},
-          {type:'sprint',title:'Direction Dash',desc:'Arrows appear — swipe in the reading direction quickly.',game:'',notes:''},
-          {type:'wrapup',title:'Review',desc:'You know how to navigate a book!',notes:''},
+          {type:'teach',title:'How books work',desc:'Cover, pages, left-to-right, top-to-bottom.',notes:''},
+          {type:'guided',title:'Page navigator',desc:'Swipe pages in correct direction.',notes:''},
+          {type:'sprint',title:'Direction Dash',desc:'Swipe in the reading direction.',game:'',notes:''},
+          {type:'wrapup',title:'Review',desc:'You know how books work!',notes:''},
         ]},
     ]},
-  { id:'letter', num:2, title:'Letter Knowledge', color:'#f59e0b', sub:'Every letter has a name, a shape, and a sound.',
+  { id:'letter', num:2, title:'Letter Knowledge', color:'#d4930a', sub:'Every letter has a name, a shape, and a sound.',
     lessons:[
-      {title:'Lesson 1: Letter Names (A-M)', desc:'Recognize and name the first 13 letters.', status:'built',
+      {title:'Lesson 1: Letter Names', desc:'Recognize and name letters.', status:'built',
         phases:[
-          {type:'teach',title:'Meet the letters',desc:'Show each letter. Say its name. "This is A. This is B."',notes:'Block Breaker teaches hear-name-tap-letter'},
-          {type:'guided',title:'Name that letter',desc:'Hear a name, find it among 3-4 options with hints.',notes:''},
-          {type:'sprint',title:'Block Breaker',desc:'Hear the name, smash the right block.',game:'game-04-block-breaker.html',notes:'Built — uses hear name, tap letter mechanic'},
-          {type:'wrapup',title:'Review',desc:'You know 13 letter names!',notes:''},
+          {type:'teach',title:'Meet the letters',desc:'Show each letter. Say its name.',notes:''},
+          {type:'guided',title:'Name that letter',desc:'Hear a name, find it among options.',notes:''},
+          {type:'sprint',title:'Block Breaker',desc:'Hear name, smash the right block.',game:'game-04-block-breaker.html',notes:'Built'},
+          {type:'wrapup',title:'Review',desc:'You know letter names!',notes:''},
         ]},
       {title:'Lesson 2: Letter Shapes', desc:'Trace and recognize letter forms.', status:'built',
         phases:[
-          {type:'teach',title:'Letter shapes',desc:'Show each letter with dotted guide. "L goes down and across."',notes:''},
-          {type:'guided',title:'Guided tracing',desc:'Trace with heavy scaffolding — dots, numbered strokes.',notes:''},
-          {type:'sprint',title:'Seed Script',desc:'Trace letters on soil beds. Sprout grows as you trace.',game:'game-05-seed-script.html',notes:'Built — letter tracing mechanic'},
-          {type:'wrapup',title:'Review',desc:'You can trace letter shapes!',notes:''},
+          {type:'teach',title:'Letter shapes',desc:'"L goes down and across."',notes:''},
+          {type:'guided',title:'Guided tracing',desc:'Trace with dots and numbered strokes.',notes:''},
+          {type:'sprint',title:'Seed Script',desc:'Trace letters on soil beds.',game:'game-05-seed-script.html',notes:'Built'},
+          {type:'wrapup',title:'Review',desc:'You can trace letters!',notes:''},
         ]},
       {title:'Lesson 3: Letter Sounds', desc:'Every letter makes a sound.', status:'built',
         phases:[
-          {type:'teach',title:'Sound introduction',desc:'Oracle plays each sound. "S makes /s/, like sun." Rule stated explicitly.',notes:'lesson-letter-sounds.html — full lesson prototype'},
-          {type:'guided',title:'Find the sound',desc:'Hear sound, pick from 3 gems. Hints after 3 seconds.',notes:'Guided phase with hint glow'},
-          {type:'sprint',title:'Enchanted Gems',desc:'Floating gems with letters. Oracle speaks sound. Find the match.',game:'enchanted-harp.html',notes:'Built — phoneme identification'},
-          {type:'wrapup',title:'Review',desc:'You learned 4 letter sounds!',notes:''},
+          {type:'teach',title:'Sound introduction',desc:'"S makes /s/, like sun."',notes:'Full lesson prototype built'},
+          {type:'guided',title:'Find the sound',desc:'Hear sound, pick from gems with hints.',notes:''},
+          {type:'sprint',title:'Enchanted Gems',desc:'Floating gems. Oracle speaks. Find the match.',game:'enchanted-harp.html',notes:'Built'},
+          {type:'wrapup',title:'Review',desc:'You learned letter sounds!',notes:''},
         ]},
     ]},
-  { id:'phonol', num:3, title:'Phonological Awareness', color:'#10b981', sub:'Hear and manipulate the sounds in words.',
+  { id:'phonol', num:3, title:'Phonological Awareness', color:'#2a9a6a', sub:'Hear and manipulate the sounds in words.',
     lessons:[
       {title:'Lesson 1: Rhyme Detection', desc:'Which words end with the same sound?', status:'built',
         phases:[
-          {type:'teach',title:'What is rhyming?',desc:'"Words that end with the same sound rhyme. Cat and hat both end with -at."',notes:''},
-          {type:'guided',title:'Find the rhyme',desc:'3 words shown. Identify the odd one out with hints.',notes:''},
-          {type:'sprint',title:'Whispering Stones',desc:'4 stones whisper words. Tap the one that doesn\'t rhyme.',game:'game-03-whispering-stones.html',notes:'Built — odd-one-out rhyme detection'},
-          {type:'wrapup',title:'Review',desc:'You can hear rhyming words!',notes:''},
+          {type:'teach',title:'What is rhyming?',desc:'"Cat and hat end with -at. They rhyme."',notes:''},
+          {type:'guided',title:'Find the rhyme',desc:'3 words. Identify the odd one.',notes:''},
+          {type:'sprint',title:'Whispering Stones',desc:'4 stones. Tap the non-rhyming one.',game:'game-03-whispering-stones.html',notes:'Built'},
+          {type:'wrapup',title:'Review',desc:'You hear rhymes!',notes:''},
         ]},
-      {title:'Lesson 2: Syllable Counting', desc:'How many parts does a word have?', status:'built',
+      {title:'Lesson 2: Syllable Counting', desc:'How many parts in a word?', status:'built',
         phases:[
-          {type:'teach',title:'What are syllables?',desc:'"Words are made of parts called syllables. Apple has 2: ap-ple."',notes:''},
-          {type:'guided',title:'Count the parts',desc:'Hear word, see petals bloom per syllable, confirm count.',notes:''},
-          {type:'sprint',title:'Syllable Sprout',desc:'Hear word, tap the number of syllables.',game:'game-06-syllable-sprout.html',notes:'Built — syllable counting'},
-          {type:'wrapup',title:'Review',desc:'You can count syllables!',notes:''},
+          {type:'teach',title:'What are syllables?',desc:'"Apple has 2 parts: ap-ple."',notes:''},
+          {type:'guided',title:'Count the parts',desc:'Hear word, see petals bloom.',notes:''},
+          {type:'sprint',title:'Syllable Sprout',desc:'Hear word, tap the count.',game:'game-06-syllable-sprout.html',notes:'Built'},
+          {type:'wrapup',title:'Review',desc:'You count syllables!',notes:''},
         ]},
-      {title:'Lesson 3: Phoneme Sequence', desc:'Hear and reproduce a sequence of sounds.', status:'concept',
+      {title:'Lesson 3: Phoneme Sequence', desc:'Reproduce a sequence of sounds.', status:'concept',
         phases:[
-          {type:'teach',title:'Sounds in order',desc:'Teach that sounds come in a specific order. Play sequences.',notes:''},
-          {type:'guided',title:'Echo the sounds',desc:'Hear 2-3 sounds, repeat by tapping gems in order.',notes:''},
-          {type:'sprint',title:'Sound Sequence',desc:'Hear sequence, tap gems in the same order.',game:'',notes:'Rune Stones (game-01) covers this but needs explicit instruction phase'},
-          {type:'wrapup',title:'Review',desc:'You can repeat sound sequences!',notes:''},
+          {type:'teach',title:'Sounds in order',desc:'Sounds come in a specific order.',notes:''},
+          {type:'guided',title:'Echo the sounds',desc:'Hear 2-3 sounds, repeat by tapping.',notes:''},
+          {type:'sprint',title:'Sound Sequence',desc:'Hear sequence, tap in order.',game:'',notes:'Needs explicit instruction phase'},
+          {type:'wrapup',title:'Review',desc:'You repeat sequences!',notes:''},
         ]},
-      {title:'Lesson 4: Phoneme Blending', desc:'Blend individual sounds into a word.', status:'concept',
+      {title:'Lesson 4: Phoneme Blending', desc:'Blend sounds into a word.', status:'concept',
         phases:[
-          {type:'teach',title:'Blending sounds',desc:'"When we push sounds together, they make a word. /c/ /a/ /t/ = cat."',notes:''},
-          {type:'guided',title:'Blend with me',desc:'Hear sounds slowly, then blended. Student confirms the word.',notes:''},
-          {type:'sprint',title:'Sound Blender',desc:'Hear separated sounds, pick the blended word from options.',game:'',notes:'Not built yet'},
-          {type:'wrapup',title:'Review',desc:'You can blend sounds into words!',notes:''},
+          {type:'teach',title:'Blending sounds',desc:'"/c/ /a/ /t/ = cat."',notes:''},
+          {type:'guided',title:'Blend with me',desc:'Hear sounds slowly, then blended.',notes:''},
+          {type:'sprint',title:'Sound Blender',desc:'Hear sounds, pick the blended word.',game:'',notes:'Not built'},
+          {type:'wrapup',title:'Review',desc:'You blend sounds!',notes:''},
         ]},
     ]},
-  { id:'alpha', num:4, title:'Alphabetic Principle', color:'#8b5cf6', sub:'Letters and sounds are connected. Knowing one tells you the other.',
+  { id:'alpha', num:4, title:'Alphabetic Principle', color:'#7c5cb8', sub:'Letters and sounds are connected.',
     lessons:[
       {title:'Lesson 1: Sound-to-Letter', desc:'Hear a sound, find its letter.', status:'concept',
         phases:[
-          {type:'teach',title:'Sounds have letters',desc:'"Every sound you hear has a letter that makes it. /s/ is always S."',notes:''},
-          {type:'guided',title:'Match sound to letter',desc:'Oracle plays sound. Student picks letter from options.',notes:''},
-          {type:'sprint',title:'Sound Match',desc:'Rapid sound-to-letter matching.',game:'',notes:'Similar to Enchanted Gems but framed as alphabetic principle'},
-          {type:'wrapup',title:'Review',desc:'You can connect sounds to letters!',notes:''},
+          {type:'teach',title:'Sounds have letters',desc:'"Every sound has a letter. /s/ is S."',notes:''},
+          {type:'guided',title:'Match sound to letter',desc:'Oracle plays, student picks.',notes:''},
+          {type:'sprint',title:'Sound Match',desc:'Rapid sound-to-letter matching.',game:'',notes:''},
+          {type:'wrapup',title:'Review',desc:'Sounds connect to letters!',notes:''},
         ]},
-      {title:'Lesson 2: Letter-to-Sound', desc:'See a letter, say its sound.', status:'concept',
+      {title:'Lesson 2: Letter-to-Sound', desc:'See a letter, know its sound.', status:'concept',
         phases:[
-          {type:'teach',title:'Letters make sounds',desc:'"When you see S, it says /s/. When you see T, it says /t/."',notes:''},
-          {type:'guided',title:'What sound?',desc:'See a letter, pick the correct sound from audio options.',notes:''},
-          {type:'sprint',title:'Sound Cast',desc:'Letters appear — tap to hear their sound, match to target.',game:'',notes:'Reverse direction of Enchanted Gems'},
-          {type:'wrapup',title:'Review',desc:'You know what sound each letter makes!',notes:''},
+          {type:'teach',title:'Letters make sounds',desc:'"See S, it says /s/."',notes:''},
+          {type:'guided',title:'What sound?',desc:'See letter, pick the sound.',notes:''},
+          {type:'sprint',title:'Sound Cast',desc:'Reverse direction matching.',game:'',notes:''},
+          {type:'wrapup',title:'Review',desc:'Letters make sounds!',notes:''},
         ]},
     ]},
-  { id:'decode', num:5, title:'Decoding', color:'#ef4444', sub:'See letters. Say their sounds. Blend into a word. Read.',
+  { id:'decode', num:5, title:'Decoding', color:'#d04a4a', sub:'See letters → say sounds → blend → read.',
     lessons:[
-      {title:'Lesson 1: CVC Words', desc:'Consonant-vowel-consonant words (cat, sun, map).', status:'built',
+      {title:'Lesson 1: CVC Words', desc:'Cat, sun, map — simple words.', status:'built',
         phases:[
-          {type:'teach',title:'Building words',desc:'"Words are made of letters in order. C-A-T says cat."',notes:''},
-          {type:'guided',title:'Build with help',desc:'Hear word, see scrambled letters + distractors. Place with hints.',notes:''},
-          {type:'sprint',title:'Spell Caster',desc:'Hear word, build it from scattered letter tiles before time runs out.',game:'spell-caster.html',notes:'Built — word building from letters'},
-          {type:'wrapup',title:'Review',desc:'You can build words from letters!',notes:''},
+          {type:'teach',title:'Building words',desc:'"C-A-T says cat."',notes:''},
+          {type:'guided',title:'Build with help',desc:'Hear word, place letters with hints.',notes:''},
+          {type:'sprint',title:'Spell Caster',desc:'Build words from scattered tiles.',game:'spell-caster.html',notes:'Built'},
+          {type:'wrapup',title:'Review',desc:'You build words!',notes:''},
         ]},
-      {title:'Lesson 2: Blends & Digraphs', desc:'Two consonants together (st, cl, sh, th).', status:'concept',
+      {title:'Lesson 2: Blends & Digraphs', desc:'ST, CL, SH, TH — letter teams.', status:'concept',
         phases:[
-          {type:'teach',title:'Letters that team up',desc:'"Sometimes two letters work together to make one sound. SH says /sh/."',notes:''},
-          {type:'guided',title:'Spot the team',desc:'Identify blends/digraphs within words with scaffolding.',notes:''},
-          {type:'sprint',title:'Team Spell',desc:'Build words with blends — STOMP, CLAP, SHINE.',game:'',notes:'Extension of Spell Caster with harder words'},
+          {type:'teach',title:'Letters team up',desc:'"SH says /sh/."',notes:''},
+          {type:'guided',title:'Spot the team',desc:'Identify blends within words.',notes:''},
+          {type:'sprint',title:'Team Spell',desc:'Build words with blends.',game:'',notes:'Extension of Spell Caster'},
           {type:'wrapup',title:'Review',desc:'You know letter teams!',notes:''},
         ]},
       {title:'Lesson 3: Sentence Reading', desc:'Read words in context.', status:'concept',
         phases:[
-          {type:'teach',title:'Words make sentences',desc:'"When words go together, they tell a story."',notes:''},
-          {type:'guided',title:'Read with help',desc:'Sentence appears word by word. Audio support available.',notes:''},
-          {type:'sprint',title:'Sentence Sprint',desc:'Read short sentences, answer comprehension taps.',game:'',notes:'Not built yet'},
-          {type:'wrapup',title:'Review',desc:'You can read sentences!',notes:''},
+          {type:'teach',title:'Words make sentences',desc:'Words together tell a story.',notes:''},
+          {type:'guided',title:'Read with help',desc:'Sentence appears word by word.',notes:''},
+          {type:'sprint',title:'Sentence Sprint',desc:'Read and answer comprehension.',game:'',notes:''},
+          {type:'wrapup',title:'Review',desc:'You read sentences!',notes:''},
         ]},
     ]},
-  { id:'encode', num:6, title:'Encoding', color:'#ec4899', sub:'Hear a word. Break it into sounds. Write the letters. Spell.',
+  { id:'encode', num:6, title:'Encoding', color:'#c04a8a', sub:'Hear → segment → write. Spelling.',
     lessons:[
-      {title:'Lesson 1: CVC Spelling', desc:'Hear a word, spell it letter by letter.', status:'concept',
+      {title:'Lesson 1: CVC Spelling', desc:'Hear a word, spell it.', status:'concept',
         phases:[
-          {type:'teach',title:'Spelling is decoding backwards',desc:'"To spell a word, listen to each sound and write its letter."',notes:''},
-          {type:'guided',title:'Spell with help',desc:'Hear word segmented into sounds. Place each letter.',notes:''},
-          {type:'sprint',title:'Spell Writer',desc:'Hear whole word, write it from memory.',game:'',notes:'Not built yet — reverse of Spell Caster'},
-          {type:'wrapup',title:'Review',desc:'You can spell words!',notes:''},
+          {type:'teach',title:'Spelling is decoding backwards',desc:'Listen, write each letter.',notes:''},
+          {type:'guided',title:'Spell with help',desc:'Hear word segmented, place letters.',notes:''},
+          {type:'sprint',title:'Spell Writer',desc:'Hear word, write from memory.',game:'',notes:'Reverse Spell Caster'},
+          {type:'wrapup',title:'Review',desc:'You spell words!',notes:''},
         ]},
       {title:'Lesson 2: Dictation', desc:'Hear a sentence, write it.', status:'concept',
         phases:[
-          {type:'teach',title:'Writing sentences',desc:'"Listen to a sentence. Write each word."',notes:''},
-          {type:'guided',title:'Guided dictation',desc:'Sentence plays. Words scaffolded one at a time.',notes:''},
-          {type:'sprint',title:'Dictation Dash',desc:'Hear sentence, type/drag words in order.',game:'',notes:'Not built yet — WRS Step 8'},
-          {type:'wrapup',title:'Review',desc:'You can write what you hear!',notes:''},
+          {type:'teach',title:'Writing sentences',desc:'Listen to a sentence. Write each word.',notes:''},
+          {type:'guided',title:'Guided dictation',desc:'Sentence plays, words scaffolded.',notes:''},
+          {type:'sprint',title:'Dictation Dash',desc:'Hear sentence, type/drag words.',game:'',notes:'WRS Step 8'},
+          {type:'wrapup',title:'Review',desc:'You write what you hear!',notes:''},
         ]},
     ]},
 ];
 
 // ══════════════════════════════════════
-// LAYOUT
+// LAYOUT — dynamic, avoids overlap
 // ══════════════════════════════════════
-const DOMAIN_X_START = 100;
-const DOMAIN_Y = 100;
-const DOMAIN_GAP = 320;
-const LESSON_Y_OFFSET = 260;
-const LESSON_GAP = 220;
-const PHASE_Y_OFFSET = 240;
-const PHASE_GAP = 200;
+const DOMAIN_X_START = 80;
+const DOMAIN_Y_START = 80;
+const DOMAIN_H_MIN = 160; // minimum domain card height
+const DOMAIN_V_GAP = 40;  // vertical gap between domains
+const LESSON_X_OFFSET = 300; // lessons are to the RIGHT of domain
+const LESSON_V_GAP = 16;
+const LESSON_H = 130; // approximate lesson card height
+const PHASE_X_OFFSET = 260; // phases to the right of lesson
+const PHASE_H_GAP = 16;
+const PHASE_H = 200; // approximate phase card height
 
 const board = document.getElementById('board');
 const svg = document.getElementById('connectors');
-let expanded = {}; // { domainId: true/false }
-let lessonExpanded = {}; // { 'domainId-lessonIdx': true/false }
+let expanded = {};
+let lessonExpanded = {};
+
+function calcDomainHeight(d) {
+  if (!expanded[d.id]) return DOMAIN_H_MIN;
+  let h = 0;
+  d.lessons.forEach((l, li) => {
+    const lkey = d.id + '-' + li;
+    if (lessonExpanded[lkey]) {
+      // Lesson with phases: height = max of (lesson card, 4 phases stacked or side-by-side)
+      h += Math.max(LESSON_H, l.phases.length * (PHASE_H + PHASE_H_GAP)) + LESSON_V_GAP;
+    } else {
+      h += LESSON_H + LESSON_V_GAP;
+    }
+  });
+  return Math.max(DOMAIN_H_MIN, h + 40);
+}
 
 function render() {
   board.innerHTML = '';
   svg.innerHTML = '';
 
+  let curY = DOMAIN_Y_START;
+
   DOMAINS.forEach((d, di) => {
-    const dx = DOMAIN_X_START + di * DOMAIN_GAP;
-    const dy = DOMAIN_Y;
+    const dx = DOMAIN_X_START;
+    const dy = curY;
+    const domainH = calcDomainHeight(d);
 
     // Domain card
     const el = document.createElement('div');
     el.className = 'domain';
-    el.style.cssText = `left:${dx}px;top:${dy}px;--domain-color:${d.color};--domain-glow:${d.color}33`;
+    el.style.cssText = `left:${dx}px;top:${dy}px;--domain-color:${d.color}`;
     el.innerHTML = `
       <div class="domain-header">
         <div class="domain-num">${d.num}</div>
@@ -305,34 +330,30 @@ function render() {
 
     // Domain connector to next
     if (di < DOMAINS.length - 1) {
-      const nx = DOMAIN_X_START + (di + 1) * DOMAIN_GAP;
-      addLine(dx + 240, dy + 60, nx, dy + 60, 'connector-domain');
+      const nextY = curY + domainH + DOMAIN_V_GAP;
+      addLine(dx + 130, dy + DOMAIN_H_MIN, dx + 130, nextY, 'connector-domain');
     }
 
     // Lessons
     if (expanded[d.id]) {
+      let lessonY = dy + 10;
       d.lessons.forEach((l, li) => {
-        const lx = dx - 20;
-        const ly = dy + LESSON_Y_OFFSET + li * LESSON_GAP;
+        const lx = dx + LESSON_X_OFFSET;
+        const ly = lessonY;
         const lkey = d.id + '-' + li;
 
         // Connector domain → lesson
-        addLine(dx + 120, dy + 140, lx + 100, ly, 'connector-lesson');
-        // Connector between lessons
-        if (li > 0) {
-          const prevLy = dy + LESSON_Y_OFFSET + (li - 1) * LESSON_GAP;
-          addLine(lx + 100, prevLy + 120, lx + 100, ly, 'connector-lesson');
-        }
+        addLine(dx + 260, dy + 80, lx, ly + 40, 'connector-lesson');
 
         const lel = document.createElement('div');
         lel.className = 'lesson show';
-        lel.style.cssText = `left:${lx}px;top:${ly}px;--domain-color:${d.color};--domain-glow:${d.color}33;transition-delay:${li * 60}ms`;
+        lel.style.cssText = `left:${lx}px;top:${ly}px;--domain-color:${d.color};transition-delay:${li * 50}ms`;
         const statusClass = l.status === 'built' ? 'status-built' : l.status === 'planned' ? 'status-planned' : 'status-concept';
         lel.innerHTML = `
           <div class="lesson-title">${l.title}</div>
           <div class="lesson-desc">${l.desc}</div>
           <span class="lesson-status ${statusClass}">${l.status}</span>
-          <div class="lesson-expand">${lessonExpanded[lkey] ? '▾ Collapse' : '▸ Show phases'}</div>
+          <div class="lesson-expand">${lessonExpanded[lkey] ? '▾ Collapse phases' : '▸ Show phases'}</div>
         `;
         lel.onclick = (e) => { e.stopPropagation(); toggleLesson(lkey); };
         board.appendChild(lel);
@@ -340,16 +361,20 @@ function render() {
         // Phases
         if (lessonExpanded[lkey]) {
           l.phases.forEach((p, pi) => {
-            const px = lx + 230 + pi * PHASE_GAP;
-            const py = ly + 20;
+            const px = lx + PHASE_X_OFFSET;
+            const py = ly + pi * (PHASE_H + PHASE_H_GAP);
 
-            // Connector
-            if (pi === 0) addLine(lx + 200, ly + 60, px, py + 40, 'connector-lesson');
-            if (pi > 0) addLine(px - PHASE_GAP + 170, py + 40, px, py + 40, 'connector-lesson');
+            // Connector lesson → first phase
+            if (pi === 0) addLine(lx + 220, ly + 50, px, py + 30, 'connector-lesson');
+            // Connector between phases
+            if (pi > 0) {
+              const prevPy = ly + (pi - 1) * (PHASE_H + PHASE_H_GAP);
+              addLine(px + 90, prevPy + PHASE_H, px + 90, py, 'connector-lesson');
+            }
 
             const pel = document.createElement('div');
             pel.className = 'phase show';
-            pel.style.cssText = `left:${px}px;top:${py}px;transition-delay:${pi * 80}ms`;
+            pel.style.cssText = `left:${px}px;top:${py}px;transition-delay:${pi * 60}ms`;
             const typeLabel = {teach:'Teach',guided:'Guided',sprint:'Sprint',wrapup:'Wrap-up'}[p.type];
             const typeClass = 'phase-' + p.type;
             pel.innerHTML = `
@@ -357,16 +382,21 @@ function render() {
               <div class="phase-title">${p.title}</div>
               <div class="phase-desc">${p.desc}</div>
               ${p.game ? `<div class="phase-game">🎮 ${p.game}</div>` : ''}
-              <textarea class="phase-notes" placeholder="Add notes..." onclick="event.stopPropagation()">${p.notes || ''}</textarea>
+              <textarea class="phase-notes" placeholder="Add notes…" onclick="event.stopPropagation()">${p.notes || ''}</textarea>
             `;
-            // Save notes on change
-            const ta = pel.querySelector('.phase-notes');
-            ta.addEventListener('input', () => { p.notes = ta.value; });
+            pel.querySelector('.phase-notes').addEventListener('input', function(){ p.notes = this.value; });
             board.appendChild(pel);
           });
+
+          // Advance lessonY by the total phase height
+          lessonY += l.phases.length * (PHASE_H + PHASE_H_GAP) + LESSON_V_GAP;
+        } else {
+          lessonY += LESSON_H + LESSON_V_GAP;
         }
       });
     }
+
+    curY += domainH + DOMAIN_V_GAP;
   });
 
   updateMinimap();
@@ -374,17 +404,15 @@ function render() {
 
 function addLine(x1, y1, x2, y2, cls) {
   const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  // Curved connector
-  const mx = (x1 + x2) / 2;
-  line.setAttribute('d', `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`);
-  line.setAttribute('class', cls || 'connector');
+  const my = (y1 + y2) / 2;
+  line.setAttribute('d', `M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`);
+  line.setAttribute('class', cls || 'connector-lesson');
   svg.appendChild(line);
 }
 
 function toggleDomain(id) {
   expanded[id] = !expanded[id];
   if (!expanded[id]) {
-    // Collapse all lessons within
     Object.keys(lessonExpanded).forEach(k => { if (k.startsWith(id)) delete lessonExpanded[k]; });
   }
   render();
@@ -395,12 +423,7 @@ function toggleLesson(key) {
   render();
 }
 
-function collapseAll() {
-  expanded = {};
-  lessonExpanded = {};
-  render();
-}
-
+function collapseAll() { expanded = {}; lessonExpanded = {}; render(); }
 function expandAll() {
   DOMAINS.forEach(d => {
     expanded[d.id] = true;
@@ -410,10 +433,10 @@ function expandAll() {
 }
 
 // ══════════════════════════════════════
-// PAN & ZOOM
+// PAN & ZOOM — gentler
 // ══════════════════════════════════════
-let panX = 0, panY = 0, zoom = 1;
-let dragging = false, dragStartX = 0, dragStartY = 0, panStartX = 0, panStartY = 0;
+let panX = 0, panY = 0, zoom = 0.85;
+let dragging = false, dragSX = 0, dragSY = 0, panSX = 0, panSY = 0;
 const viewport = document.getElementById('viewport');
 
 function applyTransform() {
@@ -425,26 +448,21 @@ function applyTransform() {
 
 viewport.addEventListener('pointerdown', e => {
   if (e.target === viewport || e.target === svg) {
-    dragging = true;
-    dragStartX = e.clientX;
-    dragStartY = e.clientY;
-    panStartX = panX;
-    panStartY = panY;
+    dragging = true; dragSX = e.clientX; dragSY = e.clientY; panSX = panX; panSY = panY;
   }
 });
 window.addEventListener('pointermove', e => {
   if (!dragging) return;
-  panX = panStartX + (e.clientX - dragStartX);
-  panY = panStartY + (e.clientY - dragStartY);
+  panX = panSX + (e.clientX - dragSX); panY = panSY + (e.clientY - dragSY);
   applyTransform();
 });
 window.addEventListener('pointerup', () => { dragging = false; });
 
 viewport.addEventListener('wheel', e => {
   e.preventDefault();
-  const delta = e.deltaY > 0 ? 0.9 : 1.1;
-  const newZoom = Math.max(0.15, Math.min(3, zoom * delta));
-  // Zoom toward cursor
+  // Gentler zoom: 3% per scroll tick
+  const delta = e.deltaY > 0 ? 0.97 : 1.03;
+  const newZoom = Math.max(0.2, Math.min(2.5, zoom * delta));
   const rect = viewport.getBoundingClientRect();
   const mx = e.clientX - rect.left;
   const my = e.clientY - rect.top;
@@ -454,31 +472,32 @@ viewport.addEventListener('wheel', e => {
   applyTransform();
 }, { passive: false });
 
-function zoomIn() { zoom = Math.min(3, zoom * 1.2); applyTransform(); }
-function zoomOut() { zoom = Math.max(0.15, zoom * 0.8); applyTransform(); }
-function resetView() { panX = 0; panY = 0; zoom = 0.85; applyTransform(); }
+function zoomIn() { zoom = Math.min(2.5, zoom * 1.08); applyTransform(); }
+function zoomOut() { zoom = Math.max(0.2, zoom * 0.92); applyTransform(); }
+function resetView() { panX = 20; panY = 0; zoom = 0.85; applyTransform(); }
 
 // ══════════════════════════════════════
 // MINIMAP
 // ══════════════════════════════════════
 function updateMinimap() {
   const mm = document.getElementById('minimap');
-  const mmW = 180, mmH = 100;
-  const boardW = DOMAINS.length * DOMAIN_GAP + 200;
-  const boardH = 2000;
-  const scaleX = mmW / boardW;
-  const scaleY = mmH / boardH;
-  const s = Math.min(scaleX, scaleY);
+  const mmW = 200, mmH = 110;
+  // Estimate total board size
+  let totalH = DOMAIN_Y_START;
+  DOMAINS.forEach(d => { totalH += calcDomainHeight(d) + DOMAIN_V_GAP; });
+  const totalW = DOMAIN_X_START + LESSON_X_OFFSET + PHASE_X_OFFSET + 200;
+  const s = Math.min(mmW / totalW, mmH / totalH);
 
-  // Draw domain dots
   let dotsHtml = '';
+  let cy = DOMAIN_Y_START;
   DOMAINS.forEach((d, i) => {
-    const x = (DOMAIN_X_START + i * DOMAIN_GAP) * s;
-    const y = DOMAIN_Y * s;
-    dotsHtml += `<div class="mm-domain" style="left:${x}px;top:${y}px;width:${240*s}px;height:${100*s}px;background:${d.color}33;border:1px solid ${d.color}55"></div>`;
+    const h = calcDomainHeight(d);
+    const x = DOMAIN_X_START * s;
+    const y = cy * s;
+    dotsHtml += `<div class="mm-domain" style="left:${x}px;top:${y}px;width:${260*s}px;height:${Math.min(h,160)*s}px;background:${d.color}22;border:1px solid ${d.color}55;border-radius:2px"></div>`;
+    cy += h + DOMAIN_V_GAP;
   });
 
-  // Viewport rectangle
   const rect = viewport.getBoundingClientRect();
   const vx = (-panX / zoom) * s;
   const vy = (-panY / zoom) * s;
@@ -492,7 +511,7 @@ function updateMinimap() {
 // INIT
 // ══════════════════════════════════════
 render();
-resetView();
+applyTransform();
 </script>
 </body>
 </html>
