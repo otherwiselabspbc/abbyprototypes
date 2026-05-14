@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>The Locked Door</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0814;overflow:hidden;font-family:'Cinzel',serif;
+  user-select:none;-webkit-user-select:none;height:100vh;width:100vw;color:#e8dcc8;
+  cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='28' y1='28' x2='10' y2='10' stroke='%238a6a40' stroke-width='3' stroke-linecap='round'/%3E%3Cline x1='28' y1='28' x2='10' y2='10' stroke='%23c9a86c' stroke-width='1.5' stroke-linecap='round'/%3E%3Ccircle cx='8' cy='8' r='4' fill='%23f5c469'/%3E%3Ccircle cx='8' cy='8' r='2.5' fill='%23fff' opacity='0.7'/%3E%3C/svg%3E") 4 4, auto}
+
+/* Full-screen canvas for all scenes */
+#scene{position:fixed;inset:0;z-index:0}
+
+/* UI overlay layer */
+#ui{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;padding:20px;pointer-events:none}
+#ui>*{pointer-events:auto}
+
+/* Speech panel at bottom */
+#speech{width:clamp(300px,90vw,520px);background:rgba(16,12,28,0.92);
+  border:2px solid rgba(139,92,246,0.25);border-radius:16px;
+  padding:16px 20px;margin-bottom:12px;position:relative;
+  box-shadow:0 4px 20px rgba(0,0,0,0.4);backdrop-filter:blur(4px)}
+#sp-name{font-size:10px;font-weight:800;color:#a78bfa;letter-spacing:3px;
+  text-transform:uppercase;margin-bottom:6px}
+#sp-text{font-size:clamp(14px,3.2vw,17px);color:#e8dcc8;line-height:1.75;
+  font-family:'Nunito',sans-serif;min-height:44px}
+#sp-text em{color:#f5c469;font-style:normal;font-weight:800}
+.sp-btn{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;
+  background:rgba(139,92,246,0.1);border:2px solid rgba(139,92,246,0.25);
+  display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+
+/* Action buttons row */
+#actions{display:flex;gap:12px;margin-bottom:16px}
+.btn{font-family:'Cinzel',serif;font-weight:800;font-size:14px;color:#fff;
+  border:none;border-radius:12px;padding:14px 36px;cursor:pointer;
+  text-transform:uppercase;letter-spacing:2px;transition:transform .1s;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn:active{transform:translateY(2px)}
+.btn-magic{background:linear-gradient(180deg,#7c3aed,#5b21b6);box-shadow:0 4px 0 #3b0d7a,0 0 16px rgba(139,92,246,0.2)}
+.btn-gold{background:linear-gradient(180deg,#d4a03c,#a07828);box-shadow:0 4px 0 #7a5a18}
+.btn-red{background:linear-gradient(180deg,#e87461,#c0503e);box-shadow:0 4px 0 #9a3a2a}
+.btn.off{display:none}
+
+/* Gem choices (for guided + sprint) */
+#gems{display:flex;gap:clamp(12px,4vw,24px);justify-content:center;margin-bottom:16px}
+#gems.off{display:none}
+.gem{width:clamp(64px,16vw,80px);height:clamp(64px,16vw,80px);border-radius:14px;
+  background:linear-gradient(145deg,#1e1a2e,#2a2340);border:3px solid rgba(139,92,246,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(24px,6vw,32px);font-weight:900;color:rgba(255,255,255,0.5);
+  cursor:pointer;transition:all .15s;text-shadow:0 0 8px rgba(139,92,246,0.3);
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.gem:hover{border-color:#a78bfa;transform:translateY(-3px);box-shadow:0 0 16px rgba(139,92,246,0.3)}
+.gem:active{transform:scale(0.95)}
+.gem.correct{border-color:#5ec77a;background:rgba(94,199,122,0.12);color:#5ec77a;
+  box-shadow:0 0 20px rgba(94,199,122,0.3)}
+.gem.wrong{animation:shake .4s ease-out}
+.gem.hint{border-color:#f5c469;box-shadow:0 0 16px rgba(245,196,105,0.3);color:#f5c469;
+  animation:hint-glow 1s ease-in-out infinite}
+.gem.dim{opacity:0.15;pointer-events:none}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes hint-glow{0%,100%{box-shadow:0 0 10px rgba(245,196,105,0.2)}50%{box-shadow:0 0 24px rgba(245,196,105,0.5)}}
+
+/* Sprint floating gems */
+#sprint-field{position:fixed;top:60px;left:0;right:0;bottom:180px;z-index:5;display:none}
+.f-gem{position:absolute;width:72px;height:72px;border-radius:14px;
+  background:linear-gradient(145deg,#1e1a2e,#2a2340);border:3px solid rgba(139,92,246,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:900;color:rgba(255,255,255,0.5);
+  cursor:pointer;text-shadow:0 0 8px rgba(139,92,246,0.3);
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:transform .12s,opacity .3s}
+.f-gem:hover{transform:scale(1.1)!important}
+.f-gem.pop{opacity:0;transform:scale(1.4)!important;transition:all .4s}
+.f-gem.wrong{animation:shake .4s ease-out}
+
+/* Timer */
+#timer{width:clamp(200px,50vw,320px);height:6px;border-radius:3px;
+  background:rgba(255,255,255,0.06);overflow:hidden;margin-bottom:12px;display:none}
+#timer-fill{height:100%;width:100%;border-radius:3px;background:#8b5cf6;
+  transition:width .2s linear,background-color .3s}
+#timer-fill.warn{background:#f5c469}
+#timer-fill.danger{background:#ef4444;animation:pulse .5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+
+/* Sprint dots */
+#dots{display:flex;gap:6px;margin-bottom:8px;display:none}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.1);
+  border:2px solid rgba(255,255,255,0.15);transition:all .3s}
+.dot.done{background:#5ec77a;border-color:#5ec77a}
+.dot.cur{background:#f5c469;border-color:#f5c469}
+
+/* Sparkle trail */
+#trail{position:fixed;inset:0;z-index:50;pointer-events:none}
+</style>
+</head>
+<body>
+
+<canvas id="scene"></canvas>
+<canvas id="trail"></canvas>
+
+<div id="ui">
+  <div id="dots"></div>
+  <div id="timer"><div id="timer-fill"></div></div>
+  <div id="gems" class="off"></div>
+  <div id="speech">
+    <div id="sp-name"></div>
+    <div id="sp-text"></div>
+    <button class="sp-btn" onclick="replayAudio()">🔊</button>
+  </div>
+  <div id="actions">
+    <button class="btn btn-magic off" id="btn-continue" onclick="nextBeat()">Continue</button>
+    <button class="btn btn-gold off" id="btn-go" onclick="startSprint()">I'm Ready</button>
+  </div>
+</div>
+
+<div id="sprint-field"></div>
+
+<script>
+'use strict';
+
+// ══════════════════════════════════════
+// SCENE CANVAS
+// ══════════════════════════════════════
+const cv=document.getElementById('scene'), cx=cv.getContext('2d');
+function resize(){cv.width=innerWidth;cv.height=innerHeight;
+  document.getElementById('trail').width=innerWidth;
+  document.getElementById('trail').height=innerHeight;}
+resize();addEventListener('resize',resize);
+
+// ══════════════════════════════════════
+// DOOR STATE — 4 rune slots
+// ══════════════════════════════════════
+const RUNES=[
+  {letter:'S',sound:'s',keyword:'sun',filled:false,glowAnim:0},
+  {letter:'T',sound:'t',keyword:'tap',filled:false,glowAnim:0},
+  {letter:'M',sound:'m',keyword:'map',filled:false,glowAnim:0},
+  {letter:'N',sound:'n',keyword:'nap',filled:false,glowAnim:0},
+];
+let doorOpen=0; // 0 = closed, animates to 1 = fully open
+let doorGlow=0; // overall glow intensity
+let portalParticles=[];
+
+// ══════════════════════════════════════
+// DRAW THE DOOR SCENE
+// ══════════════════════════════════════
+function drawScene(){
+  const w=cv.width,h=cv.height;
+  cx.clearRect(0,0,w,h);
+
+  // Background — stone wall
+  const wallGrad=cx.createLinearGradient(0,0,0,h);
+  wallGrad.addColorStop(0,'#16121e');wallGrad.addColorStop(0.5,'#1a1628');wallGrad.addColorStop(1,'#0e0a16');
+  cx.fillStyle=wallGrad;cx.fillRect(0,0,w,h);
+
+  // Stone texture
+  cx.fillStyle='rgba(255,255,255,0.01)';
+  for(let i=0;i<40;i++){
+    const sx=((i*137+53)%100)/100*w, sy=((i*89+31)%100)/100*h;
+    cx.fillRect(sx,sy,((i*7)%60)+20,((i*13)%30)+10);
+  }
+  // Moss/cracks
+  cx.strokeStyle='rgba(60,100,80,0.04)';cx.lineWidth=1;
+  for(let i=0;i<8;i++){
+    cx.beginPath();cx.moveTo(((i*173)%100)/100*w,0);
+    cx.bezierCurveTo(((i*73)%100)/100*w,h*0.3,((i*137)%100)/100*w,h*0.7,((i*97)%100)/100*w,h);
+    cx.stroke();
+  }
+
+  // Torch glow (left and right)
+  [[w*0.2,h*0.25],[w*0.8,h*0.25]].forEach(([tx,ty])=>{
+    const tg=cx.createRadialGradient(tx,ty,0,tx,ty,120);
+    tg.addColorStop(0,'rgba(245,160,60,0.06)');tg.addColorStop(1,'transparent');
+    cx.fillStyle=tg;cx.fillRect(tx-120,ty-120,240,240);
+    // Flame
+    const flicker=Math.sin(Date.now()/200+tx)*3;
+    cx.fillStyle='#f5c469';
+    cx.beginPath();cx.ellipse(tx,ty-10+flicker,5,10,0,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#ffe8a0';
+    cx.beginPath();cx.ellipse(tx,ty-14+flicker,3,6,0,0,Math.PI*2);cx.fill();
+    // Bracket
+    cx.fillStyle='#3a3040';cx.fillRect(tx-3,ty+4,6,20);
+    cx.fillRect(tx-8,ty+24,16,4);
+  });
+
+  // Door frame
+  const dx=w*0.3, dy=h*0.12, dw=w*0.4, dh=h*0.7;
+  // Stone arch
+  cx.fillStyle='#2a2438';
+  cx.beginPath();cx.moveTo(dx-20,dy+dh);cx.lineTo(dx-20,dy+40);
+  cx.quadraticCurveTo(dx-20,dy-30,w*0.5,dy-40);
+  cx.quadraticCurveTo(dx+dw+20,dy-30,dx+dw+20,dy+40);
+  cx.lineTo(dx+dw+20,dy+dh);cx.closePath();cx.fill();
+  // Inner arch
+  cx.fillStyle='#1e1a2a';
+  cx.beginPath();cx.moveTo(dx,dy+dh);cx.lineTo(dx,dy+30);
+  cx.quadraticCurveTo(dx,dy-10,w*0.5,dy-18);
+  cx.quadraticCurveTo(dx+dw,dy-10,dx+dw,dy+30);
+  cx.lineTo(dx+dw,dy+dh);cx.closePath();cx.fill();
+
+  // Door panels (two halves that open)
+  const openAmt=doorOpen; // 0-1
+  const leftDoorX=dx-openAmt*(dw*0.4);
+  const rightDoorX=dx+dw*0.5+openAmt*(dw*0.4);
+  const doorW=dw*0.5;
+
+  if(openAmt<0.98){
+    // Left door
+    cx.fillStyle='#2a2030';
+    cx.fillRect(leftDoorX,dy+20,doorW*(1-openAmt*0.5),dh-20);
+    // Right door
+    cx.fillRect(rightDoorX,dy+20,doorW*(1-openAmt*0.5),dh-20);
+    // Door wood grain
+    cx.strokeStyle='rgba(255,255,255,0.02)';cx.lineWidth=1;
+    for(let i=0;i<6;i++){
+      const gy=dy+40+i*(dh-40)/6;
+      cx.beginPath();cx.moveTo(leftDoorX+5,gy);cx.lineTo(leftDoorX+doorW*(1-openAmt*0.5)-5,gy);cx.stroke();
+      cx.beginPath();cx.moveTo(rightDoorX+5,gy);cx.lineTo(rightDoorX+doorW*(1-openAmt*0.5)-5,gy);cx.stroke();
+    }
+    // Door handles
+    if(openAmt<0.3){
+      cx.fillStyle='#5a4a3a';
+      cx.beginPath();cx.arc(dx+dw*0.45,dy+dh*0.5,6,0,Math.PI*2);cx.fill();
+      cx.beginPath();cx.arc(dx+dw*0.55,dy+dh*0.5,6,0,Math.PI*2);cx.fill();
+    }
+  }
+
+  // Portal glow behind door (visible as door opens)
+  if(openAmt>0.01){
+    const pg=cx.createRadialGradient(w*0.5,dy+dh*0.4,0,w*0.5,dy+dh*0.4,dw*0.6*openAmt);
+    pg.addColorStop(0,`rgba(139,92,246,${0.4*openAmt})`);
+    pg.addColorStop(0.5,`rgba(200,160,255,${0.15*openAmt})`);
+    pg.addColorStop(1,'transparent');
+    cx.fillStyle=pg;cx.fillRect(dx,dy+20,dw,dh-20);
+  }
+
+  // Light beam when fully open
+  if(openAmt>0.8){
+    const beamA=(openAmt-0.8)/0.2;
+    cx.fillStyle=`rgba(200,180,255,${0.03*beamA})`;
+    cx.beginPath();cx.moveTo(w*0.5-10,dy+20);cx.lineTo(w*0.3,h);cx.lineTo(w*0.7,h);cx.lineTo(w*0.5+10,dy+20);cx.closePath();cx.fill();
+  }
+
+  // ── RUNE SLOTS on the arch ──
+  RUNES.forEach((r,i)=>{
+    const angle=-0.6+i*0.4; // distribute around the arch
+    const rx=w*0.5+Math.sin(angle)*(dw*0.35);
+    const ry=dy-10+Math.cos(angle)*30+15;
+    r._x=rx;r._y=ry; // store for later reference
+
+    // Slot background
+    cx.fillStyle=r.filled?'rgba(139,92,246,0.15)':'rgba(255,255,255,0.03)';
+    cx.beginPath();cx.roundRect(rx-22,ry-22,44,44,8);cx.fill();
+    cx.strokeStyle=r.filled?'rgba(139,92,246,0.6)':'rgba(255,255,255,0.08)';
+    cx.lineWidth=2;
+    cx.beginPath();cx.roundRect(rx-22,ry-22,44,44,8);cx.stroke();
+
+    // Rune glow animation
+    if(r.glowAnim>0){
+      r.glowAnim=Math.max(0,r.glowAnim-0.01);
+      const rg=cx.createRadialGradient(rx,ry,0,rx,ry,40);
+      rg.addColorStop(0,`rgba(139,92,246,${r.glowAnim*0.5})`);
+      rg.addColorStop(1,'transparent');
+      cx.fillStyle=rg;cx.fillRect(rx-40,ry-40,80,80);
+    }
+
+    // Letter
+    if(r.filled){
+      cx.fillStyle=`rgba(200,180,255,${0.6+r.glowAnim*0.4})`;
+      cx.font='bold 22px Cinzel,serif';cx.textAlign='center';cx.textBaseline='middle';
+      cx.fillText(r.letter,rx,ry);
+    } else {
+      cx.fillStyle='rgba(255,255,255,0.08)';
+      cx.font='bold 18px Cinzel,serif';cx.textAlign='center';cx.textBaseline='middle';
+      cx.fillText('?',rx,ry);
+    }
+  });
+
+  // Overall door glow
+  if(doorGlow>0){
+    const dg=cx.createRadialGradient(w*0.5,dy+dh*0.3,0,w*0.5,dy+dh*0.3,dw*0.8);
+    dg.addColorStop(0,`rgba(139,92,246,${doorGlow*0.15})`);
+    dg.addColorStop(1,'transparent');
+    cx.fillStyle=dg;cx.fillRect(0,0,w,h);
+    doorGlow=Math.max(0,doorGlow-0.005);
+  }
+
+  // Portal particles when door is open
+  if(doorOpen>0.5){
+    if(Math.random()<0.3) portalParticles.push({
+      x:w*0.5+(Math.random()-0.5)*dw*0.3*doorOpen,
+      y:dy+dh*0.3+Math.random()*dh*0.4,
+      vy:-Math.random()*0.8-0.2,vx:(Math.random()-0.5)*0.3,
+      r:Math.random()*2+1,a:1,
+      color:['#a78bfa','#c4b5fd','#f5c469','#fff'][Math.floor(Math.random()*4)]
+    });
+    portalParticles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.a-=0.015;
+      if(p.a>0){cx.globalAlpha=p.a;cx.fillStyle=p.color;
+        cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fill();}
+    });
+    cx.globalAlpha=1;
+    portalParticles=portalParticles.filter(p=>p.a>0);
+  }
+
+  // NPC guide (simple character to the left of the door)
+  if(doorOpen<0.5){
+    drawGuide(w*0.12,h*0.6);
+  }
+}
+
+function drawGuide(x,y){
+  // Shadow
+  cx.globalAlpha=0.15;cx.fillStyle='#000';
+  cx.beginPath();cx.ellipse(x,y+44,20,6,0,0,Math.PI*2);cx.fill();cx.globalAlpha=1;
+  // Robe
+  cx.fillStyle='#3a2a6a';
+  cx.beginPath();cx.moveTo(x-16,y-4);cx.lineTo(x-20,y+40);cx.lineTo(x+20,y+40);cx.lineTo(x+16,y-4);cx.closePath();cx.fill();
+  // Head
+  cx.fillStyle='#e0c8a0';cx.beginPath();cx.arc(x,y-16,14,0,Math.PI*2);cx.fill();
+  // Hood
+  cx.fillStyle='#2a1a5a';
+  cx.beginPath();cx.moveTo(x-16,y-8);cx.quadraticCurveTo(x,y-38,x+16,y-8);
+  cx.lineTo(x+18,y-4);cx.lineTo(x-18,y-4);cx.closePath();cx.fill();
+  // Eyes
+  cx.fillStyle='#f5c469';
+  cx.beginPath();cx.arc(x-4,y-17,2.5,0,Math.PI*2);cx.fill();
+  cx.beginPath();cx.arc(x+4,y-17,2.5,0,Math.PI*2);cx.fill();
+  // Staff
+  cx.strokeStyle='#6a5a40';cx.lineWidth=3;cx.lineCap='round';
+  cx.beginPath();cx.moveTo(x+22,y-30);cx.lineTo(x+22,y+38);cx.stroke();
+  cx.fillStyle='#a78bfa';cx.beginPath();cx.arc(x+22,y-32,5,0,Math.PI*2);cx.fill();
+  cx.fillStyle='rgba(167,139,250,0.3)';cx.beginPath();cx.arc(x+22,y-32,10,0,Math.PI*2);cx.fill();
+}
+
+// Animation loop
+(function loop(){drawScene();requestAnimationFrame(loop)})();
+
+// ══════════════════════════════════════
+// AUDIO
+// ══════════════════════════════════════
+const AUD='../audio/harp/';
+const aud={};
+['s','t','m','n','k','p','f','a','e','i','o','u'].forEach(p=>{
+  const a=new Audio();a.preload='auto';a.src=AUD+p+'.wav';
+  a.onerror=()=>{a.src=AUD+p+'.mp3';};aud[p]=a;});
+
+function playS(p,cb){
+  const a=aud[p];
+  if(a){a.currentTime=0;a.onended=()=>{if(cb)cb();};a.play().catch(()=>fbSpeak(p,cb));}
+  else fbSpeak(p,cb);
+}
+function fbSpeak(t,cb){
+  try{speechSynthesis.cancel();}catch(e){}
+  const u=new SpeechSynthesisUtterance(t);u.rate=0.7;u.volume=1;
+  let d=false;u.onend=()=>{if(!d){d=true;if(cb)cb();}};u.onerror=()=>{if(!d){d=true;if(cb)cb();}};
+  setTimeout(()=>{if(!d){d=true;if(cb)cb();}},2000);speechSynthesis.speak(u);}
+
+let ac;function initAC(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();return ac;}
+function sfxOk(){try{const a=initAC(),n=a.currentTime;[523,659,784].forEach((h,i)=>{const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=h;g.gain.setValueAtTime(0,n+i*0.08);g.gain.linearRampToValueAtTime(0.12,n+i*0.08+0.01);g.gain.exponentialRampToValueAtTime(0.001,n+i*0.08+0.5);o.connect(g);g.connect(a.destination);o.start(n+i*0.08);o.stop(n+i*0.08+0.6);});}catch(e){}}
+function sfxNo(){try{const a=initAC(),n=a.currentTime;const o=a.createOscillator(),g=a.createGain();o.type='sawtooth';o.frequency.setValueAtTime(200,n);o.frequency.linearRampToValueAtTime(120,n+0.2);g.gain.setValueAtTime(0.06,n);g.gain.exponentialRampToValueAtTime(0.001,n+0.25);o.connect(g);g.connect(a.destination);o.start(n);o.stop(n+0.3);}catch(e){}}
+function sfxSlot(){try{const a=initAC(),n=a.currentTime;[440,554,659].forEach((h,i)=>{const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=h;g.gain.setValueAtTime(0,n+i*0.15);g.gain.linearRampToValueAtTime(0.15,n+i*0.15+0.01);g.gain.exponentialRampToValueAtTime(0.001,n+i*0.15+1);o.connect(g);g.connect(a.destination);o.start(n+i*0.15);o.stop(n+i*0.15+1.1);});}catch(e){}}
+function sfxDoorOpen(){try{const a=initAC(),n=a.currentTime;[330,392,440,523,587,659,784,880].forEach((h,i)=>{const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=h;g.gain.setValueAtTime(0,n+i*0.15);g.gain.linearRampToValueAtTime(0.08,n+i*0.15+0.02);g.gain.exponentialRampToValueAtTime(0.001,n+i*0.15+1.5);o.connect(g);g.connect(a.destination);o.start(n+i*0.15);o.stop(n+i*0.15+1.6);});}catch(e){}}
+document.addEventListener('pointerdown',()=>{try{initAC();}catch(e){}},{once:true});
+setInterval(()=>{if(speechSynthesis.paused)speechSynthesis.resume();},500);
+
+// ══════════════════════════════════════
+// GAME FLOW
+// ══════════════════════════════════════
+let phase='intro', runeIdx=0, beatQ=[], lastAudio='', guidedActive=false, sprintActive=false;
+let sprintIdx=0, sprintTimer=null, floatFrame=null, gemPos=[];
+const SECS=10;
+
+const SPRINT_ROUNDS=[
+  {target:'s',choices:['S','T','M','N']},
+  {target:'n',choices:['N','S','T','M']},
+  {target:'m',choices:['M','N','S','T']},
+  {target:'t',choices:['T','M','N','S']},
+  {target:'s',choices:['S','N','M','T']},
+  {target:'m',choices:['T','S','M','N']},
+];
+
+// ── BEAT SYSTEM (sequential dialogue) ──
+function queueBeats(beats,then){
+  beatQ=beats.map(b=>({...b}));
+  beatQ.push({action:then});
+  playNextBeat();
+}
+function playNextBeat(){
+  if(!beatQ.length)return;
+  const b=beatQ.shift();
+  if(b.action){b.action();return;}
+
+  document.getElementById('sp-name').textContent=b.who||'';
+  const el=document.getElementById('sp-text');
+  el.innerHTML=b.html||b.text||'';
+  if(b.speak) lastAudio=b.speak;
+
+  hideBtn('btn-continue');hideBtn('btn-go');
+
+  if(b.speak){
+    // Use speech synthesis for NPC dialogue
+    fbSpeak(b.speak,()=>{
+      if(b.sound) playS(b.sound,()=>afterBeat(b));
+      else afterBeat(b);
+    });
+  } else if(b.sound){
+    playS(b.sound,()=>afterBeat(b));
+  } else {
+    afterBeat(b);
+  }
+}
+function afterBeat(b){
+  if(b.auto){setTimeout(playNextBeat,b.auto);}
+  else if(b.showContinue!==false){showBtn('btn-continue');}
+}
+function nextBeat(){hideBtn('btn-continue');playNextBeat();}
+function replayAudio(){if(lastAudio)fbSpeak(lastAudio);}
+
+function showBtn(id){const e=document.getElementById(id);e.classList.remove('off');}
+function hideBtn(id){const e=document.getElementById(id);e.classList.add('off');}
+
+// ══════════════════════════════════════
+// PHASE 1: INTRO
+// ══════════════════════════════════════
+function startIntro(){
+  try{initAC();}catch(e){}
+  phase='intro';
+  queueBeats([
+    {who:'The Guide',speak:"You found it. The ancient door of Stonehollow.",html:"You found it. The ancient door of <em>Stonehollow</em>."},
+    {who:'The Guide',speak:"Four rune slots. Four sounds you must learn. Each sound has a letter — and each letter unlocks a piece of the door.",
+     html:"Four rune slots. Four sounds you must learn. Each sound has a letter — and each letter unlocks a piece of the door."},
+    {who:'The Guide',speak:"I'll teach you each one. Listen carefully — then prove you know it.",
+     html:"I'll teach you each one. Listen carefully — then prove you know it."},
+  ],()=>startTeach(0));
+}
+
+// ══════════════════════════════════════
+// PHASE 2: TEACH (one rune at a time)
+// ══════════════════════════════════════
+function startTeach(idx){
+  phase='teach';runeIdx=idx;
+  const r=RUNES[idx];
+
+  queueBeats([
+    {who:'The Guide',
+     speak:`This rune is the letter ${r.letter}. It makes the sound... listen.`,
+     html:`This rune is the letter <em>${r.letter}</em>. It makes the sound... listen.`},
+    {who:'',sound:r.sound,text:'',auto:800},
+    {who:'The Guide',
+     speak:`${r.letter} says its sound, like the start of ${r.keyword}. ${r.letter}... ${r.keyword}.`,
+     html:`<em>${r.letter}</em> says its sound, like the start of <em>${r.keyword}</em>.`},
+  ],()=>startGuided(idx));
+}
+
+// ══════════════════════════════════════
+// PHASE 3: GUIDED PRACTICE (per rune)
+// ══════════════════════════════════════
+function startGuided(idx){
+  phase='guided';guidedActive=false;
+  const r=RUNES[idx];
+  const others=RUNES.filter((_,i)=>i!==idx).slice(0,2).map(x=>x.letter);
+  const choices=[r.letter,...others];
+  for(let i=choices.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[choices[i],choices[j]]=[choices[j],choices[i]];}
+
+  document.getElementById('sp-name').textContent='The Guide';
+  document.getElementById('sp-text').innerHTML=`Which letter makes this sound? Listen...`;
+  hideBtn('btn-continue');hideBtn('btn-go');
+
+  // Play the sound
+  setTimeout(()=>{
+    playS(r.sound,()=>{
+      // Show gems
+      const gemsEl=document.getElementById('gems');
+      gemsEl.classList.remove('off');
+      gemsEl.innerHTML=choices.map(ch=>
+        `<div class="gem" onclick="guidedPick('${ch}')">${ch}</div>`).join('');
+      guidedActive=true;
+      lastAudio=r.sound;
+
+      // Hint after 3 seconds
+      setTimeout(()=>{
+        if(guidedActive){
+          document.querySelectorAll('#gems .gem').forEach(g=>{
+            if(g.textContent===r.letter) g.classList.add('hint');
+          });
+        }
+      },3000);
+    });
+  },500);
+}
+
+function guidedPick(ch){
+  if(!guidedActive)return;
+  const r=RUNES[runeIdx];
+  const gems=document.querySelectorAll('#gems .gem');
+
+  if(ch===r.letter){
+    guidedActive=false;sfxOk();
+    gems.forEach(g=>{if(g.textContent===ch)g.classList.add('correct');else g.classList.add('dim');});
+
+    // Fill the rune slot with animation
+    r.filled=true;r.glowAnim=1;doorGlow=1;
+    sfxSlot();
+
+    document.getElementById('sp-name').textContent='The Guide';
+    document.getElementById('sp-text').innerHTML=`That's it! <em>${r.letter}</em> is locked into the door.`;
+    fbSpeak(`That's it! ${r.letter} is locked into the door.`);
+
+    setTimeout(()=>{
+      document.getElementById('gems').classList.add('off');
+      const nextIdx=runeIdx+1;
+      if(nextIdx<RUNES.length){
+        showBtn('btn-continue');
+        beatQ=[{action:()=>startTeach(nextIdx)}];
+      } else {
+        // All runes taught — transition to sprint
+        queueBeats([
+          {who:'The Guide',
+           speak:"All four runes are in place. But the door needs one final test. Prove you remember every sound — quickly!",
+           html:"All four runes are in place. But the door needs one final test. Prove you remember every sound — <em>quickly!</em>"},
+        ],()=>{showBtn('btn-go');});
+      }
+    },1500);
+  } else {
+    sfxNo();
+    gems.forEach(g=>{if(g.textContent===ch)g.classList.add('wrong');});
+    setTimeout(()=>gems.forEach(g=>g.classList.remove('wrong')),400);
+    document.getElementById('sp-text').innerHTML=`That's ${ch}. Listen again — find <em>${r.letter}</em>.`;
+    fbSpeak(`That's ${ch}. Listen again.`,()=>playS(r.sound));
+    // Show hint
+    gems.forEach(g=>{if(g.textContent===r.letter)g.classList.add('hint');});
+  }
+}
+
+// ══════════════════════════════════════
+// PHASE 4: SPRINT (floating gems, timed)
+// ══════════════════════════════════════
+function startSprint(){
+  phase='sprint';sprintIdx=0;sprintActive=false;
+  hideBtn('btn-go');hideBtn('btn-continue');
+  document.getElementById('gems').classList.add('off');
+  document.getElementById('dots').style.display='flex';
+  document.getElementById('timer').style.display='block';
+  document.getElementById('sprint-field').style.display='block';
+  loadSprintRound();
+}
+
+function loadSprintRound(){
+  sprintActive=false;stopFloat();clearInterval(sprintTimer);
+  const r=SPRINT_ROUNDS[sprintIdx];
+  lastAudio=r.target;
+
+  document.getElementById('dots').innerHTML=SPRINT_ROUNDS.map((_,i)=>
+    `<div class="dot${i<sprintIdx?' done':''}${i===sprintIdx?' cur':''}"></div>`).join('');
+  document.getElementById('sp-name').textContent='';
+  document.getElementById('sp-text').textContent='Find the matching letter!';
+
+  // Build floating gems
+  const field=document.getElementById('sprint-field');
+  field.innerHTML='';gemPos=[];
+  const fw=field.clientWidth||innerWidth, fh=field.clientHeight||(innerHeight-200);
+  const choices=[...r.choices];
+  for(let i=choices.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[choices[i],choices[j]]=[choices[j],choices[i]];}
+
+  choices.forEach((ch,i)=>{
+    const d=document.createElement('div');d.className='f-gem';d.textContent=ch;
+    d.onclick=()=>sprintTap(ch,d);field.appendChild(d);
+    const col=i%2,row=Math.floor(i/2);
+    const x=fw*0.1+col*(fw*0.4)+Math.random()*fw*0.15;
+    const y=fh*0.1+row*(fh*0.35)+Math.random()*fh*0.1;
+    const a=Math.random()*6.28,sp=0.2+Math.random()*0.2;
+    gemPos.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,el:d,letter:ch});
+    d.style.left=x+'px';d.style.top=y+'px';
+  });
+
+  startFloat(fw,fh);
+  sTimer();
+
+  setTimeout(()=>{playS(r.target,()=>{sprintActive=true;});},300);
+}
+
+function sprintTap(ch,el){
+  if(!sprintActive)return;
+  const r=SPRINT_ROUNDS[sprintIdx];
+  if(ch.toLowerCase()===r.target){
+    sprintActive=false;sfxOk();clearInterval(sprintTimer);
+    el.classList.add('pop');
+    document.getElementById('sp-text').textContent='✓ '+ch;
+    setTimeout(()=>{
+      sprintIdx++;
+      if(sprintIdx>=SPRINT_ROUNDS.length){
+        stopFloat();
+        document.getElementById('sprint-field').style.display='none';
+        document.getElementById('timer').style.display='none';
+        document.getElementById('dots').style.display='none';
+        openTheDoor();
+      } else loadSprintRound();
+    },600);
+  } else {
+    sfxNo();el.classList.add('wrong');
+    setTimeout(()=>el.classList.remove('wrong'),400);
+    document.getElementById('sp-text').textContent="That's "+ch+' — listen again';
+    setTimeout(()=>playS(r.target),400);
+  }
+}
+
+function replaySprint(){if(sprintActive&&lastAudio)playS(lastAudio);}
+
+// Float
+function startFloat(fw,fh){stopFloat();const SZ=72,MIN=SZ+12;
+  floatFrame=requestAnimationFrame(function loop(){
+    gemPos.forEach(g=>{g.x+=g.vx;g.y+=g.vy;
+      if(g.x<0){g.x=0;g.vx=Math.abs(g.vx);}if(g.x>fw-SZ){g.x=fw-SZ;g.vx=-Math.abs(g.vx);}
+      if(g.y<0){g.y=0;g.vy=Math.abs(g.vy);}if(g.y>fh-SZ){g.y=fh-SZ;g.vy=-Math.abs(g.vy);}});
+    for(let i=0;i<gemPos.length;i++)for(let j=i+1;j<gemPos.length;j++){
+      const a=gemPos[i],b=gemPos[j],dx=(b.x+SZ/2)-(a.x+SZ/2),dy=(b.y+SZ/2)-(a.y+SZ/2),dist=Math.hypot(dx,dy);
+      if(dist<MIN&&dist>0){const ov=(MIN-dist)/2,nx=dx/dist,ny=dy/dist;
+        a.x-=nx*ov;a.y-=ny*ov;b.x+=nx*ov;b.y+=ny*ov;a.vx-=nx*0.03;a.vy-=ny*0.03;b.vx+=nx*0.03;b.vy+=ny*0.03;}}
+    gemPos.forEach(g=>{g.el.style.left=g.x+'px';g.el.style.top=g.y+'px';});
+    floatFrame=requestAnimationFrame(loop);});}
+function stopFloat(){if(floatFrame){cancelAnimationFrame(floatFrame);floatFrame=null;}}
+
+// Timer
+function sTimer(){clearInterval(sprintTimer);
+  const fill=document.getElementById('timer-fill');fill.style.width='100%';fill.className='';
+  const t0=Date.now();
+  sprintTimer=setInterval(()=>{
+    const pct=Math.max(0,(1-(Date.now()-t0)/1000/SECS))*100;
+    fill.style.width=pct+'%';
+    if(pct<=20)fill.className='danger';else if(pct<=40)fill.className='warn';else fill.className='';
+    if(pct<=0){clearInterval(sprintTimer);if(sprintActive){sprintActive=false;stopFloat();
+      document.getElementById('sp-text').textContent="Time's up — let's try again!";
+      setTimeout(()=>loadSprintRound(),1500);}}
+  },100);}
+
+// ══════════════════════════════════════
+// PHASE 5: THE DOOR OPENS
+// ══════════════════════════════════════
+function openTheDoor(){
+  phase='finale';
+  sfxDoorOpen();
+
+  // Animate door opening
+  let t=0;
+  (function anim(){
+    t+=0.005;
+    doorOpen=Math.min(1,t);
+    doorGlow=1;
+    if(t<1.2){requestAnimationFrame(anim);}
+    else{
+      // Celebration dialogue
+      queueBeats([
+        {who:'The Guide',
+         speak:"The door is open! You learned every sound. S, T, M, N — each one a key.",
+         html:"The door is open! You learned every sound. <em>S</em>, <em>T</em>, <em>M</em>, <em>N</em> — each one a key."},
+        {who:'The Guide',
+         speak:"Beyond this door lies a world that only readers can enter. And you just took your first step.",
+         html:"Beyond this door lies a world that only <em>readers</em> can enter. And you just took your first step."},
+        {who:'The Guide',
+         speak:"Remember: every letter has a sound. And every sound is a key that opens something new.",
+         html:"Remember: every letter has a <em>sound</em>. And every sound is a key that opens something new."},
+      ],()=>{
+        document.getElementById('sp-text').innerHTML='<em>Lesson complete.</em>';
+        document.getElementById('sp-name').textContent='';
+      });
+    }
+  })();
+}
+
+// ══════════════════════════════════════
+// SPARKLE TRAIL
+// ══════════════════════════════════════
+const trC=document.getElementById('trail'),trX=trC.getContext('2d'),sp=[];
+document.addEventListener('pointermove',e=>{
+  for(let i=0;i<2;i++)sp.push({x:e.clientX+(Math.random()-.5)*8,y:e.clientY+(Math.random()-.5)*8,
+    r:Math.random()*2.5+1,a:1,vx:(Math.random()-.5)*.5,vy:Math.random()*.5+.2,
+    c:['#f5c469','#a78bfa','#fff','#ef8b5b'][Math.floor(Math.random()*4)],f:Math.random()*.4+.6});
+  if(sp.length>80)sp.splice(0,sp.length-80);});
+(function tL(){trX.clearRect(0,0,trC.width,trC.height);
+  for(let i=sp.length-1;i>=0;i--){const s=sp[i];s.x+=s.vx;s.y+=s.vy;s.a-=0.025*s.f;s.r*=0.98;
+    if(s.a<=0){sp.splice(i,1);continue;}trX.globalAlpha=s.a;trX.fillStyle=s.c;
+    trX.beginPath();for(let p=0;p<5;p++){const a2=(p/5)*6.28-1.57,ox=Math.cos(a2)*s.r,oy=Math.sin(a2)*s.r,
+      a3=a2+.628,ix=Math.cos(a3)*s.r*.4,iy=Math.sin(a3)*s.r*.4;
+      if(!p)trX.moveTo(s.x+ox,s.y+oy);else trX.lineTo(s.x+ox,s.y+oy);trX.lineTo(s.x+ix,s.y+iy);}
+    trX.closePath();trX.fill();}trX.globalAlpha=1;requestAnimationFrame(tL)})();
+
+// ══════════════════════════════════════
+// START
+// ══════════════════════════════════════
+startIntro();
+
+window.guidedPick=guidedPick;
+</script>
+</body>
+</html>
