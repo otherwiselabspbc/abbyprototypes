@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Lesson: Every Letter Has a Sound</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d0a1a;overflow:hidden;font-family:'Nunito',sans-serif;
+  user-select:none;-webkit-user-select:none;height:100vh;width:100vw;color:#f0e6d3;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='28' y1='28' x2='10' y2='10' stroke='%238a6a40' stroke-width='3' stroke-linecap='round'/%3E%3Cline x1='28' y1='28' x2='10' y2='10' stroke='%23c9a86c' stroke-width='1.5' stroke-linecap='round'/%3E%3Ccircle cx='8' cy='8' r='4' fill='%23f5c469'/%3E%3Ccircle cx='8' cy='8' r='2.5' fill='%23fff' opacity='0.7'/%3E%3C/svg%3E") 4 4, auto}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse at 30% 20%,rgba(100,50,180,0.1),transparent 50%),
+    radial-gradient(ellipse at 70% 70%,rgba(60,30,120,0.08),transparent 50%)}
+
+/* Screens */
+.scr{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:20px;transition:opacity .4s}
+.scr.off{display:none}
+
+/* Phase indicator */
+.phase-bar{position:fixed;top:0;left:0;width:100%;height:4px;z-index:30;background:rgba(255,255,255,0.06)}
+.phase-fill{height:100%;background:linear-gradient(90deg,#8b5cf6,#f5c469);transition:width .5s;width:0}
+.phase-label{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:30;
+  font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(255,255,255,0.3);font-family:'Cinzel',serif}
+
+/* Common */
+h1{font-family:'Cinzel',serif;font-weight:900;color:#fff;text-align:center;
+  text-shadow:0 0 30px rgba(139,92,246,0.4);margin-bottom:8px}
+.sub{font-size:clamp(13px,3vw,16px);color:rgba(255,255,255,0.6);text-align:center;
+  max-width:400px;line-height:1.7;margin-bottom:24px}
+.btn{font-family:'Cinzel',serif;font-weight:800;font-size:14px;color:#fff;
+  border:none;border-radius:12px;padding:14px 36px;cursor:pointer;
+  background:linear-gradient(180deg,#8b5cf6,#6d28d9);
+  box-shadow:0 4px 0 #4c1d95;text-transform:uppercase;letter-spacing:3px;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:transform .1s}
+.btn:active{transform:translateY(2px)}
+
+/* Teach screen */
+.teach-card{background:rgba(30,26,46,0.95);border:2px solid rgba(139,92,246,0.3);
+  border-radius:20px;padding:32px;max-width:440px;width:90%;text-align:center;
+  box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.teach-letter{font-family:'Cinzel',serif;font-size:clamp(64px,18vw,100px);font-weight:900;
+  color:#f5c469;text-shadow:0 0 30px rgba(245,196,105,0.5);margin:16px 0 8px;
+  transition:all .4s}
+.teach-keyword{font-size:clamp(16px,4vw,20px);color:rgba(255,255,255,0.5);margin-bottom:4px}
+.teach-rule{font-size:clamp(14px,3.5vw,18px);color:rgba(255,255,255,0.7);margin-top:12px;line-height:1.6}
+.teach-rule em{color:#a78bfa;font-style:normal;font-weight:800}
+.teach-progress{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
+.tp{width:28px;height:4px;border-radius:2px;background:rgba(255,255,255,0.1);transition:all .3s}
+.tp.done{background:#8b5cf6}
+.tp.cur{background:#f5c469}
+
+/* Oracle */
+.oracle{width:80px;height:80px;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,#6a3aaa,#3a1a6a,#1a0a3a);
+  display:flex;align-items:center;justify-content:center;font-size:32px;
+  cursor:pointer;position:relative;margin:16px 0;
+  box-shadow:0 0 24px rgba(139,92,246,0.4),inset 0 0 20px rgba(200,160,255,0.1);
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:transform .12s}
+.oracle::before{content:'';position:absolute;inset:-4px;border-radius:50%;
+  border:2px solid rgba(139,92,246,0.3);animation:ring 4s linear infinite}
+.oracle:active{transform:scale(0.92)}
+.oracle.speaking{box-shadow:0 0 40px rgba(139,92,246,0.6),0 0 80px rgba(139,92,246,0.2);transform:scale(1.05)}
+@keyframes ring{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+/* Guided gems */
+.g-gems{display:flex;gap:20px;justify-content:center;margin:20px 0}
+.g-gem{width:80px;height:80px;border-radius:16px;
+  background:linear-gradient(145deg,#1e1a2e,#2a2340);
+  border:3px solid rgba(139,92,246,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:28px;font-weight:900;color:rgba(255,255,255,0.5);
+  cursor:pointer;transition:all .2s;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.g-gem:active{transform:scale(0.95)}
+.g-gem.hint{border-color:#f5c469;box-shadow:0 0 20px rgba(245,196,105,0.3);
+  color:#f5c469;animation:hint-pulse 1s ease-in-out infinite}
+.g-gem.correct{border-color:#5ec77a;background:rgba(94,199,122,0.15);color:#5ec77a;
+  box-shadow:0 0 20px rgba(94,199,122,0.3)}
+.g-gem.wrong{animation:shake .4s ease-out}
+.g-gem.dim{opacity:0.2;pointer-events:none}
+@keyframes hint-pulse{0%,100%{box-shadow:0 0 12px rgba(245,196,105,0.2)}50%{box-shadow:0 0 28px rgba(245,196,105,0.5)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* Sprint (reuses gem styles from enchanted-harp) */
+#sprint-field{position:relative;width:clamp(300px,85vw,500px);height:clamp(220px,45vh,320px)}
+.s-gem{position:absolute;width:80px;height:80px;border-radius:16px;
+  background:linear-gradient(145deg,#1e1a2e,#2a2340);
+  border:3px solid rgba(139,92,246,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:28px;font-weight:900;color:rgba(255,255,255,0.5);
+  cursor:pointer;transition:transform .12s,opacity .3s;
+  text-shadow:0 0 8px rgba(139,92,246,0.3);
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.s-gem:hover{transform:scale(1.08)!important}
+.s-gem:active{transform:scale(0.95)!important}
+.s-gem.pop{opacity:0;transform:scale(1.4)!important;transition:all .4s}
+.s-gem.wrong{animation:shake .4s ease-out}
+
+#timer{width:clamp(200px,50vw,320px);height:6px;border-radius:3px;
+  background:rgba(255,255,255,0.06);overflow:hidden;margin-bottom:14px}
+#timer-fill{height:100%;width:100%;border-radius:3px;background:#8b5cf6;
+  transition:width .2s linear,background-color .3s}
+#timer-fill.warn{background:#f5c469}
+#timer-fill.danger{background:#ef4444;animation:pulse .5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+
+#prompt{font-size:clamp(14px,3.5vw,18px);font-weight:700;
+  color:rgba(255,255,255,0.5);margin-bottom:12px;text-align:center;min-height:24px;transition:all .25s}
+#prompt.ok{color:#5ec77a;text-shadow:0 0 12px rgba(94,199,122,0.4)}
+#prompt.bad{color:#e87461}
+
+.dots{display:flex;gap:6px;margin-bottom:12px}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.1);
+  border:2px solid rgba(255,255,255,0.2);transition:all .3s}
+.dot.done{background:#5ec77a;border-color:#5ec77a}
+.dot.cur{background:#f5c469;border-color:#f5c469}
+
+/* Overlays */
+.ov{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;transition:opacity .4s}
+.ov.off{opacity:0;pointer-events:none}
+.ov h2{font-family:'Cinzel',serif;font-size:clamp(28px,7vw,44px);font-weight:900;color:#fff;
+  text-shadow:0 0 24px rgba(139,92,246,0.5);margin-bottom:8px}
+.ov p{font-size:clamp(12px,3vw,15px);color:rgba(255,255,255,0.5);margin-bottom:28px;max-width:360px;
+  text-align:center;line-height:1.6}
+#fail-ov{background:radial-gradient(ellipse at 50% 40%,rgba(232,116,97,0.1),rgba(13,10,26,0.95))}
+.btn-red{background:linear-gradient(180deg,#e87461,#c0503e);box-shadow:0 4px 0 #9a3a2a}
+
+/* Stars + Trail */
+#stars,#trail,#fx{position:fixed;inset:0;pointer-events:none}
+#stars{z-index:0}#trail{z-index:50}#fx{z-index:30}
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<canvas id="trail"></canvas>
+<canvas id="fx"></canvas>
+
+<div class="phase-bar"><div class="phase-fill" id="phase-fill"></div></div>
+<div class="phase-label" id="phase-label"></div>
+
+<!-- ═══ 1. INTRO ═══ -->
+<div class="scr" id="s-intro" style="background:radial-gradient(ellipse at 50% 40%,rgba(80,40,160,0.2),rgba(13,10,26,0.98))">
+  <div style="font-size:48px;margin-bottom:12px">✨</div>
+  <h1 style="font-size:clamp(24px,6vw,36px)">Every Letter Has a Sound</h1>
+  <p class="sub">Today you'll learn 4 letter sounds. Each letter makes a special sound — and once you know them, you can start reading words.</p>
+  <button class="btn" onclick="startTeach()">Let's Learn</button>
+</div>
+
+<!-- ═══ 2. TEACH (explicit instruction) ═══ -->
+<div class="scr off" id="s-teach" style="background:radial-gradient(ellipse at 50% 50%,#1a1230,#0d0a1a)">
+  <div class="teach-progress" id="teach-dots"></div>
+  <div class="teach-card" id="teach-card">
+    <div id="teach-label" style="font-size:12px;font-weight:800;color:rgba(139,92,246,0.6);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px">Listen and Learn</div>
+    <div class="teach-letter" id="teach-letter"></div>
+    <div class="teach-keyword" id="teach-keyword"></div>
+    <div class="teach-rule" id="teach-rule"></div>
+    <button class="oracle" id="teach-oracle" onclick="replayTeach()" style="margin:16px auto">🔮</button>
+  </div>
+  <button class="btn" id="teach-next" style="margin-top:16px;opacity:0;pointer-events:none;transition:opacity .3s" onclick="nextTeach()">Next</button>
+</div>
+
+<!-- ═══ 3. GUIDED PRACTICE ═══ -->
+<div class="scr off" id="s-guided" style="background:radial-gradient(ellipse at 50% 50%,#1a1230,#0d0a1a)">
+  <div id="g-label" style="font-size:12px;font-weight:800;color:rgba(245,196,105,0.6);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px">Guided Practice</div>
+  <div id="g-prompt" style="font-size:clamp(15px,3.8vw,19px);font-weight:700;color:rgba(255,255,255,0.6);margin-bottom:8px;text-align:center;min-height:28px"></div>
+  <button class="oracle" id="g-oracle" onclick="replayGuided()" style="margin-bottom:16px">🔮</button>
+  <div class="g-gems" id="g-gems"></div>
+  <div id="g-feedback" style="font-size:14px;color:rgba(255,255,255,0.4);min-height:24px;text-align:center;margin-top:8px;transition:all .25s"></div>
+</div>
+
+<!-- ═══ TRANSITION ═══ -->
+<div class="scr off" id="s-transition" style="background:radial-gradient(ellipse at 50% 40%,rgba(80,40,160,0.2),rgba(13,10,26,0.98))">
+  <div style="font-size:48px;margin-bottom:12px">⚡</div>
+  <h1 style="font-size:clamp(22px,5.5vw,32px)">Now Show<br>What You Know</h1>
+  <p class="sub">The sounds will play. The gems will float. Find the right letter — fast!</p>
+  <button class="btn" onclick="startSprint()">Go!</button>
+</div>
+
+<!-- ═══ 4. SPRINT (independent practice) ═══ -->
+<div class="scr off" id="s-sprint" style="background:radial-gradient(ellipse at 50% 50%,#1a1230,#0d0a1a)">
+  <div class="dots" id="sprint-dots"></div>
+  <div id="timer"><div id="timer-fill"></div></div>
+  <div id="prompt">Find the matching letter!</div>
+  <button class="oracle" id="sprint-oracle" onclick="replaySprint()" style="margin-bottom:12px">🔮</button>
+  <div id="sprint-field"></div>
+</div>
+
+<!-- ═══ 5. WRAP-UP ═══ -->
+<div class="scr off" id="s-wrapup" style="background:radial-gradient(ellipse at 50% 40%,rgba(139,92,246,0.15),rgba(13,10,26,0.95))">
+  <div style="font-size:48px;margin-bottom:12px">🎓</div>
+  <h1 style="font-size:clamp(24px,6vw,36px)">Lesson Complete!</h1>
+  <p class="sub" id="wrapup-text"></p>
+  <div id="wrapup-cards" style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;justify-content:center"></div>
+  <button class="btn" onclick="location.reload()">Play Again</button>
+</div>
+
+<!-- FAIL -->
+<div class="ov off" id="fail-ov">
+  <h2>⏱️ Time's Up</h2>
+  <p>Let's try the practice again!</p>
+  <button class="btn btn-red" onclick="retrySprint()">Retry</button>
+</div>
+
+<script>
+'use strict';
+
+// ══════════════════════════════════════
+// LESSON DATA — 4 letter sounds
+// ══════════════════════════════════════
+const LESSON=[
+  {letter:'S', sound:'s', keyword:'sun',   rule:'The letter <em>S</em> makes the /s/ sound — like the start of <em>sun</em> and <em>snake</em>.'},
+  {letter:'T', sound:'t', keyword:'tap',   rule:'The letter <em>T</em> makes the /t/ sound — like the start of <em>tap</em> and <em>top</em>.'},
+  {letter:'M', sound:'m', keyword:'map',   rule:'The letter <em>M</em> makes the /m/ sound — like the start of <em>map</em> and <em>moon</em>.'},
+  {letter:'N', sound:'n', keyword:'nap',   rule:'The letter <em>N</em> makes the /n/ sound — like the start of <em>nap</em> and <em>nose</em>.'},
+];
+
+// Guided practice rounds (hear sound, pick from 3)
+const GUIDED=[
+  {target:'s', choices:['S','T','M']},
+  {target:'m', choices:['N','M','S']},
+  {target:'t', choices:['T','N','M']},
+  {target:'n', choices:['S','N','T']},
+];
+
+// Sprint rounds (hear sound, pick from 4 floating gems)
+const SPRINT=[
+  {target:'s', choices:['S','T','M','N']},
+  {target:'n', choices:['N','S','T','M']},
+  {target:'m', choices:['M','N','S','T']},
+  {target:'t', choices:['T','M','N','S']},
+  {target:'s', choices:['S','N','M','T']},
+  {target:'m', choices:['T','S','M','N']},
+];
+
+const SECS=10; // per sprint round
+
+// ══════════════════════════════════════
+// AUDIO
+// ══════════════════════════════════════
+const AUD_PATH='../audio/harp/';
+const aud={};
+['s','t','m','n','k','p','f'].forEach(p=>{
+  const a=new Audio();a.preload='auto';a.src=AUD_PATH+p+'.wav';
+  a.onerror=()=>{a.src=AUD_PATH+p+'.mp3';};
+  aud[p]=a;
+});
+
+function playSound(p,cb){
+  const a=aud[p];
+  if(a){a.currentTime=0;a.onended=()=>{if(cb)cb();};
+    a.play().catch(()=>fallback(p,cb));
+  } else fallback(p,cb);
+}
+function fallback(p,cb){
+  try{speechSynthesis.cancel();}catch(e){}
+  const u=new SpeechSynthesisUtterance(p);u.rate=0.7;u.volume=1;
+  let d=false;u.onend=()=>{if(!d){d=true;if(cb)cb();}};
+  u.onerror=()=>{if(!d){d=true;if(cb)cb();}};
+  setTimeout(()=>{if(!d){d=true;if(cb)cb();}},1500);
+  speechSynthesis.speak(u);
+}
+
+let ac;function initAC(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();return ac;}
+function sfxOk(){try{const a=initAC(),n=a.currentTime;
+  [523,659,784].forEach((h,i)=>{const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=h;
+    g.gain.setValueAtTime(0,n+i*0.08);g.gain.linearRampToValueAtTime(0.12,n+i*0.08+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,n+i*0.08+0.5);
+    o.connect(g);g.connect(a.destination);o.start(n+i*0.08);o.stop(n+i*0.08+0.6);});}catch(e){}}
+function sfxNo(){try{const a=initAC(),n=a.currentTime;const o=a.createOscillator(),g=a.createGain();
+  o.type='sawtooth';o.frequency.setValueAtTime(200,n);o.frequency.linearRampToValueAtTime(120,n+0.2);
+  g.gain.setValueAtTime(0.06,n);g.gain.exponentialRampToValueAtTime(0.001,n+0.25);
+  o.connect(g);g.connect(a.destination);o.start(n);o.stop(n+0.3);}catch(e){}}
+function sfxWin(){try{const a=initAC(),n=a.currentTime;
+  [523,587,659,784,880,1047].forEach((h,i)=>{const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=h;
+    g.gain.setValueAtTime(0,n+i*0.1);g.gain.linearRampToValueAtTime(0.1,n+i*0.1+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,n+i*0.1+0.7);
+    o.connect(g);g.connect(a.destination);o.start(n+i*0.1);o.stop(n+i*0.1+0.8);});}catch(e){}}
+document.addEventListener('pointerdown',()=>{try{initAC();}catch(e){}},{once:true});
+setInterval(()=>{if(speechSynthesis.paused)speechSynthesis.resume();},500);
+
+// ══════════════════════════════════════
+// SCREENS
+// ══════════════════════════════════════
+function show(id){
+  ['s-intro','s-teach','s-guided','s-transition','s-sprint','s-wrapup'].forEach(s=>
+    document.getElementById(s).classList.add('off'));
+  document.getElementById(id).classList.remove('off');
+}
+function setPhase(pct,label){
+  document.getElementById('phase-fill').style.width=pct+'%';
+  document.getElementById('phase-label').textContent=label;
+}
+
+// ══════════════════════════════════════
+// 2. TEACH — explicit instruction
+// ══════════════════════════════════════
+let teachIdx=0, lastTeachSound='';
+
+function startTeach(){
+  try{initAC();}catch(e){}
+  teachIdx=0;show('s-teach');setPhase(10,'Teach');
+  showTeachCard();
+}
+
+function showTeachCard(){
+  const item=LESSON[teachIdx];
+  // Progress dots
+  document.getElementById('teach-dots').innerHTML=LESSON.map((_,i)=>
+    `<div class="tp${i<teachIdx?' done':''}${i===teachIdx?' cur':''}"></div>`).join('');
+  // Card content
+  document.getElementById('teach-letter').textContent=item.letter;
+  document.getElementById('teach-keyword').textContent=item.keyword;
+  document.getElementById('teach-rule').innerHTML=item.rule;
+  lastTeachSound=item.sound;
+
+  // Hide next button until audio plays
+  const btn=document.getElementById('teach-next');
+  btn.style.opacity='0';btn.style.pointerEvents='none';
+
+  // Oracle speaks the sound, then enable next
+  setTimeout(()=>{
+    const orc=document.getElementById('teach-oracle');
+    orc.classList.add('speaking');
+    playSound(item.sound, ()=>{
+      orc.classList.remove('speaking');
+      btn.style.opacity='1';btn.style.pointerEvents='auto';
+    });
+  },500);
+}
+
+function replayTeach(){
+  if(lastTeachSound){
+    const orc=document.getElementById('teach-oracle');
+    orc.classList.add('speaking');
+    playSound(lastTeachSound,()=>orc.classList.remove('speaking'));
+  }
+}
+
+function nextTeach(){
+  teachIdx++;
+  if(teachIdx>=LESSON.length){
+    // Move to guided practice
+    startGuided();
+  } else {
+    showTeachCard();
+  }
+}
+
+// ══════════════════════════════════════
+// 3. GUIDED PRACTICE — supervised, can't fail
+// ══════════════════════════════════════
+let guidedIdx=0, guidedActive=false, lastGuidedSound='';
+
+function startGuided(){
+  guidedIdx=0;show('s-guided');setPhase(40,'Guided Practice');
+  loadGuided();
+}
+
+function loadGuided(){
+  guidedActive=false;
+  const r=GUIDED[guidedIdx];
+  lastGuidedSound=r.target;
+
+  document.getElementById('g-prompt').textContent='Which letter makes this sound?';
+  document.getElementById('g-feedback').textContent='';
+
+  // Shuffle choices
+  const choices=[...r.choices];
+  for(let i=choices.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[choices[i],choices[j]]=[choices[j],choices[i]];}
+
+  // Build gem buttons
+  const container=document.getElementById('g-gems');
+  container.innerHTML='';
+  choices.forEach(ch=>{
+    const d=document.createElement('div');
+    d.className='g-gem';d.textContent=ch;
+    d.onclick=()=>guidedTap(ch,d);
+    container.appendChild(d);
+  });
+
+  // Play the sound, then hint the correct gem after a delay
+  setTimeout(()=>{
+    const orc=document.getElementById('g-oracle');
+    orc.classList.add('speaking');
+    playSound(r.target, ()=>{
+      orc.classList.remove('speaking');
+      guidedActive=true;
+      // After 3 seconds, hint the correct answer if not yet tapped
+      setTimeout(()=>{
+        if(guidedActive){
+          const gems=document.querySelectorAll('#g-gems .g-gem');
+          gems.forEach(g=>{
+            if(g.textContent===r.target.toUpperCase()) g.classList.add('hint');
+          });
+        }
+      },3000);
+    });
+  },400);
+}
+
+function guidedTap(ch, el){
+  if(!guidedActive)return;
+  const r=GUIDED[guidedIdx];
+
+  if(ch.toLowerCase()===r.target){
+    guidedActive=false;sfxOk();
+    el.classList.add('correct');
+    document.querySelectorAll('#g-gems .g-gem').forEach(g=>{if(g!==el)g.classList.add('dim');});
+    document.getElementById('g-feedback').textContent='That\'s right! '+ch+' makes the /'+r.target+'/ sound.';
+    document.getElementById('g-feedback').style.color='#5ec77a';
+
+    setTimeout(()=>{
+      guidedIdx++;
+      if(guidedIdx>=GUIDED.length){
+        show('s-transition');setPhase(65,'Ready');
+      } else {
+        loadGuided();
+      }
+    },1200);
+  } else {
+    sfxNo();el.classList.add('wrong');
+    setTimeout(()=>el.classList.remove('wrong'),400);
+    document.getElementById('g-feedback').textContent='That\'s '+ch+'. Listen again — tap the glowing gem.';
+    document.getElementById('g-feedback').style.color='rgba(232,116,97,0.8)';
+    // Replay sound
+    setTimeout(()=>playSound(r.target),500);
+    // Hint the correct one
+    document.querySelectorAll('#g-gems .g-gem').forEach(g=>{
+      if(g.textContent===r.target.toUpperCase()) g.classList.add('hint');
+    });
+  }
+}
+
+function replayGuided(){
+  if(lastGuidedSound){
+    const orc=document.getElementById('g-oracle');
+    orc.classList.add('speaking');
+    playSound(lastGuidedSound,()=>orc.classList.remove('speaking'));
+  }
+}
+
+// ══════════════════════════════════════
+// 4. SPRINT — independent practice, timed, floating gems
+// ══════════════════════════════════════
+let sprintIdx=0, sprintActive=false, sprintTimer=null, lastSprintSound='';
+let gemPos=[], floatFrame=null;
+
+function startSprint(){
+  sprintIdx=0;show('s-sprint');setPhase(75,'Practice');
+  document.getElementById('fail-ov').classList.add('off');
+  loadSprintRound();
+}
+function retrySprint(){
+  document.getElementById('fail-ov').classList.add('off');
+  sprintIdx=0;loadSprintRound();
+}
+
+function loadSprintRound(){
+  sprintActive=false;stopFloat();clearInterval(sprintTimer);
+  const r=SPRINT[sprintIdx];
+  lastSprintSound=r.target;
+
+  // Dots
+  document.getElementById('sprint-dots').innerHTML=SPRINT.map((_,i)=>
+    `<div class="dot${i<sprintIdx?' done':''}${i===sprintIdx?' cur':''}"></div>`).join('');
+
+  document.getElementById('prompt').textContent='Find the matching letter!';
+  document.getElementById('prompt').className='';
+
+  // Build floating gems
+  const field=document.getElementById('sprint-field');
+  field.innerHTML='';
+  gemPos=[];
+  const fw=field.clientWidth||350, fh=field.clientHeight||250;
+  const choices=[...r.choices];
+  for(let i=choices.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[choices[i],choices[j]]=[choices[j],choices[i]];}
+
+  choices.forEach((ch,i)=>{
+    const d=document.createElement('div');
+    d.className='s-gem';d.textContent=ch;
+    d.onclick=()=>sprintTap(ch,d);
+    field.appendChild(d);
+    const col=i%2, row=Math.floor(i/2);
+    const x=20+col*(fw/2-60)+Math.random()*40;
+    const y=10+row*(fh/2-60)+Math.random()*30;
+    const a=Math.random()*6.28, sp=0.2+Math.random()*0.2;
+    gemPos.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,el:d,letter:ch});
+    d.style.left=x+'px';d.style.top=y+'px';
+  });
+
+  startFloat(fw,fh);
+  startTimer();
+
+  // Play sound
+  setTimeout(()=>{
+    const orc=document.getElementById('sprint-oracle');
+    orc.classList.add('speaking');
+    playSound(r.target,()=>{orc.classList.remove('speaking');sprintActive=true;});
+  },300);
+}
+
+function sprintTap(ch,el){
+  if(!sprintActive)return;
+  const r=SPRINT[sprintIdx];
+  if(ch.toLowerCase()===r.target){
+    sprintActive=false;sfxOk();clearInterval(sprintTimer);
+    el.classList.add('pop');
+    document.getElementById('prompt').textContent='✓ '+ch;
+    document.getElementById('prompt').className='ok';
+    burst();
+    setTimeout(()=>{
+      sprintIdx++;
+      if(sprintIdx>=SPRINT.length){
+        stopFloat();setPhase(100,'Complete');
+        sfxWin();confetti();
+        showWrapup();
+      } else {
+        loadSprintRound();
+      }
+    },800);
+  } else {
+    sfxNo();el.classList.add('wrong');
+    setTimeout(()=>el.classList.remove('wrong'),400);
+    document.getElementById('prompt').textContent='That\'s '+ch+' — listen again';
+    document.getElementById('prompt').className='bad';
+    setTimeout(()=>playSound(r.target),400);
+  }
+}
+
+function replaySprint(){
+  if(lastSprintSound&&sprintActive){
+    const orc=document.getElementById('sprint-oracle');
+    orc.classList.add('speaking');
+    playSound(lastSprintSound,()=>orc.classList.remove('speaking'));
+  }
+}
+
+// Float
+function startFloat(fw,fh){
+  stopFloat();const SZ=80,MIN=SZ+10;
+  floatFrame=requestAnimationFrame(function loop(){
+    gemPos.forEach(g=>{
+      g.x+=g.vx;g.y+=g.vy;
+      if(g.x<0){g.x=0;g.vx=Math.abs(g.vx);}
+      if(g.x>fw-SZ){g.x=fw-SZ;g.vx=-Math.abs(g.vx);}
+      if(g.y<0){g.y=0;g.vy=Math.abs(g.vy);}
+      if(g.y>fh-SZ){g.y=fh-SZ;g.vy=-Math.abs(g.vy);}
+    });
+    for(let i=0;i<gemPos.length;i++)for(let j=i+1;j<gemPos.length;j++){
+      const a=gemPos[i],b=gemPos[j];
+      const dx=b.x-a.x+SZ/2-(b.x+SZ/2-a.x),dy=b.y-a.y;
+      const cx1=a.x+SZ/2,cy1=a.y+SZ/2,cx2=b.x+SZ/2,cy2=b.y+SZ/2;
+      const ddx=cx2-cx1,ddy=cy2-cy1,dist=Math.hypot(ddx,ddy);
+      if(dist<MIN&&dist>0){const ov=(MIN-dist)/2,nx=ddx/dist,ny=ddy/dist;
+        a.x-=nx*ov;a.y-=ny*ov;b.x+=nx*ov;b.y+=ny*ov;
+        a.vx-=nx*0.03;a.vy-=ny*0.03;b.vx+=nx*0.03;b.vy+=ny*0.03;}
+    }
+    gemPos.forEach(g=>{g.el.style.left=g.x+'px';g.el.style.top=g.y+'px';});
+    floatFrame=requestAnimationFrame(loop);
+  });
+}
+function stopFloat(){if(floatFrame){cancelAnimationFrame(floatFrame);floatFrame=null;}}
+
+// Timer
+function startTimer(){
+  clearInterval(sprintTimer);
+  const fill=document.getElementById('timer-fill');
+  fill.style.width='100%';fill.className='';
+  const t0=Date.now();
+  sprintTimer=setInterval(()=>{
+    const pct=Math.max(0,(1-(Date.now()-t0)/1000/SECS))*100;
+    fill.style.width=pct+'%';
+    if(pct<=20)fill.className='danger';
+    else if(pct<=40)fill.className='warn';
+    else fill.className='';
+    if(pct<=0){clearInterval(sprintTimer);if(sprintActive){sprintActive=false;stopFloat();
+      setTimeout(()=>document.getElementById('fail-ov').classList.remove('off'),400);}}
+  },100);
+}
+
+// ══════════════════════════════════════
+// 5. WRAP-UP
+// ══════════════════════════════════════
+function showWrapup(){
+  setTimeout(()=>{
+    show('s-wrapup');
+    document.getElementById('wrapup-text').textContent=
+      'You learned '+LESSON.length+' letter sounds today! Every time you see these letters, you\'ll know what sound they make.';
+    const cards=document.getElementById('wrapup-cards');
+    cards.innerHTML=LESSON.map(l=>
+      `<div style="background:rgba(139,92,246,0.1);border:2px solid rgba(139,92,246,0.3);border-radius:12px;padding:12px 20px;text-align:center">
+        <div style="font-family:Cinzel,serif;font-size:32px;font-weight:900;color:#f5c469">${l.letter}</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5)">${l.keyword}</div>
+      </div>`).join('');
+  },800);
+}
+
+// ══════════════════════════════════════
+// EFFECTS
+// ══════════════════════════════════════
+function burst(){
+  const c=document.getElementById('fx');c.width=innerWidth;c.height=innerHeight;
+  const x=c.getContext('2d'),ps=[];
+  for(let i=0;i<40;i++){const a=Math.random()*6.28,s=Math.random()*3+1;
+    ps.push({x:innerWidth/2,y:innerHeight*.45,vx:Math.cos(a)*s,vy:Math.sin(a)*s-1.5,
+      r:Math.random()*3+1,c:['#8b5cf6','#f5c469','#5ec77a','#fff'][Math.floor(Math.random()*4)],a:1});}
+  (function l(){x.clearRect(0,0,c.width,c.height);let alive=false;
+    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.04;p.a-=.02;
+      if(p.a>0){alive=true;x.globalAlpha=p.a;x.fillStyle=p.c;x.beginPath();x.arc(p.x,p.y,p.r,0,6.28);x.fill();}});
+    x.globalAlpha=1;if(alive)requestAnimationFrame(l);})();
+}
+function confetti(){
+  const c=document.createElement('canvas');c.width=innerWidth;c.height=innerHeight;
+  c.style.cssText='position:fixed;top:0;left:0;z-index:99;pointer-events:none';
+  document.body.appendChild(c);const x=c.getContext('2d'),ps=[];
+  for(let i=0;i<80;i++){const a=Math.random()*6.28,s=Math.random()*5+2;
+    ps.push({x:c.width/2,y:c.height*.4,vx:Math.cos(a)*s,vy:Math.sin(a)*s-3,
+      r:Math.random()*4+2,c:['#8b5cf6','#f5c469','#5ec77a','#a78bfa','#fff'][Math.floor(Math.random()*5)],
+      a:1,ro:Math.random()*6});}
+  (function l(){x.clearRect(0,0,c.width,c.height);let alive=false;
+    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.1;p.a-=.012;p.ro+=.08;
+      if(p.a>0){alive=true;x.globalAlpha=p.a;x.fillStyle=p.c;
+        x.save();x.translate(p.x,p.y);x.rotate(p.ro);x.fillRect(-p.r,-p.r*.5,p.r*2,p.r);x.restore();}});
+    x.globalAlpha=1;if(alive)requestAnimationFrame(l);else c.remove();})();
+}
+
+// ══════════════════════════════════════
+// STARS + SPARKLE TRAIL
+// ══════════════════════════════════════
+const stC=document.getElementById('stars'),stX=stC.getContext('2d'),st=[];
+function rsz(){stC.width=innerWidth;stC.height=innerHeight;
+  document.getElementById('trail').width=innerWidth;document.getElementById('trail').height=innerHeight;}
+rsz();addEventListener('resize',rsz);
+for(let i=0;i<40;i++)st.push({x:Math.random()*3e3,y:Math.random()*3e3,r:Math.random()*1+0.3,
+  a:Math.random()*0.4,p:Math.random()*6.28,s:Math.random()*0.01+0.004});
+(function sL(){stX.clearRect(0,0,stC.width,stC.height);st.forEach(s=>{s.p+=s.s;
+  stX.fillStyle=`rgba(180,160,255,${s.a*(0.3+0.7*Math.sin(s.p))})`;
+  stX.beginPath();stX.arc(s.x%stC.width,s.y%stC.height,s.r,0,6.28);stX.fill();});requestAnimationFrame(sL)})();
+
+const trC=document.getElementById('trail'),trX=trC.getContext('2d'),sp=[];
+document.addEventListener('pointermove',e=>{
+  for(let i=0;i<2;i++)sp.push({x:e.clientX+(Math.random()-.5)*8,y:e.clientY+(Math.random()-.5)*8,
+    r:Math.random()*2.5+1,a:1,vx:(Math.random()-.5)*.5,vy:Math.random()*.5+.2,
+    c:['#f5c469','#a78bfa','#fff','#ef8b5b'][Math.floor(Math.random()*4)],f:Math.random()*.4+.6});
+  if(sp.length>80)sp.splice(0,sp.length-80);});
+(function tL(){trX.clearRect(0,0,trC.width,trC.height);
+  for(let i=sp.length-1;i>=0;i--){const s=sp[i];s.x+=s.vx;s.y+=s.vy;s.a-=0.025*s.f;s.r*=0.98;
+    if(s.a<=0){sp.splice(i,1);continue;}trX.globalAlpha=s.a;trX.fillStyle=s.c;
+    trX.beginPath();for(let p=0;p<5;p++){const a2=(p/5)*6.28-1.57,ox=Math.cos(a2)*s.r,oy=Math.sin(a2)*s.r,
+      a3=a2+.628,ix=Math.cos(a3)*s.r*.4,iy=Math.sin(a3)*s.r*.4;
+      if(!p)trX.moveTo(s.x+ox,s.y+oy);else trX.lineTo(s.x+ox,s.y+oy);trX.lineTo(s.x+ix,s.y+iy);}
+    trX.closePath();trX.fill();}trX.globalAlpha=1;requestAnimationFrame(tL)})();
+</script>
+</body>
+</html>

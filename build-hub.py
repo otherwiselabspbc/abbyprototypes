@@ -19,7 +19,23 @@ def esc(s):
 # SCAN GAMES
 # ══════════════════════════════════════
 def scan_games():
-    files = sorted(glob.glob(os.path.join(ROOT, 'game-*.html')))
+    # Scan both root and minigame prototypes subfolder
+    files = sorted(
+        glob.glob(os.path.join(ROOT, 'game-*.html')) +
+        glob.glob(os.path.join(ROOT, '*.html')) +
+        glob.glob(os.path.join(ROOT, 'minigame prototypes', '*.html'))
+    )
+    # Deduplicate and filter to game/lesson/quest/spell/enchanted files
+    seen = set()
+    filtered = []
+    for f in files:
+        name = os.path.basename(f)
+        if name in seen or name == 'index.html':
+            continue
+        seen.add(name)
+        if any(kw in name for kw in ['game-','quest','spell','enchanted','lesson','harp']):
+            filtered.append(f)
+    files = filtered
     games = []
     for f in files:
         name = os.path.basename(f)
@@ -156,7 +172,7 @@ def generate():
     resources = scan_resources()
     now = datetime.now().strftime('%B %d, %Y')
 
-    playable = [g for g in games if int(g['num']) >= 3]
+    playable = [g for g in games if g['num'].isdigit() and int(g['num']) >= 3 or not g['num'].isdigit()]
 
     quick_links = '\n  '.join(
         f'<a class="quick-link" href="{esc(g["file"])}" onclick="sessionStorage.setItem(\'fromGarden\',\'1\')">{esc(g["title"])}</a>'

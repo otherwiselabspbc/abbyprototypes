@@ -112,6 +112,68 @@ When adding a new resource, always fill in ALL fields in the entry template belo
 
 ---
 
+### R-004: Otherwise Labs Check-in — Explicit & Systematic Instruction
+
+| Field | Value |
+|---|---|
+| **Title** | Abby <> Bob Otherwise Labs check-in — Meeting Notes |
+| **Authors** | Tyler Ogata, Abigail Garewal, Robert Borges |
+| **Year** | 2026 |
+| **Publisher** | Internal meeting (Gemini notes) |
+| **Type** | Meeting notes |
+| **Pages** | 5 |
+| **File** | `~/Downloads/Abby __ Bob Otherwise Labs check-in - 2026_05_07 15_00 PDT - Notes by Gemini.pdf` |
+| **Topics** | Explicit instruction, systematic teaching, 80/20 ratio, 3-stage learning structure, concealing failure, lesson plan structure, contextualized learning |
+| **Skill derived** | `/explicit-instruction` |
+| **Date added** | 2026-05-14 |
+
+**Key takeaways:**
+1. **80/20 ratio.** Lessons are 80% explicit instruction and 20% practice. Mini-games are the 20% — the game must also contain the 80%.
+2. **Explicit means directly telling.** The game states the rule/concept clearly before practice begins. Students don't infer or discover it on their own.
+3. **3-stage structure.** Tutorial (teach concept + mechanic) → Supervised Learning (must demonstrate understanding to proceed) → Independent Practice (the sprint).
+4. **Systematic linking.** Concepts must be taught in order. Can't teach "I says its name before LD" without first teaching what a long vowel is.
+5. **Contextualize learning.** "You need to decode this word to unlock the passage" is better than "practice reading this word."
+6. **Conceal failure.** Errors should feel like part of the learning process, not setbacks. No red X marks. Wrong answers trigger re-teaching.
+7. **Students should know they're learning.** Awareness of growth is motivating. Pride comes from feeling the skill develop — don't hide that this is educational.
+8. **One lesson plan = multiple mini-games.** Each lesson covers different activities; each could be a separate game within a session.
+
+**How it shaped our product:**
+- The `/explicit-instruction` skill was created to codify these principles
+- Every game must now include explicit concept teaching, not just game-mechanic practice
+- The 3-stage structure (Tutorial → Supervised → Independent) replaces our previous simpler Learn/Practice split
+- Error feedback must re-teach the concept, not just indicate wrongness
+
+---
+
+### R-005: WRS Lesson Plan Poster
+
+| Field | Value |
+|---|---|
+| **Title** | WRS Lesson Plan Outline |
+| **Authors** | Wilson Reading System |
+| **Year** | — |
+| **Publisher** | Wilson Language Training |
+| **Type** | Reference poster / infographic |
+| **Pages** | 1 |
+| **File** | `~/Downloads/WRS Lesson Plan Poster.avif` |
+| **Topics** | Lesson plan structure, 10-step lesson sequence, reading and spelling instruction flow, session rhythm |
+| **Skill derived** | Added to `/explicit-instruction` |
+| **Date added** | 2026-05-14 |
+
+**Key takeaways:**
+1. **10-step lesson structure.** Sounds drill → Teach concepts → Word cards → Wordlist reading → Sentence reading → Reverse drill → Teach spelling → Written dictation → Passage reading → Fluency & comprehension.
+2. **Smallest to largest.** The lesson flows: Sound → Letter → Word → Sentence → Passage → Story. Then reverses for encoding.
+3. **Each step has a clear purpose.** Steps 1-5 are reading direction. Steps 6-8 are spelling direction. Steps 9-10 are extended application.
+4. **Quick drills bookend the teaching.** Fast sound recognition at the start (Step 1) and fast sound-to-letter at the midpoint (Step 6) act as warm-ups.
+5. **Teaching always precedes practice.** Steps 2 and 7 are explicit instruction. Steps 4, 5, 8 are independent practice. The pattern is always: teach → practice → teach → practice.
+
+**How it shaped our product:**
+- Maps each mini-game type to a WRS step (Enchanted Gems = Step 1, Spell Caster = Step 4, Quest Catcher = Step 5)
+- Shows how mini-games should be sequenced in a session: drill → teach → practice → teach → practice
+- Confirms that our games span multiple WRS steps, not just one
+
+---
+
 ## Topic Index
 
 Quick lookup — which resource covers which topic:
@@ -130,10 +192,16 @@ Quick lookup — which resource covers which topic:
 | Game feel / aesthetics | R-003 |
 | Mechanics → Dynamics → Aesthetics | R-003 |
 | Collaboration vs competition | R-001 (Ch 13), R-002 (CD5) |
-| Dyslexia / OG methodology | (curriculum CSV — not a PDF resource yet) |
+| Dyslexia / OG methodology | (curriculum CSV), R-004 |
 | Multimedia principles | R-001 (Ch 12) |
 | Scarcity / retention | R-002 (Ch 10) |
 | Loss aversion | R-002 (Ch 12) |
+| Explicit instruction | R-004 |
+| Systematic teaching / concept sequencing | R-004 |
+| Lesson plan structure | R-004 |
+| Concealing failure | R-004, R-001 (Ch 5) |
+| 80/20 instruction ratio | R-004 |
+| 3-stage learning (tutorial/supervised/practice) | R-004 |
 
 ---
 
