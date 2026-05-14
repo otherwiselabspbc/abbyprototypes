@@ -72,33 +72,43 @@ body{background:#0a0814;overflow:hidden;font-family:'Cinzel',serif;
 #gems{position:fixed;bottom:clamp(80px,15vh,140px);left:50%;transform:translateX(-50%);
   display:flex;gap:clamp(12px,4vw,24px);justify-content:center;z-index:12}
 #gems.off{display:none}
-.gem{width:clamp(64px,16vw,80px);height:clamp(64px,16vw,80px);border-radius:14px;
-  background:linear-gradient(145deg,#1e1a2e,#2a2340);border:3px solid rgba(139,92,246,0.2);
+.gem{width:clamp(68px,17vw,84px);height:clamp(68px,17vw,84px);
+  clip-path:polygon(50% 0%,85% 18%,100% 55%,80% 92%,50% 100%,20% 92%,0% 55%,15% 18%);
+  background:linear-gradient(145deg,#2a2050,#1a1438);
   display:flex;align-items:center;justify-content:center;
-  font-size:clamp(24px,6vw,32px);font-weight:900;color:rgba(255,255,255,0.5);
-  cursor:pointer;transition:all .15s;text-shadow:0 0 8px rgba(139,92,246,0.3);
-  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.gem:hover{border-color:#a78bfa;transform:translateY(-3px);box-shadow:0 0 16px rgba(139,92,246,0.3)}
+  font-family:'Cinzel',serif;font-size:clamp(24px,6vw,32px);font-weight:900;
+  color:rgba(255,255,255,0.55);
+  cursor:pointer;transition:all .15s;text-shadow:0 0 10px rgba(139,92,246,0.4);
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  filter:drop-shadow(0 2px 8px rgba(139,92,246,0.2))}
+.gem:hover{transform:translateY(-4px);filter:drop-shadow(0 0 16px rgba(139,92,246,0.4))}
 .gem:active{transform:scale(0.95)}
-.gem.correct{border-color:#5ec77a;background:rgba(94,199,122,0.12);color:#5ec77a;
-  box-shadow:0 0 20px rgba(94,199,122,0.3)}
+.gem.correct{background:linear-gradient(145deg,#1a3828,#0e2818);color:#5ec77a;
+  filter:drop-shadow(0 0 20px rgba(94,199,122,0.4))}
 .gem.wrong{animation:shake .4s ease-out}
-.gem.hint{border-color:#f5c469;box-shadow:0 0 16px rgba(245,196,105,0.3);color:#f5c469;
+.gem.hint{background:linear-gradient(145deg,#3a2a10,#2a1a08);color:#f5c469;
+  filter:drop-shadow(0 0 16px rgba(245,196,105,0.4));
   animation:hint-glow 1s ease-in-out infinite}
-.gem.dim{opacity:0.15;pointer-events:none}
+.gem.dim{opacity:0.12;pointer-events:none}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 @keyframes hint-glow{0%,100%{box-shadow:0 0 10px rgba(245,196,105,0.2)}50%{box-shadow:0 0 24px rgba(245,196,105,0.5)}}
 
-/* Sprint floating gems */
-#sprint-field{position:fixed;top:60px;left:0;right:0;bottom:180px;z-index:5;display:none}
-.f-gem{position:absolute;width:72px;height:72px;border-radius:14px;
-  background:linear-gradient(145deg,#1e1a2e,#2a2340);border:3px solid rgba(139,92,246,0.2);
+/* Sprint floating gems — centered field, gem-shaped */
+#sprint-field{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:clamp(300px,70vw,480px);height:clamp(240px,45vh,360px);
+  z-index:5;display:none}
+.f-gem{position:absolute;width:76px;height:76px;
+  clip-path:polygon(50% 0%,85% 18%,100% 55%,80% 92%,50% 100%,20% 92%,0% 55%,15% 18%);
+  background:linear-gradient(145deg,#2a2050,#1a1438);
   display:flex;align-items:center;justify-content:center;
-  font-size:26px;font-weight:900;color:rgba(255,255,255,0.5);
-  cursor:pointer;text-shadow:0 0 8px rgba(139,92,246,0.3);
-  -webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:transform .12s,opacity .3s}
-.f-gem:hover{transform:scale(1.1)!important}
-.f-gem.pop{opacity:0;transform:scale(1.4)!important;transition:all .4s}
+  font-family:'Cinzel',serif;font-size:26px;font-weight:900;color:rgba(255,255,255,0.55);
+  cursor:pointer;text-shadow:0 0 10px rgba(139,92,246,0.4);
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  transition:transform .12s,opacity .3s;
+  filter:drop-shadow(0 2px 8px rgba(139,92,246,0.2))}
+.f-gem:hover{transform:scale(1.12)!important;filter:drop-shadow(0 0 16px rgba(139,92,246,0.4))}
+.f-gem.pop{opacity:0;transform:scale(1.5)!important;transition:all .4s;
+  filter:drop-shadow(0 0 30px rgba(94,199,122,0.5))}
 .f-gem.wrong{animation:shake .4s ease-out}
 
 /* Timer */
@@ -139,6 +149,7 @@ body{background:#0a0814;overflow:hidden;font-family:'Cinzel',serif;
 <div id="actions">
   <button class="btn btn-magic off" id="btn-continue" onclick="nextBeat()">Continue</button>
   <button class="btn btn-gold off" id="btn-go" onclick="startSprint()">I'm Ready</button>
+  <button class="btn btn-magic off" id="btn-restart" onclick="location.reload()">Play Again</button>
 </div>
 
 <div id="sprint-field"></div>
@@ -606,8 +617,8 @@ function startGuided(idx){
   document.getElementById('sp-text').innerHTML=`Which letter makes this sound? Listen...`;
   hideBtn('btn-continue');hideBtn('btn-go');
 
-  // Play the sound
-  setTimeout(()=>{
+  // Speak the prompt, THEN play the phoneme sound
+  fbSpeak('Which letter makes this sound? Listen.',()=>{
     playS(r.sound,()=>{
       // Show gems
       const gemsEl=document.getElementById('gems');
@@ -626,7 +637,7 @@ function startGuided(idx){
         }
       },3000);
     });
-  },500);
+  });
 }
 
 function guidedPick(ch){
@@ -698,7 +709,7 @@ function loadSprintRound(){
   // Build floating gems
   const field=document.getElementById('sprint-field');
   field.innerHTML='';gemPos=[];
-  const fw=field.clientWidth||innerWidth, fh=field.clientHeight||(innerHeight-200);
+  const fw=field.clientWidth||400, fh=field.clientHeight||300;
   const choices=[...r.choices];
   for(let i=choices.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[choices[i],choices[j]]=[choices[j],choices[i]];}
 
@@ -747,7 +758,7 @@ function sprintTap(ch,el){
 function replaySprint(){if(sprintActive&&lastAudio)playS(lastAudio);}
 
 // Float
-function startFloat(fw,fh){stopFloat();const SZ=72,MIN=SZ+12;
+function startFloat(fw,fh){stopFloat();const SZ=76,MIN=SZ+14;
   floatFrame=requestAnimationFrame(function loop(){
     gemPos.forEach(g=>{g.x+=g.vx;g.y+=g.vy;
       if(g.x<0){g.x=0;g.vx=Math.abs(g.vx);}if(g.x>fw-SZ){g.x=fw-SZ;g.vx=-Math.abs(g.vx);}
@@ -800,8 +811,10 @@ function openTheDoor(){
          speak:"Remember: every letter has a sound. And every sound is a key that opens something new.",
          html:"Remember: every letter has a <em>sound</em>. And every sound is a key that opens something new."},
       ],()=>{
-        document.getElementById('sp-text').innerHTML='<em>Lesson complete.</em>';
         document.getElementById('sp-name').textContent='';
+        document.getElementById('sp-text').innerHTML='<em>Lesson complete!</em>';
+        fbSpeak('Lesson complete!');
+        showBtn('btn-restart');
       });
     }
   })();
