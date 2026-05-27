@@ -220,14 +220,6 @@ body{background:#3d8a28;overflow:hidden;font-family:'Press Start 2P',monospace;
 </div>
 
 <script>
-// Refresh guard
-(function(){
-  if(!sessionStorage.getItem('fromGarden')){
-    window.location.replace('garden-overworld.html');
-    return;
-  }
-  sessionStorage.removeItem('fromGarden');
-})();
 
 // ══════════════════════════════════════
 // DATA — words with syllable breakdowns
@@ -807,7 +799,7 @@ function doStart(){
 onBtn('startBtn', doStart);
 onBtn('practiceBtn', startPractice);
 onBtn('playAgainBtn', startPractice);
-onBtn('homeBtn', ()=>{ window.location.href='garden-overworld.html'; });
+onBtn('homeBtn', ()=>{ location.reload(); });
 
 function doLearnNext(){
   learnStep++;
