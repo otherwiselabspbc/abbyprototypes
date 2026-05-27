@@ -353,27 +353,16 @@ function makeStoneTexture(phoneme, support, colorHex) {
     ctx.stroke();
   }
 
-  if(support==='none'){
-    const sym=RUNES[Math.floor(phoneme.charCodeAt(0)*7+13)%RUNES.length];
-    // Rune looks carved and glowing — double-draw for intensity
-    ctx.shadowColor=`rgb(${col})`; ctx.shadowBlur=28;
-    ctx.fillStyle=`rgba(255,255,255,0.8)`;
-    ctx.font='bold 90px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(sym,cx,cy);
-    ctx.shadowBlur=12; ctx.fillStyle='rgba(255,255,255,0.95)';
-    ctx.fillText(sym,cx,cy);
-  } else {
-    // Letter looks incised into stone, glowing from within
-    ctx.shadowColor=`rgb(${col})`; ctx.shadowBlur=44;
-    ctx.fillStyle='rgba(255,255,255,0.88)';
-    ctx.font=`bold italic 110px Georgia,serif`;
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(phoneme.toUpperCase(),cx,cy+4);
-    // Second pass — crisp bright core on top of glow
-    ctx.shadowBlur=14;
-    ctx.fillStyle='rgba(255,255,255,0.98)';
-    ctx.fillText(phoneme.toUpperCase(),cx,cy+4);
-  }
+  // Always show the actual letter on the stone
+  ctx.shadowColor=`rgb(${col})`; ctx.shadowBlur=44;
+  ctx.fillStyle='rgba(255,255,255,0.88)';
+  ctx.font=`bold italic 110px Georgia,serif`;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(phoneme.toUpperCase(),cx,cy+4);
+  // Second pass — crisp bright core on top of glow
+  ctx.shadowBlur=14;
+  ctx.fillStyle='rgba(255,255,255,0.98)';
+  ctx.fillText(phoneme.toUpperCase(),cx,cy+4);
   ctx.restore();
 
   return new THREE.CanvasTexture(cv);
@@ -654,7 +643,6 @@ function buildRoundDots(cur){
 
 function buildSeqRow(seq,support){
   const el=$('seq-row'); el.innerHTML='';
-  if(support==='none') return;
   seq.forEach((_,i)=>{
     const d=document.createElement('div');
     d.className='sq'; d.id='sq'+i;
