@@ -301,14 +301,6 @@ body{background:#4a8ff5;overflow:hidden;font-family:'Press Start 2P',monospace;
 <div id="feedback"></div>
 
 <script>
-// Refresh guard — always land in garden overworld
-(function(){
-  if(!sessionStorage.getItem('fromGarden')){
-    window.location.replace('garden-overworld.html');
-    return;
-  }
-  sessionStorage.removeItem('fromGarden');
-})();
 
 // ══════════════════════════════════════
 // LEARN DATA
@@ -826,7 +818,7 @@ document.getElementById('startBtn').addEventListener('click',()=>{
 document.getElementById('practiceBtn').addEventListener('click',()=>startPractice());
 document.getElementById('playAgainBtn').addEventListener('click',()=>startPractice());
 document.getElementById('homeBtn').addEventListener('click',()=>{
-  window.location.href='garden-overworld.html';
+  location.reload();
 });
 </script>
 </body>
