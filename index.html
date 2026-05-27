@@ -2232,9 +2232,10 @@ function toggleProfile(id) {
   if (!isOpen) el.classList.add('open');
 }
 
-/* Game card link → open button */
-document.querySelectorAll('.game-link-input').forEach(input => {
+/* Game card link → open button (only in game-footer, not member upload rows) */
+document.querySelectorAll('.game-footer .game-link-input').forEach(input => {
   const btn = input.nextElementSibling;
+  if (!btn || !btn.classList.contains('game-open-btn')) return;
 
   function syncBtn() {
     const val = input.value.trim();
