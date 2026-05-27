@@ -61,13 +61,6 @@ body{background:#4a8ff5;overflow:hidden;font-family:'Press Start 2P',monospace;
 #round-label{font-size:7px;letter-spacing:3px;color:#fff;text-transform:uppercase;
   text-shadow:1px 1px 0 rgba(0,0,0,0.2)}
 
-#timer{width:clamp(200px,50vw,300px);height:6px;border-radius:3px;
-  background:rgba(255,255,255,0.15);overflow:hidden;margin-top:4px}
-#timer-fill{height:100%;width:100%;border-radius:3px;background:#7cfc00;
-  transition:width .2s linear,background-color .3s}
-#timer-fill.warn{background:#ffe44d}
-#timer-fill.danger{background:#ff4444;animation:pulse .5s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
 
 #instruction{font-size:clamp(11px,2.8vw,14px);color:#fff;text-align:center;
   line-height:2.6;word-spacing:0.15em;
@@ -161,7 +154,6 @@ body{background:#4a8ff5;overflow:hidden;font-family:'Press Start 2P',monospace;
   <div id="hud-top">
     <div id="round-dots"></div>
     <div id="round-label">Round 1 of 6</div>
-    <div id="timer"><div id="timer-fill"></div></div>
   </div>
   <div id="instruction"></div>
   <div id="blocks-grid">
@@ -202,8 +194,7 @@ const ROUNDS=[
   {letters:['C','J','Q','Z'], target:2},
   {letters:['Y','I','O','U'], target:0},
 ];
-const SECS=20;
-let rIdx=0,canAnswer=false,locked=false,hintTier=0,tmr=null;
+let rIdx=0,canAnswer=false,locked=false,hintTier=0;
 const blockEls=[0,1,2,3].map(i=>document.getElementById('block'+i));
 
 // ═══ Background particles ═══
@@ -247,6 +238,9 @@ function say(t,cb){
     speechSynthesis.speak(u);if(speechSynthesis.paused)speechSynthesis.resume();},60);
 }
 
+// Speak a letter name without "capital" prefix
+function sayLetter(letter,cb){say(letter.toLowerCase(),cb);}
+
 // ═══ SFX ═══
 let _ac;
 function getAC(){if(!_ac)_ac=new(window.AudioContext||window.webkitAudioContext)();if(_ac.state==='suspended')_ac.resume();return _ac;}
@@ -263,7 +257,7 @@ function runDemo(){
   if(!demoActive)return;
   const t=demoIdx%4,el=document.getElementById('db'+t);
   el.classList.add('d-glow');
-  say(DEMO_L[t]);
+  sayLetter(DEMO_L[t]);
   setTimeout(()=>{el.classList.remove('d-glow');el.classList.add('d-smash');
     setTimeout(()=>{el.classList.remove('d-smash');demoIdx++;setTimeout(runDemo,800);},500);},1200);
 }
@@ -280,20 +274,6 @@ function showScreen(id){
   document.getElementById(id).classList.remove('off');
 }
 
-// ═══ Timer ═══
-function startTimer(){
-  clearInterval(tmr);
-  const fill=document.getElementById('timer-fill');fill.style.width='100%';fill.className='';
-  const t0=Date.now();
-  tmr=setInterval(()=>{
-    const pct=Math.max(0,(1-(Date.now()-t0)/1000/SECS))*100;
-    fill.style.width=pct+'%';
-    if(pct<=20)fill.className='danger';else if(pct<=40)fill.className='warn';else fill.className='';
-    if(pct<=0){clearInterval(tmr);locked=true;
-      setTimeout(()=>document.getElementById('fail-ov').classList.remove('off'),600);}
-  },100);
-}
-
 // ═══ Instruction ═══
 const instrEl=document.getElementById('instruction');
 function setInstr(txt){instrEl.classList.remove('fade');instrEl.innerHTML=txt;}
@@ -303,7 +283,7 @@ function fadeInstr(){instrEl.classList.add('fade');}
 function startGame(){
   try{getAC();}catch(e){}
   demoActive=false;speechSynthesis.cancel();
-  rIdx=0;showScreen('s-game');startTimer();setTimeout(()=>setupRound(0),120);
+  rIdx=0;showScreen('s-game');setTimeout(()=>setupRound(0),120);
 }
 
 function setupRound(idx){
@@ -344,12 +324,12 @@ function autoPlayAll(r){
       setTimeout(()=>{
         const target=r.letters[r.target];
         setInstr("Which one is it? Tap it!");
-        say(`Find ${target}.`,()=>{canAnswer=true;});
+        say(`Find ${target.toLowerCase()}.`,()=>{canAnswer=true;});
       },300);
       return;
     }
     blockEls[i].classList.add('playing');
-    say(r.letters[i],()=>{blockEls[i].classList.remove('playing');i++;setTimeout(next,200);});
+    sayLetter(r.letters[i],()=>{blockEls[i].classList.remove('playing');i++;setTimeout(next,200);});
   }
   next();
 }
@@ -371,7 +351,7 @@ function handleTap(i){
     blockEls[i].classList.add('correct');
     blockEls.forEach((el,j)=>{if(j!==i)el.classList.add('celebrate');});
     setInstr(`That's ${target}!`);
-    say(`That's ${target}!`);
+    say(`That's ${target.toLowerCase()}!`);
     setTimeout(()=>{
       blockEls[i].classList.add('smash');
       setTimeout(advanceRound,800);
@@ -382,7 +362,7 @@ function handleTap(i){
 
     if(hintTier<3){
       setInstr(`That's ${tapped}. Try again!`);
-      say(`That's ${tapped}. Try again!`,()=>{
+      say(`That's ${tapped.toLowerCase()}. Try again!`,()=>{
         blockEls[i].classList.remove('wrong');locked=false;
       });
     } else {
@@ -390,7 +370,7 @@ function handleTap(i){
       blockEls[i].classList.remove('wrong');
       blockEls[r.target].classList.add('correct');
       setInstr(`The answer is ${target}.`);
-      say(`The answer is ${target}.`);
+      say(`The answer is ${target.toLowerCase()}.`);
       sfxOk();
       setTimeout(()=>{
         blockEls[r.target].classList.add('smash');
@@ -402,7 +382,7 @@ function handleTap(i){
 
 function advanceRound(){
   rIdx++;
-  if(rIdx>=ROUNDS.length){clearInterval(tmr);sfxWin();showScreen('win-ov');}
+  if(rIdx>=ROUNDS.length){sfxWin();showScreen('win-ov');}
   else setupRound(rIdx);
 }
 
@@ -410,11 +390,11 @@ function advanceRound(){
 document.getElementById('startBtn').addEventListener('click',startGame);
 document.getElementById('playAgainBtn').addEventListener('click',()=>{
   document.getElementById('win-ov').classList.add('off');rIdx=0;
-  showScreen('s-game');startTimer();setTimeout(()=>setupRound(0),120);
+  showScreen('s-game');setTimeout(()=>setupRound(0),120);
 });
 document.getElementById('retryBtn').addEventListener('click',()=>{
   document.getElementById('fail-ov').classList.add('off');rIdx=0;
-  showScreen('s-game');startTimer();setTimeout(()=>setupRound(0),120);
+  showScreen('s-game');setTimeout(()=>setupRound(0),120);
 });
 </script>
 </body>
