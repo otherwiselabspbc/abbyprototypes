@@ -114,7 +114,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 <div class="screen off" id="game">
   <div class="hud"><div class="dots" id="dots"></div><div class="hud-label" id="hud-label"></div></div>
   <div id="timer"><div id="timer-fill"></div></div>
-  <div id="prompt">Tap each stone to hear it</div>
+  <div id="prompt">Listen carefully to each word</div>
   <button class="oracle" id="oracle" onclick="replayAll()">🔮</button>
   <div class="stones" id="stones"></div>
 </div>
@@ -125,14 +125,22 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 <script>
 'use strict';
 
-const ROUNDS=[
-  {words:['wish','dish','fish','chip'], odd:3},
-  {words:['cap','nap','map','pan'],    odd:3},
-  {words:['slam','cram','gram','slip'],odd:3},
-  {words:['cat','hat','bat','cup'],    odd:3},
-  {words:['ring','king','sing','run'], odd:3},
-  {words:['lake','cake','make','lamp'],odd:3},
+// Rhyming words + odd one out — position is randomized each round
+const ROUND_DATA=[
+  {rhymes:['wish','dish','fish'], odd:'chip'},
+  {rhymes:['cap','nap','map'],    odd:'pan'},
+  {rhymes:['slam','cram','gram'], odd:'slip'},
+  {rhymes:['cat','hat','bat'],    odd:'cup'},
+  {rhymes:['ring','king','sing'], odd:'run'},
+  {rhymes:['lake','cake','make'], odd:'lamp'},
 ];
+function shuffleRound(data){
+  const pos=Math.floor(Math.random()*4);
+  const words=[...data.rhymes];
+  words.splice(pos,0,data.odd);
+  return {words, odd:pos};
+}
+const ROUNDS=ROUND_DATA.map(shuffleRound);
 const SECS=15;
 let rIdx=0,heard=new Set(),canAnswer=false,active=false,tmr=null;
 
@@ -162,19 +170,19 @@ function startGame(){try{initAC();}catch(e){}rIdx=0;
   document.getElementById('win-ov').classList.add('off');document.getElementById('fail-ov').classList.add('off');
   show('game');loadRound();}
 function restart(){document.getElementById('win-ov').classList.add('off');document.getElementById('fail-ov').classList.add('off');
-  rIdx=0;show('game');loadRound();}
+  rIdx=0;ROUND_DATA.forEach((d,i)=>{ROUNDS[i]=shuffleRound(d);});show('game');loadRound();}
 
 function loadRound(){
   const r=ROUNDS[rIdx];heard=new Set();canAnswer=false;active=false;
   document.getElementById('dots').innerHTML=ROUNDS.map((_,i)=>`<div class="dot${i<rIdx?' done':''}${i===rIdx?' cur':''}"></div>`).join('');
   document.getElementById('hud-label').textContent=(rIdx+1)+' / '+ROUNDS.length;
-  document.getElementById('prompt').textContent='Tap each stone to hear it';
+  document.getElementById('prompt').textContent='Listen carefully to each word';
   document.getElementById('prompt').className='';
   const container=document.getElementById('stones');container.innerHTML='';
   r.words.forEach((w,i)=>{const el=document.createElement('div');el.className='stone';
     el.textContent=w.toUpperCase();el.onclick=()=>tapStone(i,el);container.appendChild(el);});
   startTimer();
-  setTimeout(()=>playAll(),400);
+  say('Listen carefully to each word.',()=>setTimeout(()=>playAll(),300));
 }
 
 function playAll(){
