@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>minigame-mechanics — OL Design Skills</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --coral:#d95f4b;--coral-dk:#b84a38;--coral-lt:#faeae7;
+  --teal:#2d7d74;--teal-lt:#e3f4f2;
+  --cream:#f6f6f7;--ink:#111318;--ink-mid:#3c3f4a;--ink-soft:#7b7f8e;
+  --border:#e2e4e9;--white:#ffffff;
+  --r:10px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);font-family:'Inter',sans-serif;color:var(--ink);min-height:100vh}
+header{position:relative;background:var(--ink);overflow:hidden;padding:48px 24px 40px;text-align:center}
+header::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 20% 50%,rgba(237,106,90,.22) 0%,transparent 70%),
+  radial-gradient(ellipse 50% 70% at 80% 30%,rgba(74,158,151,.18) 0%,transparent 65%);pointer-events:none}
+header::after{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.header-inner{position:relative;z-index:1;max-width:640px;margin:0 auto}
+header h1{font-family:'Inter',sans-serif;font-size:clamp(24px,5vw,36px);font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:10px}
+header p{font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;max-width:520px;margin:0 auto}
+.back{display:inline-flex;align-items:center;gap:6px;margin:20px 24px;font-size:13px;color:var(--coral);text-decoration:none;font-weight:600}
+.back:hover{text-decoration:underline}
+main{max-width:800px;margin:0 auto;padding:0 20px 60px}
+h2{font-family:'Inter',sans-serif;font-size:20px;font-weight:700;color:var(--ink);margin:36px 0 14px;padding-bottom:10px;border-bottom:2px solid var(--coral);letter-spacing:-0.3px}
+h3{font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:var(--ink);margin:28px 0 10px;letter-spacing:-0.2px}
+h4{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--ink-mid);margin:20px 0 6px}
+p{font-size:13px;color:var(--ink-mid);line-height:1.7;margin-bottom:10px}
+ul{margin:8px 0 14px 20px;font-size:13px;color:var(--ink-mid);line-height:1.7}
+li{margin-bottom:4px}
+strong{color:var(--ink)}
+em{color:var(--teal);font-style:normal;background:var(--teal-lt);padding:1px 5px;border-radius:4px}
+code.inline{font-family:'DM Mono',monospace;background:var(--cream);padding:2px 6px;border-radius:4px;font-size:11px;color:var(--coral)}
+pre{background:var(--ink);color:rgba(255,255,255,.75);padding:18px;border-radius:var(--r);overflow-x:auto;font-family:'DM Mono',monospace;font-size:12px;line-height:1.6;margin:12px 0 16px;border:1.5px solid rgba(255,255,255,.08)}
+pre code{background:none;padding:0;color:inherit;font-size:inherit;font-family:inherit}
+hr{border:none;border-top:1.5px solid var(--border);margin:32px 0}
+.table-wrap{overflow-x:auto;margin:12px 0 16px;border-radius:var(--r);border:1.5px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;padding:11px 14px;background:var(--ink);color:rgba(255,255,255,.7);
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500}
+td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--ink-mid)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--cream)}
+.tag{display:inline-block;background:var(--teal-lt);color:var(--teal);padding:4px 12px;border-radius:20px;
+  font-family:'DM Mono',monospace;font-size:10px;font-weight:500;margin:12px 0 4px}
+footer{background:var(--ink);text-align:center;padding:28px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;color:rgba(255,255,255,.2)}
+@media(max-width:600px){header h1{letter-spacing:-.5px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <h1>minigame-mechanics</h1>
+    <p>Defines the structure, pacing, and UI rules for sprint mini-games — short pop-up challenges (~20-30 seconds) that test a single skill during longer play sessions. Use when building or auditing any min</p>
+  </div>
+</header>
+<a class="back" href="index.html">← Back to Project HQ</a>
+<main>
+<div class="tag">/minigame-mechanics</div>
+<hr>
+<h2>What is a Mini-Game?</h2>
+<p>A mini-game is a <strong>pop-up sprint challenge</strong> that emerges during a longer play session or lesson plan. It is NOT a lesson. It does not teach — it tests a skill the player has already learned elsewhere.</p>
+<p>Mini-games are the <strong>20% practice</strong> in the 80/20 instruction model. The 80% explicit instruction happens in narrative lesson sessions (e.g., The Locked Door). Mini-games are the fast, focused skill checks that punctuate those sessions.</p>
+<p><strong>Think of mini-games like boss fights in an RPG:</strong> the player has been learning skills throughout the level, and the mini-game is where they prove they can use them.</p>
+<hr>
+<h2>Mini-Game vs Lesson Session</h2>
+<div class="table-wrap"><table><thead><tr>
+<th></th><th>Mini-Game (Sprint)</th><th>Lesson Session (Narrative)</th>
+</tr></thead><tbody>
+<tr><td><strong>Duration</strong></td><td>20–30 seconds</td><td>5–15 minutes</td></tr>
+<tr><td><strong>Purpose</strong></td><td>Test a skill</td><td>Teach a skill</td></tr>
+<tr><td><strong>Structure</strong></td><td>Landing → Practice rounds</td><td>Landing → Learn → Guided → Practice → Win</td></tr>
+<tr><td><strong>Instruction</strong></td><td>None or 1 spoken sentence</td><td>Full explicit instruction with NPC/narrative</td></tr>
+<tr><td><strong>When it appears</strong></td><td>Pops up during a longer session</td><td>IS the longer session</td></tr>
+<tr><td><strong>Scaffolding</strong></td><td>Minimal — hint escalation only</td><td>Full — 80% of the time is instruction</td></tr>
+<tr><td><strong>Examples</strong></td><td>Enchanted Gems, Spell Caster, Whispering Stones, Block Breaker</td><td>The Locked Door, Lesson: Letter Sounds</td></tr>
+</tbody></table></div>
+<hr>
+<h2>Structure</h2>
+<p>Every mini-game has exactly 2 screens:</p>
+<pre><code>
+LANDING → PRACTICE (multiple rounds)
+</code></pre>
+<p>That&#x27;s it. No Learn screen. No Transition screen. No How-To-Play screen.</p>
+<h3>Screen 1: Landing</h3>
+<p>The landing page contains:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Element</th><th>Required?</th><th>Details</th>
+</tr></thead><tbody>
+<tr><td><strong>Game name</strong></td><td>Yes</td><td>Large, prominent title</td></tr>
+<tr><td><strong>Skill tag</strong></td><td>Yes</td><td>Small text identifying the literacy skill being tested (e.g., &quot;Rhyme Detection&quot;, &quot;Phoneme ID&quot;)</td></tr>
+<tr><td><strong>Begin button</strong></td><td>Yes</td><td>Single primary CTA — should pulse or glow so the player knows to tap it</td></tr>
+<tr><td><strong>Brief instruction</strong></td><td>Optional</td><td>Maximum 1 sentence. If present, it describes the mechanic, not the skill.</td></tr>
+<tr><td><strong>Demo animation</strong></td><td>No</td><td>Remove demos — they slow down the sprint feel</td></tr>
+<tr><td><strong>Age range</strong></td><td>No</td><td>Remove — not useful to the player</td></tr>
+<tr><td><strong>Tagline/description</strong></td><td>No</td><td>Remove — the game teaches through play</td></tr>
+</tbody></table></div>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>The landing page should feel like a title card, not an instruction manual</li>
+<li>The Begin button should be the most prominent element — use a pulsing glow animation</li>
+<li>No text walls. Zero or one sentence max.</li>
+</ul>
+<h3>Screen 2: Practice (the game)</h3>
+<p>The practice screen contains multiple rounds of the same mechanic with different content.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Element</th><th>Required?</th><th>Details</th>
+</tr></thead><tbody>
+<tr><td><strong>Round dots</strong></td><td>Yes</td><td>Visual indicator showing progress through rounds (e.g., 1/6)</td></tr>
+<tr><td><strong>Round label</strong></td><td>Yes</td><td>&quot;Round X of Y&quot; text</td></tr>
+<tr><td><strong>Spoken instruction</strong></td><td>Yes</td><td>Read aloud when the first round starts</td></tr>
+<tr><td><strong>Game area</strong></td><td>Yes</td><td>The interactive elements (stones, blocks, tiles, etc.)</td></tr>
+<tr><td><strong>Hint escalation</strong></td><td>Yes</td><td>Wrong answers get increasing support (3 tiers)</td></tr>
+</tbody></table></div>
+<hr>
+<h2>Pacing Rules</h2>
+<ul>
+<li><strong>Total duration:</strong> 20–30 seconds of active play (not counting instruction speech)</li>
+<li><strong>Rounds:</strong> 4–6 rounds per game</li>
+<li><strong>No timer</strong> unless the mechanic specifically requires time pressure</li>
+<li><strong>No lives/hearts</strong> — replaced by hint escalation</li>
+<li><strong>Auto-advance</strong> between rounds — no &quot;Continue&quot; button unless it&#x27;s a reward moment</li>
+</ul>
+<hr>
+<h2>Instruction Rules</h2>
+<h3>On the landing page:</h3>
+<ul>
+<li>Zero or one sentence of text, max</li>
+<li>Do NOT read instructions aloud on the landing page</li>
+</ul>
+<h3>When the game starts (first round):</h3>
+<ul>
+<li>Instructions are <strong>always read aloud</strong></li>
+<li>Instructions are spoken in a <strong>warm, natural voice</strong> — never robotic</li>
+<li>Use pre-recorded audio files (ElevenLabs) when available; fall back to Web Speech API with a preferred female voice</li>
+<li>When using Web Speech API, always cache a natural-sounding voice (Samantha, Karen, Moira, etc.)</li>
+</ul>
+<h3>Instruction phrasing:</h3>
+<ul>
+<li>Instructions must <strong>command an action</strong> — they tell the player what to do</li>
+<li>Use imperative verbs: &quot;Listen&quot;, &quot;Tap&quot;, &quot;Trace&quot;, &quot;Find&quot;, &quot;Match&quot;</li>
+<li>Always specify the input AND the output: what the player receives, then what they do</li>
+</ul>
+<p><strong>Good instructions:</strong></p>
+<ul>
+<li>&quot;Listen to the sound, then tap the correct letter.&quot;</li>
+<li>&quot;Listen carefully to each word. Which one doesn&#x27;t rhyme? Tap it!&quot;</li>
+<li>&quot;Touch each stone to hear its sound.&quot;</li>
+<li>&quot;Listen to the spell, then cast it yourself by matching the sound to the letter in the correct order.&quot;</li>
+<li>&quot;Trace the letter. Follow the dotted path with your finger.&quot;</li>
+</ul>
+<p><strong>Bad instructions:</strong></p>
+<ul>
+<li>&quot;Welcome to the game!&quot; (not an action)</li>
+<li>&quot;In this game, you will learn about rhyming.&quot; (describes, doesn&#x27;t command)</li>
+<li>&quot;Phoneme identification exercise.&quot; (jargon, not an action)</li>
+<li>&quot;Tap the correct answer.&quot; (too vague — what are they listening to? What makes it correct?)</li>
+</ul>
+<h3>After the first round:</h3>
+<ul>
+<li>Do NOT repeat the full instruction on subsequent rounds</li>
+<li>Prompts can be shorter: &quot;Which one doesn&#x27;t rhyme?&quot; or just the spoken target</li>
+<li>The player already knows the mechanic — don&#x27;t slow them down</li>
+</ul>
+<hr>
+<h2>Voice Rules</h2>
+<p>The voice in mini-games must feel warm and human, not robotic.</p>
+<h3>Priority order for voice:</h3>
+<p>1. <strong>Pre-recorded audio files</strong> (ElevenLabs WAV/MP3) — best quality</p>
+<p>2. <strong>Web Speech API with cached natural voice</strong> — acceptable fallback</p>
+<h3>Web Speech API voice selection:</h3>
+<p>Always cache a voice on load. Prefer these voices (in order):</p>
+<p><code class="inline">samantha, karen, moira, tessa, fiona, victoria, zira, jenny, google uk english female, google us english</code></p>
+<p>Filter for English (<code class="inline">lang.startsWith(&#x27;en&#x27;)</code>) and prefer <code class="inline">localService</code> voices.</p>
+<h3>Speech parameters:</h3>
+<ul>
+<li><code class="inline">rate</code>: 0.85–0.95 (slightly slower than normal for clarity)</li>
+<li><code class="inline">pitch</code>: 1.0–1.1 (natural, not cartoonish)</li>
+<li><code class="inline">volume</code>: 1.0</li>
+</ul>
+<h3>Phoneme pronunciation:</h3>
+<ul>
+<li>When speaking individual letter sounds, pass <strong>lowercase</strong> to the Speech API to avoid &quot;capital B&quot;</li>
+<li>When pre-recorded phoneme audio is available (e.g., <code class="inline">audio/harp/</code>), always use it instead of Speech API</li>
+<li>Audio path from <code class="inline">minigame prototypes/</code> folder: use <code class="inline">../audio/</code> prefix</li>
+</ul>
+<hr>
+<h2>Feedback Rules</h2>
+<h3>Correct answer:</h3>
+<ul>
+<li>Ascending chime SFX</li>
+<li>Visual celebration (glow, particles, shatter, confetti — match the game&#x27;s aesthetic)</li>
+<li>Brief spoken confirmation: &quot;That&#x27;s T!&quot; or &quot;Pan doesn&#x27;t rhyme!&quot;</li>
+<li>Auto-advance to next round after ~1 second</li>
+</ul>
+<h3>Wrong answer — 3-tier hint escalation:</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Tier</th><th>Trigger</th><th>Response</th>
+</tr></thead><tbody>
+<tr><td><strong>1 — Nudge</strong></td><td>1st wrong</td><td>Process feedback: &quot;That&#x27;s [wrong answer]. Try again!&quot;</td></tr>
+<tr><td><strong>2 — Directive</strong></td><td>2nd wrong</td><td>More specific help, may replay sounds for comparison</td></tr>
+<tr><td><strong>3 — Bottom-out</strong></td><td>3rd wrong</td><td>Reveal the answer with explanation, auto-advance</td></tr>
+</tbody></table></div>
+<h3>Wrong answer SFX:</h3>
+<ul>
+<li>Soft descending tone — never a harsh buzzer</li>
+<li>The sound should say &quot;not quite&quot; not &quot;you failed&quot;</li>
+</ul>
+<hr>
+<h2>Visual Rules</h2>
+<ul>
+<li><strong>No text walls</strong> — all instructions are spoken, not displayed as paragraphs</li>
+<li><strong>Interactive elements glow visibly</strong> when they are the focus (being spoken, being played)</li>
+<li>The glow should be dramatic enough that there is no ambiguity about which element is active</li>
+<li><strong>Begin button</strong> always pulses/glows on the landing page</li>
+<li><strong>Round dots</strong> show progress — filled for complete, highlighted for current, empty for upcoming</li>
+<li>Match the game&#x27;s existing aesthetic — don&#x27;t introduce new design systems per game</li>
+</ul>
+<hr>
+<h2>What NOT to Include in Mini-Games</h2>
+<ul>
+<li>Learn screens or tutorial phases</li>
+<li>Transition screens (&quot;Ready to Practice?&quot;)</li>
+<li>How-to-play screens with numbered steps</li>
+<li>Timers (unless the mechanic requires it)</li>
+<li>Lives, hearts, or health bars</li>
+<li>Score counters or leaderboards</li>
+<li>&quot;Back to Garden&quot; or overworld navigation</li>
+<li>Session storage guards or redirect logic</li>
+<li>Age range labels on the landing page</li>
+<li>Demo animations on the landing page</li>
+</ul>
+<hr>
+<h2>Checklist — Run Before Shipping Any Mini-Game</h2>
+<ul>
+<li>[ ] Landing page has: game name, skill tag, glowing Begin button</li>
+<li>[ ] Landing page does NOT have: instructions paragraph, demo, age range, how-to-play</li>
+<li>[ ] No Learn or Transition screens exist</li>
+<li>[ ] First round speaks instructions aloud (imperative action command)</li>
+<li>[ ] Subsequent rounds do NOT repeat full instructions</li>
+<li>[ ] Voice sounds natural (pre-recorded or cached natural voice)</li>
+<li>[ ] Letters spoken lowercase to avoid &quot;capital&quot; prefix</li>
+<li>[ ] 4–6 rounds of practice</li>
+<li>[ ] No timer (unless mechanic requires it)</li>
+<li>[ ] No lives/hearts — hint escalation instead</li>
+<li>[ ] Correct answers: chime + visual celebration + spoken confirmation</li>
+<li>[ ] Wrong answers: soft tone + process feedback + hint escalation</li>
+<li>[ ] No garden overworld redirect or session storage guard</li>
+<li>[ ] Game opens directly to landing page from URL</li>
+</ul>
+</main>
+<footer>OL Design Skills · Auto-generated May 27, 2026</footer>
+</body>
+</html>
