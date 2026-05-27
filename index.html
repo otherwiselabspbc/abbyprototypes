@@ -551,7 +551,12 @@ main {
   font-weight: 500;
   padding: 4px 10px;
   border-radius: 20px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s;
 }
+.game-status-badge:hover { opacity: .75 }
 
 .status-wip {
   background: rgba(237,106,90,.1);
@@ -1903,6 +1908,17 @@ footer {
 <footer>OL Project HQ · Updated May 2026</footer>
 
 <script>
+/* Status badge toggle */
+document.querySelectorAll('.game-status-badge').forEach(badge => {
+  badge.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const isWip = this.classList.contains('status-wip');
+    this.classList.toggle('status-wip', !isWip);
+    this.classList.toggle('status-done', isWip);
+    this.textContent = isWip ? 'Complete' : 'In Progress';
+  });
+});
+
 /* Profile accordion */
 function toggleProfile(id) {
   const el = document.getElementById(id);
