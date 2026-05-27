@@ -463,12 +463,44 @@ main {
   font-size: 12.5px;
   color: var(--ink-mid);
   line-height: 1.65;
+  outline: none;
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin: -6px -8px;
+  transition: background .15s, box-shadow .15s;
+  cursor: text;
+}
+
+.game-mechanics:hover {
+  background: var(--cream);
+}
+
+.game-mechanics:focus {
+  background: var(--cream);
+  box-shadow: 0 0 0 2px var(--coral);
 }
 
 .game-mechanics-placeholder {
-  font-size: 12px;
-  color: var(--border);
+  font-size: 12.5px;
+  color: #bbb;
   font-style: italic;
+  outline: none;
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin: -6px -8px;
+  transition: background .15s, box-shadow .15s;
+  cursor: text;
+}
+
+.game-mechanics-placeholder:hover {
+  background: var(--cream);
+}
+
+.game-mechanics-placeholder:focus {
+  background: var(--cream);
+  box-shadow: 0 0 0 2px var(--coral);
+  color: var(--ink-mid);
+  font-style: normal;
 }
 
 .game-tags {
@@ -559,8 +591,8 @@ main {
 .game-status-badge:hover { opacity: .75 }
 
 .status-wip {
-  background: rgba(237,106,90,.1);
-  color: var(--coral-dk);
+  background: rgba(217,163,0,.12);
+  color: #9a7200;
 }
 
 .status-done {
@@ -568,7 +600,12 @@ main {
   color: var(--teal);
 }
 
-.status-wip::before, .status-done::before {
+.status-nonfunctional {
+  background: rgba(185,40,40,.1);
+  color: #b32828;
+}
+
+.status-wip::before, .status-done::before, .status-nonfunctional::before {
   content: '';
   width: 5px; height: 5px;
   border-radius: 50%;
@@ -960,6 +997,18 @@ tbody tr:hover td { background: var(--cream) }
 
 .member-upload-row .game-link-input { flex: 1; min-width: 120px }
 
+.proto-type-select {
+  flex: 0 0 auto;
+  min-width: 120px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237b7f8e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+  cursor: pointer;
+}
+
 /* Document card link row */
 .doc-card { display: flex; flex-direction: column; gap: 10px }
 .doc-link-row {
@@ -1199,6 +1248,285 @@ tbody tr:hover td { background: var(--cream) }
   font-style: italic;
 }
 
+/* ── NARRATIVE EXPLORATION LIST ───────────────── */
+.narrative-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.narrative-item {
+  background: var(--white);
+  border: 1.5px solid #e8e2f5;
+  border-radius: var(--r);
+  padding: 20px 24px;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.narrative-item:hover {
+  border-color: #9b7ec8;
+  box-shadow: var(--shadow-sm);
+}
+
+.narrative-item-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.narrative-item-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: var(--ink);
+}
+
+.narrative-item-header .game-skill-tag {
+  background: #f0ebfc;
+  color: #7c5cbf;
+}
+
+.narrative-item-desc {
+  font-size: 12.5px;
+  color: var(--ink-mid);
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+.narrative-item-games {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.narrative-item-games-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-right: 4px;
+}
+
+.narrative-game-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: #f0ebfc;
+  color: #7c5cbf;
+  border: 1px solid #e8e2f5;
+}
+
+/* ── ACTION ITEMS BOARD ───────────────────────── */
+.action-filter {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all .15s;
+}
+.action-filter:hover { border-color: var(--coral); color: var(--coral) }
+.action-filter.active { background: var(--ink); border-color: var(--ink); color: #fff }
+
+.action-board {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.action-board-header {
+  display: grid;
+  grid-template-columns: 32px 1fr 110px 90px 90px 100px 36px;
+  gap: 0;
+  padding: 0 8px;
+  background: var(--ink);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.action-board-header-cell {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.5);
+  padding: 10px 10px;
+  font-weight: 500;
+}
+
+.action-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 110px 90px 90px 100px 36px;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  transition: background .12s;
+  align-items: center;
+}
+
+.action-row:last-child { border-bottom: none }
+.action-row:hover { background: #fafafa }
+.action-row.done-item { opacity: .55 }
+.action-row.done-item .action-text { text-decoration: line-through; color: var(--ink-soft) }
+
+.action-row-cell {
+  padding: 11px 10px;
+  font-size: 12.5px;
+  color: var(--ink-mid);
+  min-width: 0;
+}
+
+.action-checkbox-cell {
+  padding: 11px 0 11px 10px;
+  display: flex;
+  align-items: center;
+}
+
+.action-checkbox {
+  width: 16px; height: 16px;
+  border-radius: 4px;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, border-color .15s;
+  background: var(--white);
+  flex-shrink: 0;
+}
+.action-checkbox.checked { background: var(--teal); border-color: var(--teal) }
+.action-checkbox.checked::after {
+  content: '';
+  width: 7px; height: 4px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translateY(-1px);
+  display: block;
+}
+
+.action-text {
+  font-size: 12.5px;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.action-owner-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--cream);
+  color: var(--ink-mid);
+  border: 1px solid var(--border);
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.action-priority-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 20px;
+  display: inline-block;
+  white-space: nowrap;
+}
+.action-priority-high   { background: rgba(185,40,40,.08);  color: #b32828; }
+.action-priority-medium { background: rgba(217,163,0,.1);   color: #9a7200; }
+.action-priority-low    { background: var(--teal-lt);       color: var(--teal); }
+
+.action-status-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 20px;
+  display: inline-block;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity .15s;
+}
+.action-status-pill:hover { opacity: .75 }
+.action-status-open  { background: rgba(217,163,0,.1); color: #9a7200 }
+.action-status-done  { background: var(--teal-lt); color: var(--teal) }
+
+.action-due-input {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-mid);
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background .15s;
+}
+.action-due-input:hover, .action-due-input:focus { background: var(--cream) }
+.action-due-input.overdue { color: #b32828 }
+
+.action-remove {
+  font-size: 12px;
+  color: #ccc;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: color .15s;
+  text-align: center;
+}
+.action-remove:hover { color: var(--coral) }
+
+/* Add row at bottom */
+.action-add-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  background: #fafafa;
+  flex-wrap: wrap;
+}
+
+.action-add-row input,
+.action-add-row select {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--ink);
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  outline: none;
+  transition: border-color .15s;
+}
+.action-add-row input:focus,
+.action-add-row select:focus { border-color: var(--coral) }
+.action-add-row input[type="text"] { flex: 2; min-width: 180px }
+.action-add-row select { flex: 0 0 auto }
+.action-add-row input[type="date"] { flex: 0 0 auto; color: var(--ink-soft) }
+
+.action-empty {
+  text-align: center;
+  padding: 40px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
 /* ── FOOTER ───────────────────────────────────── */
 footer {
   background: var(--ink);
@@ -1239,33 +1567,14 @@ footer {
     <a class="nav-link" href="#team">Team</a>
     <a class="nav-link" href="#documents">Documents</a>
     <a class="nav-link" href="#frameworks">Frameworks</a>
-    <a class="nav-link" href="#resources">Research</a>
+    <a class="nav-link" href="#resources">Resource Library</a>
     <a class="nav-link" href="#meeting-notes">Meeting Notes</a>
-    <a class="nav-link" href="#roadmap">Roadmap</a>
+    <a class="nav-link" href="#action-items">Action Items</a>
   </div>
 </nav>
 
 <!-- ═══ MAIN ═══════════════════════════════════════════════════════ -->
 <main>
-
-  <!-- ═══ STORYBOARD BANNER ═════════════════════════════════════ -->
-  <a class="sb-banner" href="storyboard.html">
-    <div class="sb-icon-wrap">&#x1f5fa;&#xfe0f;</div>
-    <div class="sb-text">
-      <div class="sb-title">Game Storyboard</div>
-      <div class="sb-desc">Interactive zoomable board showing the full curriculum flow. Click domains to expand lessons, click games to see beat-by-beat storyboards.</div>
-      <div class="sb-pills">
-        <span class="sb-pill">Print Concepts</span>
-        <span class="sb-pill">Letter Knowledge</span>
-        <span class="sb-pill">Phonological Awareness</span>
-        <span class="sb-pill">Alphabetic Principle</span>
-        <span class="sb-pill">Decoding</span>
-        <span class="sb-pill">Encoding</span>
-        <span class="sb-pill">Comprehension</span>
-      </div>
-    </div>
-    <span class="sb-arrow">→</span>
-  </a>
 
   <!-- ═══ PROTOTYPES ══════════════════════════════════════════════ -->
   <div class="section" id="prototypes">
@@ -1274,124 +1583,28 @@ footer {
       <span class="section-count">11 total</span>
     </div>
 
-    <!-- ── Category: Short Mini-Games ── -->
-    <div class="proto-category">
-      <div class="proto-category-header">
-        
-        <div>
-          <div class="proto-category-title">Short Mini-Games</div>
-          <div class="proto-category-desc">Short-form challenges that emerge during a longer play session to test a player's knowledge. Each mini-game either unlocks a new feature of the overworld or is a necessary step to move the story forward.</div>
-        </div>
-        <span class="section-count" style="flex-shrink:0">9 games</span>
-      </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px;padding:12px 18px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--r)">
+      <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-soft)">Narrative Explorations</span>
+      <span style="width:1px;height:14px;background:var(--border);display:inline-block"></span>
+      <span style="font-size:12px;font-weight:600;color:#7c5cbf;background:#f0ebfc;padding:3px 10px;border-radius:20px;border:1px solid #e8e2f5">Garden Overworld</span>
+      <span style="font-size:11px;color:var(--ink-soft)">&</span>
+      <span style="font-size:12px;font-weight:600;color:#7c5cbf;background:#f0ebfc;padding:3px 10px;border-radius:20px;border:1px solid #e8e2f5">Magical RPG</span>
+    </div>
 
+    <!-- ── The Garden Overworld ── -->
+    <div class="proto-category proto-category-narrative">
+      <div class="proto-category-header">
+        <div>
+          <div class="proto-category-title">The Garden Overworld</div>
+          <div class="proto-category-desc">A living garden hub that grows and changes as the player progresses. Plants bloom when skills are mastered and pause when the player is away, but never die. The overworld is meant to serve as the connective tissue between lessons, giving players a sense of ownership and continuity across sessions.</div>
+        </div>
+        <span class="section-count" style="flex-shrink:0">3 games</span>
+      </div>
       <div class="games-grid">
 
-        <!-- Enchanted Gems -->
-        <div class="game-card">
-          <div class="game-card-top">
-            <div class="game-num">—</div>
-            <div class="game-info">
-              <div class="game-name">Enchanted Gems</div>
-              <div class="game-domain">Literacy Skill Game</div>
-              <span class="game-skill-tag">Phoneme ID</span>
-            </div>
-            <span class="game-status-badge status-wip">In Progress</span>
-          </div>
-          <div class="game-body">
-            <div class="game-mechanics-label">Mechanics</div>
-            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
-            <div class="game-notes-label">Notes</div>
-            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
-          </div>
-          <div class="game-footer">
-            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/enchanted-harp.html" />
-            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/enchanted-harp.html" target="_blank" rel="noopener">Open ↗</a>
-          </div>
-        </div>
-
-        <!-- The Rune Stones -->
-        <div class="game-card">
-          <div class="game-card-top">
-            <div class="game-num">01</div>
-            <div class="game-info">
-              <div class="game-name">The Rune Stones</div>
-              <div class="game-domain">Phoneme Quest · Stage I · Legacy</div>
-              <span class="game-skill-tag">Phoneme Sequence</span>
-            </div>
-            <span class="game-status-badge status-wip">In Progress</span>
-          </div>
-          <div class="game-body">
-            <div class="game-mechanics-label">Mechanics</div>
-            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
-            <div class="game-tags">
-              <span class="game-tag">Ages 6–12</span>
-              <span class="game-tag">Legacy</span>
-            </div>
-            <div class="game-notes-label">Notes</div>
-            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
-          </div>
-          <div class="game-footer">
-            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-01-rune-stones.html" />
-            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-01-rune-stones.html" target="_blank" rel="noopener">Open ↗</a>
-          </div>
-        </div>
-
-        <!-- The Enchanted Harp -->
-        <div class="game-card">
-          <div class="game-card-top">
-            <div class="game-num">02</div>
-            <div class="game-info">
-              <div class="game-name">The Enchanted Harp</div>
-              <div class="game-domain">Phoneme Quest · Stage II · Legacy</div>
-              <span class="game-skill-tag">Phoneme Sequence</span>
-            </div>
-            <span class="game-status-badge status-wip">In Progress</span>
-          </div>
-          <div class="game-body">
-            <div class="game-mechanics-label">Mechanics</div>
-            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
-            <div class="game-tags">
-              <span class="game-tag">Ages 6–12</span>
-              <span class="game-tag">Legacy</span>
-            </div>
-            <div class="game-notes-label">Notes</div>
-            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
-          </div>
-          <div class="game-footer">
-            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-02-enchanted-harp.html" />
-            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-02-enchanted-harp.html" target="_blank" rel="noopener">Open ↗</a>
-          </div>
-        </div>
-
-        <!-- The Whispering Stones -->
-        <div class="game-card">
-          <div class="game-card-top">
-            <div class="game-num">03</div>
-            <div class="game-info">
-              <div class="game-name">The Whispering Stones</div>
-              <div class="game-domain">Literacy Skill Game</div>
-              <span class="game-skill-tag">Rhyme Detection</span>
-            </div>
-            <span class="game-status-badge status-wip">In Progress</span>
-          </div>
-          <div class="game-body">
-            <div class="game-mechanics-label">Mechanics</div>
-            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
-            <div class="game-tags"><span class="game-tag">Ages 5–10</span></div>
-            <div class="game-notes-label">Notes</div>
-            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
-          </div>
-          <div class="game-footer">
-            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-03-whispering-stones.html" />
-            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-03-whispering-stones.html" target="_blank" rel="noopener">Open ↗</a>
-          </div>
-        </div>
-
         <!-- Block Breaker -->
-        <div class="game-card">
+        <div class="game-card lesson-card">
           <div class="game-card-top">
-            <div class="game-num">04</div>
             <div class="game-info">
               <div class="game-name">Block Breaker</div>
               <div class="game-domain">Literacy Skill Game</div>
@@ -1401,8 +1614,7 @@ footer {
           </div>
           <div class="game-body">
             <div class="game-mechanics-label">Mechanics</div>
-            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
-            <div class="game-tags"><span class="game-tag">Ages 5–10</span></div>
+            <div class="game-mechanics game-mechanics-placeholder" contenteditable="true" spellcheck="false" data-placeholder="Add mechanics description here…">Add mechanics description here…</div>
             <div class="game-notes-label">Notes</div>
             <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
           </div>
@@ -1413,9 +1625,8 @@ footer {
         </div>
 
         <!-- Seed Script -->
-        <div class="game-card">
+        <div class="game-card lesson-card">
           <div class="game-card-top">
-            <div class="game-num">05</div>
             <div class="game-info">
               <div class="game-name">Seed Script</div>
               <div class="game-domain">Literacy Skill Game</div>
@@ -1425,8 +1636,7 @@ footer {
           </div>
           <div class="game-body">
             <div class="game-mechanics-label">Mechanics</div>
-            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
-            <div class="game-tags"><span class="game-tag">Ages 5–10</span></div>
+            <div class="game-mechanics game-mechanics-placeholder" contenteditable="true" spellcheck="false" data-placeholder="Add mechanics description here…">Add mechanics description here…</div>
             <div class="game-notes-label">Notes</div>
             <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
           </div>
@@ -1437,9 +1647,8 @@ footer {
         </div>
 
         <!-- Syllable Sprout -->
-        <div class="game-card">
+        <div class="game-card lesson-card">
           <div class="game-card-top">
-            <div class="game-num">06</div>
             <div class="game-info">
               <div class="game-name">Syllable Sprout</div>
               <div class="game-domain">Literacy Skill Game</div>
@@ -1449,8 +1658,7 @@ footer {
           </div>
           <div class="game-body">
             <div class="game-mechanics-label">Mechanics</div>
-            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
-            <div class="game-tags"><span class="game-tag">Ages 5–10</span></div>
+            <div class="game-mechanics game-mechanics-placeholder" contenteditable="true" spellcheck="false" data-placeholder="Add mechanics description here…">Add mechanics description here…</div>
             <div class="game-notes-label">Notes</div>
             <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
           </div>
@@ -1460,20 +1668,121 @@ footer {
           </div>
         </div>
 
-        <!-- Quest Catcher -->
-        <div class="game-card">
+      </div>
+    </div>
+
+    <!-- ── Magical RPG ── -->
+    <div class="proto-category proto-category-narrative">
+      <div class="proto-category-header">
+        <div>
+          <div class="proto-category-title">Magical RPG</div>
+          <div class="proto-category-desc">A quest-driven fantasy world where the player takes on the role of a young apprentice learning to harness the power of language and sound. Literacy skills are embedded directly into the story. For example, decoding a spell, identifying a rhyme to unlock a door, or tracing a rune to cast magic. Learning should always feel purposeful within the world.</div>
+        </div>
+        <span class="section-count" style="flex-shrink:0">8 games</span>
+      </div>
+      <div class="games-grid">
+
+        <!-- Enchanted Gems -->
+        <div class="game-card lesson-card">
           <div class="game-card-top">
-            <div class="game-num">—</div>
             <div class="game-info">
-              <div class="game-name">Quest Catcher</div>
+              <div class="game-name">Enchanted Gems</div>
               <div class="game-domain">Literacy Skill Game</div>
+              <span class="game-skill-tag">Phoneme ID</span>
+            </div>
+            <span class="game-status-badge status-wip">In Progress</span>
+          </div>
+          <div class="game-body">
+            <div class="game-mechanics-label">Mechanics</div>
+            <div class="game-mechanics game-mechanics-placeholder" contenteditable="true" spellcheck="false" data-placeholder="Add mechanics description here…">Add mechanics description here…</div>
+            <div class="game-notes-label">Notes</div>
+            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
+          </div>
+          <div class="game-footer">
+            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/enchanted-harp.html" />
+            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/enchanted-harp.html" target="_blank" rel="noopener">Open ↗</a>
+          </div>
+        </div>
+
+        <!-- The Rune Stones -->
+        <div class="game-card lesson-card">
+          <div class="game-card-top">
+            <div class="game-info">
+              <div class="game-name">The Rune Stones</div>
+              <div class="game-domain">Literacy Skill Game</div>
+              <span class="game-skill-tag">Phoneme Sequence</span>
+            </div>
+            <span class="game-status-badge status-wip">In Progress</span>
+          </div>
+          <div class="game-body">
+            <div class="game-mechanics-label">Mechanics</div>
+            <div class="game-mechanics game-mechanics-placeholder" contenteditable="true" spellcheck="false" data-placeholder="Add mechanics description here…">Add mechanics description here…</div>
+            <div class="game-notes-label">Notes</div>
+            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
+          </div>
+          <div class="game-footer">
+            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-01-rune-stones.html" />
+            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-01-rune-stones.html" target="_blank" rel="noopener">Open ↗</a>
+          </div>
+        </div>
+
+        <!-- The Enchanted Harp -->
+        <div class="game-card lesson-card">
+          <div class="game-card-top">
+            <div class="game-info">
+              <div class="game-name">The Enchanted Harp</div>
+              <div class="game-domain">Literacy Skill Game</div>
+              <span class="game-skill-tag">Phoneme Sequence</span>
+            </div>
+            <span class="game-status-badge status-wip">In Progress</span>
+          </div>
+          <div class="game-body">
+            <div class="game-mechanics-label">Mechanics</div>
+            <div class="game-mechanics game-mechanics-placeholder" contenteditable="true" spellcheck="false" data-placeholder="Add mechanics description here…">Add mechanics description here…</div>
+            <div class="game-notes-label">Notes</div>
+            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
+          </div>
+          <div class="game-footer">
+            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-02-enchanted-harp.html" />
+            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-02-enchanted-harp.html" target="_blank" rel="noopener">Open ↗</a>
+          </div>
+        </div>
+
+        <!-- The Whispering Stones -->
+        <div class="game-card lesson-card">
+          <div class="game-card-top">
+            <div class="game-info">
+              <div class="game-name">The Whispering Stones</div>
+              <div class="game-domain">Literacy Skill Game</div>
+              <span class="game-skill-tag">Rhyme Detection</span>
+            </div>
+            <span class="game-status-badge status-wip">In Progress</span>
+          </div>
+          <div class="game-body">
+            <div class="game-mechanics-label">Mechanics</div>
+            <div class="game-mechanics game-mechanics-placeholder" contenteditable="true" spellcheck="false" data-placeholder="Add mechanics description here…">Add mechanics description here…</div>
+            <div class="game-notes-label">Notes</div>
+            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
+          </div>
+          <div class="game-footer">
+            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-03-whispering-stones.html" />
+            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-03-whispering-stones.html" target="_blank" rel="noopener">Open ↗</a>
+          </div>
+        </div>
+
+        <!-- Quest Catcher -->
+        <div class="game-card lesson-card">
+          <div class="game-card-top">
+            <div class="game-info">
+              <div class="game-name">Mini Lesson: Quest Catcher</div>
+              <div class="game-domain">Experimenting with quest narrative and NPC villager</div>
               <span class="game-skill-tag">Vocabulary</span>
             </div>
             <span class="game-status-badge status-wip">In Progress</span>
           </div>
           <div class="game-body">
             <div class="game-mechanics-label">Mechanics</div>
-            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
+            <div class="game-mechanics game-mechanics-placeholder" contenteditable="true" spellcheck="false" data-placeholder="Add mechanics description here…">Add mechanics description here…</div>
             <div class="game-notes-label">Notes</div>
             <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
           </div>
@@ -1484,9 +1793,8 @@ footer {
         </div>
 
         <!-- Spell Caster -->
-        <div class="game-card">
+        <div class="game-card lesson-card">
           <div class="game-card-top">
-            <div class="game-num">—</div>
             <div class="game-info">
               <div class="game-name">Spell Caster</div>
               <div class="game-domain">Literacy Skill Game</div>
@@ -1496,7 +1804,7 @@ footer {
           </div>
           <div class="game-body">
             <div class="game-mechanics-label">Mechanics</div>
-            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
+            <div class="game-mechanics game-mechanics-placeholder" contenteditable="true" spellcheck="false" data-placeholder="Add mechanics description here…">Add mechanics description here…</div>
             <div class="game-notes-label">Notes</div>
             <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
           </div>
@@ -1506,36 +1814,19 @@ footer {
           </div>
         </div>
 
-      </div>
-    </div>
-
-    <!-- ── Category: Narrative Explorations ── -->
-    <div class="proto-category proto-category-narrative">
-      <div class="proto-category-header">
-        
-        <div>
-          <div class="proto-category-title">Narrative Explorations</div>
-          <div class="proto-category-desc">Experiments in how the game's story can authentically embed evidence-based dyslexia tutoring. These prototypes explore the ways narrative, character, and world-building can make structured literacy instruction feel natural and engaging.</div>
-        </div>
-        <span class="section-count" style="flex-shrink:0">2 games</span>
-      </div>
-
-      <div class="games-grid">
-
         <!-- Lesson: Letter Sounds -->
         <div class="game-card lesson-card">
           <div class="game-card-top">
-            <div class="game-num">—</div>
             <div class="game-info">
-              <div class="game-name">Lesson: Letter Sounds</div>
-              <div class="game-domain">Full Lesson · Explicit Instruction</div>
+              <div class="game-name">Mini Lesson: Letter Sounds</div>
+              <div class="game-domain">Experimenting with explicit instruction in play session</div>
               <span class="game-skill-tag">Letter Sounds</span>
             </div>
             <span class="game-status-badge status-wip">In Progress</span>
           </div>
           <div class="game-body">
             <div class="game-mechanics-label">Mechanics</div>
-            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
+            <div class="game-mechanics game-mechanics-placeholder" contenteditable="true" spellcheck="false" data-placeholder="Add mechanics description here…">Add mechanics description here…</div>
             <div class="game-notes-label">Notes</div>
             <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
           </div>
@@ -1548,17 +1839,16 @@ footer {
         <!-- The Locked Door -->
         <div class="game-card lesson-card">
           <div class="game-card-top">
-            <div class="game-num">—</div>
             <div class="game-info">
-              <div class="game-name">The Locked Door</div>
-              <div class="game-domain">Full Lesson · Explicit Instruction</div>
+              <div class="game-name">Mini Lesson: The Locked Door</div>
+              <div class="game-domain">Experimenting with explicit instruction in magical quest</div>
               <span class="game-skill-tag">Narrative</span>
             </div>
             <span class="game-status-badge status-wip">In Progress</span>
           </div>
           <div class="game-body">
             <div class="game-mechanics-label">Mechanics</div>
-            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
+            <div class="game-mechanics game-mechanics-placeholder" contenteditable="true" spellcheck="false" data-placeholder="Add mechanics description here…">Add mechanics description here…</div>
             <div class="game-notes-label">Notes</div>
             <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
           </div>
@@ -1577,7 +1867,7 @@ footer {
   <div class="section" id="team">
     <div class="section-header">
       <h2 class="section-title">Team</h2>
-      <span class="section-count">3 members</span>
+      <span class="section-count">4 members</span>
     </div>
     <div class="profiles">
 
@@ -1588,7 +1878,6 @@ footer {
             <div class="profile-avatar" style="background:var(--coral)">A</div>
             <div>
               <div class="profile-name">Abby</div>
-              <div class="profile-role">Game Design · Prototyping</div>
             </div>
           </div>
           <div class="profile-right">
@@ -1599,27 +1888,32 @@ footer {
         <div class="profile-body">
           <div class="profile-content">
             <table class="profile-table">
-              <thead><tr><th>#</th><th>Prototype</th><th>Domain</th><th>Skill</th><th>Status</th></tr></thead>
+              <thead><tr><th>Prototype</th><th>Type</th><th>Skill</th><th>Status</th></tr></thead>
               <tbody>
-                <tr><td>—</td><td>Enchanted Gems</td><td>—</td><td>—</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>01</td><td>The Rune Stones</td><td>Phoneme Quest · Stage I</td><td>Phonological Awareness · Sequence Detection</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>02</td><td>The Enchanted Harp</td><td>Phoneme Quest · Stage II</td><td>Phonological Awareness · Sequence Detection</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>03</td><td>The Whispering Stones</td><td>Phonological Awareness</td><td>Rhyme Detection · Ages 6–12</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>04</td><td>Block Breaker</td><td>Letter Knowledge</td><td>Letter Recognition · Ages 5–10</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>05</td><td>Seed Script</td><td>Letter Knowledge</td><td>Letter Tracing · Ages 5–10</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>06</td><td>Syllable Sprout</td><td>Phonological Awareness</td><td>Syllable Counting · Ages 5–10</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>—</td><td>Lesson: Letter Sounds</td><td>—</td><td>—</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>—</td><td>The Locked Door</td><td>—</td><td>—</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>—</td><td>Quest Catcher</td><td>—</td><td>—</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>—</td><td>Spell Caster</td><td>—</td><td>—</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>Enchanted Gems</td><td>Mini-game</td><td>Phoneme Identification</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>The Rune Stones</td><td>Mini-game</td><td>Phoneme Sequence</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>The Enchanted Harp</td><td>Mini-game</td><td>Phoneme Sequence</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>The Whispering Stones</td><td>Mini-game</td><td>Rhyme Detection</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>Block Breaker</td><td>Mini-game</td><td>Letter Recognition</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>Seed Script</td><td>Mini-game</td><td>Letter Tracing</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>Syllable Sprout</td><td>Mini-game</td><td>Syllable Counting</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>Mini Lesson: Letter Sounds</td><td>Mini-lesson</td><td>Letter Sounds</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>Mini Lesson: The Locked Door</td><td>Mini-lesson</td><td>Letter Sounds · Narrative</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>Mini Lesson: Quest Catcher</td><td>Mini-lesson</td><td>Vocabulary in Context</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>Spell Caster</td><td>Mini-game</td><td>Decoding · Word Building</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
               </tbody>
             </table>
             <div class="member-upload-section">
               <div class="member-upload-label">Add a new prototype</div>
               <div class="member-upload-row">
                 <input class="game-link-input" type="text" placeholder="Prototype name" id="abby-proto-name" />
+                <select class="game-link-input proto-type-select" id="abby-proto-type">
+                  <option value="Mini-game">Mini-game</option>
+                  <option value="Mini-lesson">Mini-lesson</option>
+                  <option value="Other">Other</option>
+                </select>
                 <input class="game-link-input" type="text" placeholder="URL" id="abby-proto-url" />
-                <button class="game-open-btn" onclick="addMemberProto('profile-abby', 'abby-proto-name', 'abby-proto-url')">Add</button>
+                <button class="game-open-btn" onclick="addMemberProto('profile-abby', 'abby-proto-name', 'abby-proto-type', 'abby-proto-url')">Add</button>
               </div>
             </div>
           </div>
@@ -1633,7 +1927,6 @@ footer {
             <div class="profile-avatar" style="background:var(--teal)">B</div>
             <div>
               <div class="profile-name">Bob</div>
-              <div class="profile-role">—</div>
             </div>
           </div>
           <div class="profile-right">
@@ -1644,7 +1937,7 @@ footer {
         <div class="profile-body">
           <div class="profile-content">
             <table class="profile-table" id="bob-table" style="display:none">
-              <thead><tr><th>Prototype</th><th>URL</th><th></th></tr></thead>
+              <thead><tr><th>Prototype</th><th>Type</th><th>URL</th><th></th></tr></thead>
               <tbody id="bob-tbody"></tbody>
             </table>
             <div class="profile-empty" id="bob-empty">No prototypes yet</div>
@@ -1652,8 +1945,13 @@ footer {
               <div class="member-upload-label">Add a new prototype</div>
               <div class="member-upload-row">
                 <input class="game-link-input" type="text" placeholder="Prototype name" id="bob-proto-name" />
+                <select class="game-link-input proto-type-select" id="bob-proto-type">
+                  <option value="Mini-game">Mini-game</option>
+                  <option value="Mini-lesson">Mini-lesson</option>
+                  <option value="Other">Other</option>
+                </select>
                 <input class="game-link-input" type="text" placeholder="URL" id="bob-proto-url" />
-                <button class="game-open-btn" onclick="addMemberProto('profile-bob', 'bob-proto-name', 'bob-proto-url')">Add</button>
+                <button class="game-open-btn" onclick="addMemberProto('profile-bob', 'bob-proto-name', 'bob-proto-type', 'bob-proto-url')">Add</button>
               </div>
             </div>
           </div>
@@ -1667,7 +1965,6 @@ footer {
             <div class="profile-avatar" style="background:var(--gold)">T</div>
             <div>
               <div class="profile-name">Tyler</div>
-              <div class="profile-role">Curriculum · Instruction</div>
             </div>
           </div>
           <div class="profile-right">
@@ -1678,7 +1975,7 @@ footer {
         <div class="profile-body">
           <div class="profile-content">
             <table class="profile-table" id="tyler-table" style="display:none">
-              <thead><tr><th>Prototype</th><th>URL</th><th></th></tr></thead>
+              <thead><tr><th>Prototype</th><th>Type</th><th>URL</th><th></th></tr></thead>
               <tbody id="tyler-tbody"></tbody>
             </table>
             <div class="profile-empty" id="tyler-empty">No prototypes yet</div>
@@ -1686,8 +1983,51 @@ footer {
               <div class="member-upload-label">Add a new prototype</div>
               <div class="member-upload-row">
                 <input class="game-link-input" type="text" placeholder="Prototype name" id="tyler-proto-name" />
+                <select class="game-link-input proto-type-select" id="tyler-proto-type">
+                  <option value="Mini-game">Mini-game</option>
+                  <option value="Mini-lesson">Mini-lesson</option>
+                  <option value="Other">Other</option>
+                </select>
                 <input class="game-link-input" type="text" placeholder="URL" id="tyler-proto-url" />
-                <button class="game-open-btn" onclick="addMemberProto('profile-tyler', 'tyler-proto-name', 'tyler-proto-url')">Add</button>
+                <button class="game-open-btn" onclick="addMemberProto('profile-tyler', 'tyler-proto-name', 'tyler-proto-type', 'tyler-proto-url')">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jed -->
+      <div class="profile" id="profile-jed">
+        <div class="profile-header" onclick="toggleProfile('profile-jed')">
+          <div class="profile-left">
+            <div class="profile-avatar" style="background:#6b7ecc">J</div>
+            <div>
+              <div class="profile-name">Jed</div>
+            </div>
+          </div>
+          <div class="profile-right">
+            <span class="profile-count" id="jed-count"></span>
+            <span class="profile-chevron">▾</span>
+          </div>
+        </div>
+        <div class="profile-body">
+          <div class="profile-content">
+            <table class="profile-table" id="jed-table" style="display:none">
+              <thead><tr><th>Prototype</th><th>Type</th><th>URL</th><th></th></tr></thead>
+              <tbody id="jed-tbody"></tbody>
+            </table>
+            <div class="profile-empty" id="jed-empty">No prototypes yet</div>
+            <div class="member-upload-section">
+              <div class="member-upload-label">Add a new prototype</div>
+              <div class="member-upload-row">
+                <input class="game-link-input" type="text" placeholder="Prototype name" id="jed-proto-name" />
+                <select class="game-link-input proto-type-select" id="jed-proto-type">
+                  <option value="Mini-game">Mini-game</option>
+                  <option value="Mini-lesson">Mini-lesson</option>
+                  <option value="Other">Other</option>
+                </select>
+                <input class="game-link-input" type="text" placeholder="URL" id="jed-proto-url" />
+                <button class="game-open-btn" onclick="addMemberProto('profile-jed', 'jed-proto-name', 'jed-proto-type', 'jed-proto-url')">Add</button>
               </div>
             </div>
           </div>
@@ -1727,7 +2067,7 @@ footer {
   <div class="section" id="frameworks">
     <div class="section-header">
       <h2 class="section-title">Design Frameworks</h2>
-      <span class="section-count">11 skills</span>
+      <span class="section-count">10 skills</span>
     </div>
     <div style="background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:20px">
       <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px">What is a skill?</div>
@@ -1740,19 +2080,20 @@ footer {
       <a href="skill-game-storyboard.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">game-storyboard</div><div class="card-desc">Use when designing a new mini-game from scratch. Provides the complete screen-by-screen structure every game must follow, including tutorial and sprint phases.</div><div class="card-meta"><span class="card-tag">/game-storyboard</span></div></a>
       <a href="skill-game-vision.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">game-vision</div><div class="card-desc">Reference the core product vision, design principles, and three-phase roadmap for OL Prototypes before building any game or feature.</div><div class="card-meta"><span class="card-tag">/game-vision</span></div></a>
       <a href="skill-mda.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">mda</div><div class="card-desc">Evaluate a game's effectiveness using the MDA Framework (Mechanics, Dynamics, Aesthetics). Use when auditing whether a mini-game achieves intended learning.</div><div class="card-meta"><span class="card-tag">/mda</span></div></a>
+      <a href="skill-minigame-mechanics.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">minigame-mechanics</div><div class="card-desc">Structure, pacing, and UI rules for sprint mini-games — short pop-up challenges (~20-30s) that test a single skill during longer play sessions.</div><div class="card-meta"><span class="card-tag">/minigame-mechanics</span></div></a>
       <a href="skill-octalysis.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">octalysis</div><div class="card-desc">Audit or design a game feature against the Octalysis Framework (Yu-kai Chou). Ensures the game engages all 8 Core Drives, balancing extrinsic and intrinsic motivation.</div><div class="card-meta"><span class="card-tag">/octalysis</span></div></a>
       <a href="skill-product-management.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">product-management</div><div class="card-desc">Manage the end-to-end design process for OL Prototypes. Covers design stages (Double Diamond), decision logging, user research, prototype handoffs.</div><div class="card-meta"><span class="card-tag">/product-management</span></div></a>
       <a href="skill-resources.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">resources</div><div class="card-desc">Central library of all research sources, readings, and references used in the OL Prototypes design process. Search by topic, type, or keyword.</div><div class="card-meta"><span class="card-tag">/resources</span></div></a>
       <a href="skill-ui-ux.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">ui-ux</div><div class="card-desc">Review or apply UI/UX design principles to a game screen, component, or interaction. Covers general design principles plus literacy-specific accessibility.</div><div class="card-meta"><span class="card-tag">/ui-ux</span></div></a>
-      <a href="skill-minigame-mechanics.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">minigame-mechanics</div><div class="card-desc">Structure, pacing, and UI rules for sprint mini-games — short pop-up challenges (~20-30s) that test a single skill during longer play sessions.</div><div class="card-meta"><span class="card-tag">/minigame-mechanics</span></div></a>
     </div>
   </div>
 
   <!-- ═══ RESEARCH ════════════════════════════════════════════════ -->
   <div class="section" id="resources">
     <div class="section-header">
-      <h2 class="section-title">Research Sources</h2>
+      <h2 class="section-title">Resource Library</h2>
       <span class="section-count">5 sources</span>
+      <a href="https://drive.google.com/drive/u/0/folders/1kZLAUjk5gWplhWxgBuv5Z1SGsmzxbLNr" target="_blank" rel="noopener" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--teal);text-decoration:none;padding:5px 12px;border:1.5px solid var(--teal-lt);border-radius:8px;background:var(--teal-lt);transition:background .15s" onmouseover="this.style.background='#c4e8e4'" onmouseout="this.style.background='var(--teal-lt)'">Open in Google Drive ↗</a>
     </div>
     <div class="table-wrap">
       <table>
@@ -1789,118 +2130,54 @@ footer {
     </div>
   </div>
 
-  <!-- ═══ ROADMAP ═════════════════════════════════════════════════ -->
-  <div class="section" id="roadmap">
+  <!-- ═══ ACTION ITEMS ═══════════════════════════════════════════ -->
+  <div class="section" id="action-items">
     <div class="section-header">
-      <h2 class="section-title">Project Roadmap</h2>
+      <h2 class="section-title">Action Items</h2>
+      <span class="section-count" id="action-count">0 items</span>
     </div>
 
-    <div class="rm-legend">
-      <div class="rm-legend-item"><div class="rm-legend-dot" style="background:var(--teal)"></div> Complete</div>
-      <div class="rm-legend-item"><div class="rm-legend-dot" style="background:var(--coral)"></div> In Progress</div>
-      <div class="rm-legend-item"><div class="rm-legend-dot" style="background:var(--border)"></div> Upcoming</div>
+    <!-- Filter tabs -->
+    <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+      <button class="action-filter active" onclick="filterActions('all', this)">All</button>
+      <button class="action-filter" onclick="filterActions('open', this)">Open</button>
+      <button class="action-filter" onclick="filterActions('done', this)">Done</button>
     </div>
 
-    <div class="roadmap">
-
-      <div class="rm-stage done" onclick="toggleRM(this)">
-        <div class="rm-dot"></div>
-        <div class="rm-trigger">
-          <span class="rm-badge rm-badge-done">Complete</span>
-          <span class="rm-title">Stage 0 — Vision &amp; Strategy</span>
-          <span class="rm-chevron">▾</span>
-        </div>
-        <div class="rm-body">
-          <ul class="rm-items">
-            <li class="done"><div class="rm-check"></div><span>Product vision document</span></li>
-            <li class="done"><div class="rm-check"></div><span>Target audience defined</span></li>
-            <li class="done"><div class="rm-check"></div><span>Curriculum backbone mapped (CSV)</span></li>
-            <li class="done"><div class="rm-check"></div><span>Platform: browser-first, mobile touch</span></li>
-            <li class="done"><div class="rm-check"></div><span>Design principles established</span></li>
-          </ul>
-        </div>
+    <!-- Board -->
+    <div class="action-board">
+      <div class="action-board-header">
+        <div class="action-board-header-cell"></div>
+        <div class="action-board-header-cell">Task</div>
+        <div class="action-board-header-cell">Assignee</div>
+        <div class="action-board-header-cell">Priority</div>
+        <div class="action-board-header-cell">Status</div>
+        <div class="action-board-header-cell">Due Date</div>
+        <div class="action-board-header-cell"></div>
+      </div>
+      <div id="action-list">
+        <div class="action-empty" id="action-empty" style="padding:32px;text-align:center;font-size:13px;color:var(--ink-soft);font-style:italic">No action items yet.</div>
       </div>
 
-      <div class="rm-stage done" onclick="toggleRM(this)">
-        <div class="rm-dot"></div>
-        <div class="rm-trigger">
-          <span class="rm-badge rm-badge-done">Complete</span>
-          <span class="rm-title">Stage 1 — Discover (Research)</span>
-          <span class="rm-chevron">▾</span>
-        </div>
-        <div class="rm-body">
-          <ul class="rm-items">
-            <li class="done"><div class="rm-check"></div><span>Handbook of Game-Based Learning (R-001)</span></li>
-            <li class="done"><div class="rm-check"></div><span>Actionable Gamification / Octalysis (R-002)</span></li>
-            <li class="done"><div class="rm-check"></div><span>MDA Framework (R-003)</span></li>
-            <li class="done"><div class="rm-check"></div><span>Meeting: Explicit &amp; Systematic Instruction (R-004)</span></li>
-            <li class="done"><div class="rm-check"></div><span>WRS Lesson Plan Structure (R-005)</span></li>
-            <li><div class="rm-check"></div><span>Interview OG tutors</span></li>
-            <li><div class="rm-check"></div><span>Interview parents/caregivers</span></li>
-            <li><div class="rm-check"></div><span>Observe live tutoring sessions</span></li>
-          </ul>
-        </div>
+      <!-- Add new row -->
+      <div class="action-add-row">
+        <input type="text" id="action-text" placeholder="+ Add an action item…" onkeydown="if(event.key==='Enter') addActionItem()" />
+        <select id="action-owner">
+          <option value="">Assignee</option>
+          <option value="Abby">Abby</option>
+          <option value="Bob">Bob</option>
+          <option value="Tyler">Tyler</option>
+          <option value="Jed">Jed</option>
+          <option value="Team">Team</option>
+        </select>
+        <select id="action-priority">
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+          <option value="Low">Low</option>
+        </select>
+        <input type="date" id="action-due" />
+        <button class="game-open-btn" style="flex-shrink:0" onclick="addActionItem()">Add</button>
       </div>
-
-      <div class="rm-stage done" onclick="toggleRM(this)">
-        <div class="rm-dot"></div>
-        <div class="rm-trigger">
-          <span class="rm-badge rm-badge-done">Complete</span>
-          <span class="rm-title">Stage 2 — Define (Frameworks)</span>
-          <span class="rm-chevron">▾</span>
-        </div>
-        <div class="rm-body">
-          <ul class="rm-items">
-            <li class="done"><div class="rm-check"></div><span>10 design skills created</span></li>
-            <li class="done"><div class="rm-check"></div><span>7 key decisions logged</span></li>
-            <li class="done"><div class="rm-check"></div><span>80/20 instruction ratio established</span></li>
-            <li class="done"><div class="rm-check"></div><span>3-stage lesson structure (Tutorial → Guided → Sprint)</span></li>
-            <li class="done"><div class="rm-check"></div><span>Hint escalation replacing lives</span></li>
-            <li><div class="rm-check"></div><span>User personas (Learner, Tutor, Parent)</span></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="rm-stage active open" onclick="toggleRM(this)">
-        <div class="rm-dot"></div>
-        <div class="rm-trigger">
-          <span class="rm-badge rm-badge-wip">In Progress</span>
-          <span class="rm-title">Stage 3 — Develop (Build &amp; Test)</span>
-          <span class="rm-chevron">▾</span>
-        </div>
-        <div class="rm-body">
-          <ul class="rm-items">
-            <li class="done"><div class="rm-check"></div><span>11 mini-game prototypes built</span></li>
-            <li class="done"><div class="rm-check"></div><span>Full lesson prototype (Locked Door)</span></li>
-            <li class="done"><div class="rm-check"></div><span>Interactive storyboard created</span></li>
-            <li class="done"><div class="rm-check"></div><span>Audio assets (ElevenLabs phonemes + words)</span></li>
-            <li><div class="rm-check"></div><span>Print Concepts game</span></li>
-            <li><div class="rm-check"></div><span>Encoding game</span></li>
-            <li><div class="rm-check"></div><span>Phoneme blending game</span></li>
-            <li><div class="rm-check"></div><span>Playtest with target users</span></li>
-            <li><div class="rm-check"></div><span>Font readability audit</span></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="rm-stage future" onclick="toggleRM(this)">
-        <div class="rm-dot"></div>
-        <div class="rm-trigger">
-          <span class="rm-badge rm-badge-future">Upcoming</span>
-          <span class="rm-title">Stage 4 — Deliver (Polish &amp; Ship)</span>
-          <span class="rm-chevron">▾</span>
-        </div>
-        <div class="rm-body">
-          <ul class="rm-items">
-            <li><div class="rm-check"></div><span>Full session playtest (3+ games in sequence)</span></li>
-            <li><div class="rm-check"></div><span>Curriculum alignment sign-off</span></li>
-            <li><div class="rm-check"></div><span>Accessibility audit</span></li>
-            <li><div class="rm-check"></div><span>Device testing</span></li>
-            <li><div class="rm-check"></div><span>Analytics instrumentation</span></li>
-          </ul>
-        </div>
-      </div>
-
     </div>
   </div>
 
@@ -1909,14 +2186,41 @@ footer {
 <footer>OL Project HQ · Updated May 2026</footer>
 
 <script>
-/* Status badge toggle */
+/* Mechanics editable placeholders */
+document.querySelectorAll('.game-mechanics-placeholder[contenteditable]').forEach(el => {
+  const placeholder = el.getAttribute('data-placeholder');
+
+  el.addEventListener('focus', function() {
+    if (this.textContent.trim() === placeholder) {
+      this.textContent = '';
+      this.classList.remove('game-mechanics-placeholder');
+      this.classList.add('game-mechanics');
+    }
+  });
+
+  el.addEventListener('blur', function() {
+    if (this.textContent.trim() === '') {
+      this.textContent = placeholder;
+      this.classList.remove('game-mechanics');
+      this.classList.add('game-mechanics-placeholder');
+    }
+  });
+});
+
+/* Status badge toggle — cycles: In Progress → Complete → Non-functional → In Progress */
 document.querySelectorAll('.game-status-badge').forEach(badge => {
   badge.addEventListener('click', function(e) {
     e.stopPropagation();
-    const isWip = this.classList.contains('status-wip');
-    this.classList.toggle('status-wip', !isWip);
-    this.classList.toggle('status-done', isWip);
-    this.textContent = isWip ? 'Complete' : 'In Progress';
+    if (this.classList.contains('status-wip')) {
+      this.classList.replace('status-wip', 'status-done');
+      this.textContent = 'Complete';
+    } else if (this.classList.contains('status-done')) {
+      this.classList.replace('status-done', 'status-nonfunctional');
+      this.textContent = 'Non-functional';
+    } else {
+      this.classList.replace('status-nonfunctional', 'status-wip');
+      this.textContent = 'In Progress';
+    }
   });
 });
 
@@ -1926,11 +2230,6 @@ function toggleProfile(id) {
   const isOpen = el.classList.contains('open');
   document.querySelectorAll('.profile').forEach(p => p.classList.remove('open'));
   if (!isOpen) el.classList.add('open');
-}
-
-/* Roadmap accordion */
-function toggleRM(stage) {
-  stage.classList.toggle('open');
 }
 
 /* Game card link → open button */
@@ -1960,10 +2259,12 @@ document.querySelectorAll('.game-link-input').forEach(input => {
 // openLink replaced by native <a> tags
 
 /* ── MEMBER PROTOTYPE ADD ──────────────────────────────────── */
-function addMemberProto(profileId, nameInputId, urlInputId) {
+function addMemberProto(profileId, nameInputId, typeSelectId, urlInputId) {
   const nameEl = document.getElementById(nameInputId);
+  const typeEl = document.getElementById(typeSelectId);
   const urlEl  = document.getElementById(urlInputId);
   const name = nameEl.value.trim();
+  const type = typeEl ? typeEl.value : '—';
   const url  = urlEl.value.trim();
   if (!name) { nameEl.focus(); return; }
 
@@ -1973,17 +2274,18 @@ function addMemberProto(profileId, nameInputId, urlInputId) {
   const empty  = document.getElementById(member + '-empty');
   const count  = document.getElementById(member + '-count');
 
-  if (!tbody) return; // Abby uses a static table; skip dynamic for her
+  if (!tbody) return;
 
   const tr = document.createElement('tr');
   tr.innerHTML = `
     <td><strong>${escapeHtml(name)}</strong></td>
-    <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+    <td><span style="font-size:11px;color:var(--ink-soft)">${escapeHtml(type)}</span></td>
+    <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
       ${url ? `<a href="${escapeHtml(url)}" target="_blank" style="color:var(--coral);font-family:'DM Mono',monospace;font-size:11px">${escapeHtml(url)}</a>` : '<span style="color:#ccc;font-style:italic">No URL</span>'}
     </td>
-    <td>
-      ${url ? `<button class="game-open-btn" style="padding:5px 10px;font-size:10px" onclick="window.open('${escapeHtml(url)}','_blank')">Open ↗</button>` : ''}
-      <button class="note-btn" style="padding:5px 10px;font-size:10px;margin-left:4px" onclick="this.closest('tr').remove(); updateMemberCount('${member}')"></button>
+    <td style="white-space:nowrap">
+      ${url ? `<a class="game-open-btn" href="${escapeHtml(url)}" target="_blank" rel="noopener" style="padding:5px 10px;font-size:10px">Open ↗</a>` : ''}
+      <button class="note-btn" style="padding:5px 10px;font-size:10px;margin-left:4px" onclick="this.closest('tr').remove(); updateMemberCount('${member}')">Remove</button>
     </td>`;
   tbody.appendChild(tr);
 
@@ -1992,6 +2294,7 @@ function addMemberProto(profileId, nameInputId, urlInputId) {
   updateMemberCount(member);
 
   nameEl.value = '';
+  if (typeEl) typeEl.selectedIndex = 0;
   urlEl.value  = '';
   nameEl.focus();
 }
@@ -2019,6 +2322,124 @@ document.querySelectorAll('.doc-link-input').forEach(input => {
   input.addEventListener('input', syncDoc);
   input.addEventListener('paste', () => setTimeout(syncDoc, 0));
 });
+
+/* ── ACTION ITEMS BOARD ──────────────────────────────────────── */
+const actionItems = [
+  { id: 'action-1', text: 'Tyler and Abby: schedule kick-off meeting for Learning Progression Mechanics document', owner: 'Tyler', priority: 'High', done: false, due: '' },
+  { id: 'action-2', text: 'Bob and Jed: schedule kick-off meeting for Context & Narrative document', owner: 'Bob', priority: 'High', done: false, due: '' },
+  { id: 'action-3', text: 'Tyler: keep Abby in the loop as Learning Progression Mechanics document progresses', owner: 'Tyler', priority: 'Medium', done: false, due: '' },
+  { id: 'action-4', text: 'Team: align on terminology — differentiate between skills, tutor-led activities, digital activities, and learning/game mechanics', owner: 'Team', priority: 'High', done: false, due: '' },
+  { id: 'action-5', text: 'Tyler + Abby: draft Learning Progression Mechanics document, including session loop structure (warm-up → learning activities) and level/stage groupings', owner: 'Tyler', priority: 'High', done: false, due: '' },
+  { id: 'action-6', text: 'Bob + Jed (with Tyler + Abby): draft Context & Narrative document — backstory, recurring characters, core verb set, and examples of mechanics binding into story', owner: 'Bob', priority: 'Medium', done: false, due: '' },
+  { id: 'action-7', text: 'Team: decide whether the 3 games share a single narrative or each has its own', owner: 'Team', priority: 'Medium', done: false, due: '' },
+  { id: 'action-8', text: 'Team: decide whether to include initial diagnostic assessments in the progression document or keep assessment separate', owner: 'Team', priority: 'Medium', done: false, due: '' },
+  { id: 'action-9', text: 'Bob: reach out to Jed separately to schedule Context & Narrative working session', owner: 'Bob', priority: 'High', done: false, due: '' },
+];
+let currentFilter = 'all';
+
+function addActionItem() {
+  const textEl     = document.getElementById('action-text');
+  const ownerEl    = document.getElementById('action-owner');
+  const priorityEl = document.getElementById('action-priority');
+  const dueEl      = document.getElementById('action-due');
+  const text = textEl.value.trim();
+  if (!text) { textEl.focus(); return; }
+  actionItems.unshift({
+    id: 'action-' + Date.now(),
+    text,
+    owner: ownerEl.value || '',
+    priority: priorityEl.value,
+    done: false,
+    due: dueEl.value || ''
+  });
+  textEl.value = ''; ownerEl.selectedIndex = 0; priorityEl.selectedIndex = 0; dueEl.value = '';
+  renderActions();
+}
+
+function toggleActionDone(id) {
+  const item = actionItems.find(a => a.id === id);
+  if (item) { item.done = !item.done; renderActions(); }
+}
+
+function updateActionDue(id, val) {
+  const item = actionItems.find(a => a.id === id);
+  if (item) item.due = val;
+}
+
+function removeAction(id) {
+  const idx = actionItems.findIndex(a => a.id === id);
+  if (idx > -1) { actionItems.splice(idx, 1); renderActions(); }
+}
+
+function filterActions(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.action-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderActions();
+}
+
+function renderActions() {
+  const list  = document.getElementById('action-list');
+  const empty = document.getElementById('action-empty');
+  const count = document.getElementById('action-count');
+
+  list.querySelectorAll('.action-row').forEach(el => el.remove());
+
+  const filtered = actionItems.filter(a => {
+    if (currentFilter === 'open') return !a.done;
+    if (currentFilter === 'done') return a.done;
+    return true;
+  });
+
+  const open = actionItems.filter(a => !a.done).length;
+  count.textContent = open + ' open · ' + actionItems.length + ' total';
+
+  if (filtered.length === 0) {
+    empty.style.display = '';
+    empty.textContent = currentFilter === 'done' ? 'No completed items yet.' :
+                        currentFilter === 'open' ? 'All items are done!' :
+                        'No action items yet.';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  filtered.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'action-row' + (item.done ? ' done-item' : '');
+
+    let overdueClass = '';
+    if (item.due && !item.done) {
+      const d = new Date(item.due + 'T00:00:00');
+      if (d < today) overdueClass = ' overdue';
+    }
+
+    row.innerHTML = \`
+      <div class="action-checkbox-cell">
+        <div class="action-checkbox \${item.done ? 'checked' : ''}" onclick="toggleActionDone('\${item.id}')"></div>
+      </div>
+      <div class="action-row-cell"><span class="action-text">\${escapeHtml(item.text)}</span></div>
+      <div class="action-row-cell">
+        \${item.owner ? \`<span class="action-owner-tag">\${escapeHtml(item.owner)}</span>\` : '<span style="color:#ccc;font-size:11px">—</span>'}
+      </div>
+      <div class="action-row-cell">
+        <span class="action-priority-pill action-priority-\${item.priority.toLowerCase()}">\${escapeHtml(item.priority)}</span>
+      </div>
+      <div class="action-row-cell">
+        <span class="action-status-pill \${item.done ? 'action-status-done' : 'action-status-open'}" onclick="toggleActionDone('\${item.id}')">
+          \${item.done ? 'Done' : 'Open'}
+        </span>
+      </div>
+      <div class="action-row-cell">
+        <input type="date" class="action-due-input\${overdueClass}" value="\${escapeHtml(item.due)}" onchange="updateActionDue('\${item.id}', this.value); renderActions()" />
+      </div>
+      <div class="action-row-cell" style="padding:0;text-align:center">
+        <button class="action-remove" onclick="removeAction('\${item.id}')">&#x2715;</button>
+      </div>\`;
+    list.appendChild(row);
+  });
+}
 
 /* ── MEETING NOTES ─────────────────────────────────────── */
 const notesData = []; // { id, title, dateLabel, dateYear, fileName, content }
@@ -2160,6 +2581,8 @@ const observer = new IntersectionObserver(entries => {
 }, { rootMargin: '-40% 0px -55% 0px' });
 
 sections.forEach(s => observer.observe(s));
+
+renderActions();
 </script>
 </body>
 </html>
