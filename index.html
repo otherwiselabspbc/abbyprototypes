@@ -1555,17 +1555,15 @@ footer {
   <div class="header-inner">
     <div class="header-eyebrow">OL Project HQ · Active</div>
     <h1>OL<span> Project</span> HQ</h1>
-    <p>An RPG that adapts evidence-based dyslexia tutoring into playful game mechanics.</p>
-
   </div>
 </header>
 
 <!-- ═══ NAV ═══════════════════════════════════════════════════════ -->
 <nav>
   <div class="nav-inner">
-    <a class="nav-link active" href="#prototypes">Prototypes</a>
+    <a class="nav-link active" href="#documents">Documents</a>
     <a class="nav-link" href="#team">Team</a>
-    <a class="nav-link" href="#documents">Documents</a>
+    <a class="nav-link" href="#prototypes">Prototypes</a>
     <a class="nav-link" href="#frameworks">Frameworks</a>
     <a class="nav-link" href="#resources">Resource Library</a>
     <a class="nav-link" href="#meeting-notes">Meeting Notes</a>
@@ -1575,6 +1573,135 @@ footer {
 
 <!-- ═══ MAIN ═══════════════════════════════════════════════════════ -->
 <main>
+
+  <!-- ═══ DOCUMENTS ═══════════════════════════════════════════════ -->
+  <div class="section" id="documents">
+    <div class="section-header">
+      <h2 class="section-title">Project Documents</h2>
+      <span class="section-count">2 docs</span>
+    </div>
+    <div class="cards-grid">
+      <div class="card doc-card">
+        <div class="card-title">Product Vision</div>
+        <div class="card-desc">Core concept, three-phase roadmap, design principles.</div>
+        <div class="doc-link-row">
+          <input class="game-link-input doc-link-input" type="text" placeholder="Paste document URL…" />
+          <a class="game-open-btn disabled" href="#" onclick="return false;">Open ↗</a>
+        </div>
+      </div>
+      <div class="card doc-card">
+        <div class="card-title">Curriculum Map</div>
+        <div class="card-desc">~50 Orton-Gillingham activities with modalities and sample items.</div>
+        <div class="doc-link-row">
+          <input class="game-link-input doc-link-input" type="text" placeholder="Paste document URL…" />
+          <a class="game-open-btn disabled" href="#" onclick="return false;">Open ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TEAM ════════════════════════════════════════════════════ -->
+  <div class="section" id="team">
+    <div class="section-header">
+      <h2 class="section-title">Team</h2>
+      <span class="section-count">4 members</span>
+    </div>
+    <div class="profiles">
+      <!-- Abby -->
+      <div class="profile" id="profile-abby">
+        <div class="profile-header" onclick="toggleProfile('profile-abby')">
+          <div class="profile-left">
+            <div class="profile-avatar" style="background:var(--coral)">A</div>
+            <div><div class="profile-name">Abby</div></div>
+          </div>
+          <div class="profile-right">
+            <span class="profile-count">11 prototypes</span>
+            <span class="profile-chevron">▾</span>
+          </div>
+        </div>
+        <div class="profile-body">
+          <div class="profile-content">
+            <table class="profile-table">
+              <thead><tr><th>Prototype</th><th>Type</th><th>Skill</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Enchanted Gems</td><td>Mini-game</td><td>Phoneme Identification</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>The Rune Stones</td><td>Mini-game</td><td>Phoneme Sequence</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>The Enchanted Harp</td><td>Mini-game</td><td>Phoneme Sequence</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>The Whispering Stones</td><td>Mini-game</td><td>Rhyme Detection</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>Block Breaker</td><td>Mini-game</td><td>Letter Recognition</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>Seed Script</td><td>Mini-game</td><td>Letter Tracing</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>Syllable Sprout</td><td>Mini-game</td><td>Syllable Counting</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>Mini Lesson: Letter Sounds</td><td>Mini-lesson</td><td>Letter Sounds</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>Mini Lesson: The Locked Door</td><td>Mini-lesson</td><td>Letter Sounds · Narrative</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>Mini Lesson: Quest Catcher</td><td>Mini-lesson</td><td>Vocabulary in Context</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>Spell Caster</td><td>Mini-game</td><td>Decoding · Word Building</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+              </tbody>
+            </table>
+            <div class="member-upload-section">
+              <div class="member-upload-label">Add a new prototype</div>
+              <div class="member-upload-row">
+                <input class="game-link-input" type="text" placeholder="Prototype name" id="abby-proto-name" />
+                <select class="game-link-input proto-type-select" id="abby-proto-type"><option value="Mini-game">Mini-game</option><option value="Mini-lesson">Mini-lesson</option><option value="Other">Other</option></select>
+                <input class="game-link-input" type="text" placeholder="URL" id="abby-proto-url" />
+                <button class="game-open-btn" onclick="addMemberProto('profile-abby', 'abby-proto-name', 'abby-proto-type', 'abby-proto-url')">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Bob -->
+      <div class="profile" id="profile-bob">
+        <div class="profile-header" onclick="toggleProfile('profile-bob')">
+          <div class="profile-left"><div class="profile-avatar" style="background:var(--teal)">B</div><div><div class="profile-name">Bob</div></div></div>
+          <div class="profile-right"><span class="profile-count" id="bob-count"></span><span class="profile-chevron">▾</span></div>
+        </div>
+        <div class="profile-body"><div class="profile-content">
+          <table class="profile-table" id="bob-table" style="display:none"><thead><tr><th>Prototype</th><th>Type</th><th>URL</th><th></th></tr></thead><tbody id="bob-tbody"></tbody></table>
+          <div class="profile-empty" id="bob-empty">No prototypes yet</div>
+          <div class="member-upload-section"><div class="member-upload-label">Add a new prototype</div><div class="member-upload-row">
+            <input class="game-link-input" type="text" placeholder="Prototype name" id="bob-proto-name" />
+            <select class="game-link-input proto-type-select" id="bob-proto-type"><option value="Mini-game">Mini-game</option><option value="Mini-lesson">Mini-lesson</option><option value="Other">Other</option></select>
+            <input class="game-link-input" type="text" placeholder="URL" id="bob-proto-url" />
+            <button class="game-open-btn" onclick="addMemberProto('profile-bob', 'bob-proto-name', 'bob-proto-type', 'bob-proto-url')">Add</button>
+          </div></div>
+        </div></div>
+      </div>
+      <!-- Tyler -->
+      <div class="profile" id="profile-tyler">
+        <div class="profile-header" onclick="toggleProfile('profile-tyler')">
+          <div class="profile-left"><div class="profile-avatar" style="background:var(--gold)">T</div><div><div class="profile-name">Tyler</div></div></div>
+          <div class="profile-right"><span class="profile-count" id="tyler-count"></span><span class="profile-chevron">▾</span></div>
+        </div>
+        <div class="profile-body"><div class="profile-content">
+          <table class="profile-table" id="tyler-table" style="display:none"><thead><tr><th>Prototype</th><th>Type</th><th>URL</th><th></th></tr></thead><tbody id="tyler-tbody"></tbody></table>
+          <div class="profile-empty" id="tyler-empty">No prototypes yet</div>
+          <div class="member-upload-section"><div class="member-upload-label">Add a new prototype</div><div class="member-upload-row">
+            <input class="game-link-input" type="text" placeholder="Prototype name" id="tyler-proto-name" />
+            <select class="game-link-input proto-type-select" id="tyler-proto-type"><option value="Mini-game">Mini-game</option><option value="Mini-lesson">Mini-lesson</option><option value="Other">Other</option></select>
+            <input class="game-link-input" type="text" placeholder="URL" id="tyler-proto-url" />
+            <button class="game-open-btn" onclick="addMemberProto('profile-tyler', 'tyler-proto-name', 'tyler-proto-type', 'tyler-proto-url')">Add</button>
+          </div></div>
+        </div></div>
+      </div>
+      <!-- Jed -->
+      <div class="profile" id="profile-jed">
+        <div class="profile-header" onclick="toggleProfile('profile-jed')">
+          <div class="profile-left"><div class="profile-avatar" style="background:#6b7ecc">J</div><div><div class="profile-name">Jed</div></div></div>
+          <div class="profile-right"><span class="profile-count" id="jed-count"></span><span class="profile-chevron">▾</span></div>
+        </div>
+        <div class="profile-body"><div class="profile-content">
+          <table class="profile-table" id="jed-table" style="display:none"><thead><tr><th>Prototype</th><th>Type</th><th>URL</th><th></th></tr></thead><tbody id="jed-tbody"></tbody></table>
+          <div class="profile-empty" id="jed-empty">No prototypes yet</div>
+          <div class="member-upload-section"><div class="member-upload-label">Add a new prototype</div><div class="member-upload-row">
+            <input class="game-link-input" type="text" placeholder="Prototype name" id="jed-proto-name" />
+            <select class="game-link-input proto-type-select" id="jed-proto-type"><option value="Mini-game">Mini-game</option><option value="Mini-lesson">Mini-lesson</option><option value="Other">Other</option></select>
+            <input class="game-link-input" type="text" placeholder="URL" id="jed-proto-url" />
+            <button class="game-open-btn" onclick="addMemberProto('profile-jed', 'jed-proto-name', 'jed-proto-type', 'jed-proto-url')">Add</button>
+          </div></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
 
   <!-- ═══ PROTOTYPES ══════════════════════════════════════════════ -->
   <div class="section" id="prototypes">
@@ -1861,206 +1988,6 @@ footer {
       </div>
     </div>
 
-  </div>
-
-  <!-- ═══ TEAM ════════════════════════════════════════════════════ -->
-  <div class="section" id="team">
-    <div class="section-header">
-      <h2 class="section-title">Team</h2>
-      <span class="section-count">4 members</span>
-    </div>
-    <div class="profiles">
-
-      <!-- Abby -->
-      <div class="profile" id="profile-abby">
-        <div class="profile-header" onclick="toggleProfile('profile-abby')">
-          <div class="profile-left">
-            <div class="profile-avatar" style="background:var(--coral)">A</div>
-            <div>
-              <div class="profile-name">Abby</div>
-            </div>
-          </div>
-          <div class="profile-right">
-            <span class="profile-count">11 prototypes</span>
-            <span class="profile-chevron">▾</span>
-          </div>
-        </div>
-        <div class="profile-body">
-          <div class="profile-content">
-            <table class="profile-table">
-              <thead><tr><th>Prototype</th><th>Type</th><th>Skill</th><th>Status</th></tr></thead>
-              <tbody>
-                <tr><td>Enchanted Gems</td><td>Mini-game</td><td>Phoneme Identification</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>The Rune Stones</td><td>Mini-game</td><td>Phoneme Sequence</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>The Enchanted Harp</td><td>Mini-game</td><td>Phoneme Sequence</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>The Whispering Stones</td><td>Mini-game</td><td>Rhyme Detection</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>Block Breaker</td><td>Mini-game</td><td>Letter Recognition</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>Seed Script</td><td>Mini-game</td><td>Letter Tracing</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>Syllable Sprout</td><td>Mini-game</td><td>Syllable Counting</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>Mini Lesson: Letter Sounds</td><td>Mini-lesson</td><td>Letter Sounds</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>Mini Lesson: The Locked Door</td><td>Mini-lesson</td><td>Letter Sounds · Narrative</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>Mini Lesson: Quest Catcher</td><td>Mini-lesson</td><td>Vocabulary in Context</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>Spell Caster</td><td>Mini-game</td><td>Decoding · Word Building</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-              </tbody>
-            </table>
-            <div class="member-upload-section">
-              <div class="member-upload-label">Add a new prototype</div>
-              <div class="member-upload-row">
-                <input class="game-link-input" type="text" placeholder="Prototype name" id="abby-proto-name" />
-                <select class="game-link-input proto-type-select" id="abby-proto-type">
-                  <option value="Mini-game">Mini-game</option>
-                  <option value="Mini-lesson">Mini-lesson</option>
-                  <option value="Other">Other</option>
-                </select>
-                <input class="game-link-input" type="text" placeholder="URL" id="abby-proto-url" />
-                <button class="game-open-btn" onclick="addMemberProto('profile-abby', 'abby-proto-name', 'abby-proto-type', 'abby-proto-url')">Add</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bob -->
-      <div class="profile" id="profile-bob">
-        <div class="profile-header" onclick="toggleProfile('profile-bob')">
-          <div class="profile-left">
-            <div class="profile-avatar" style="background:var(--teal)">B</div>
-            <div>
-              <div class="profile-name">Bob</div>
-            </div>
-          </div>
-          <div class="profile-right">
-            <span class="profile-count" id="bob-count"></span>
-            <span class="profile-chevron">▾</span>
-          </div>
-        </div>
-        <div class="profile-body">
-          <div class="profile-content">
-            <table class="profile-table" id="bob-table" style="display:none">
-              <thead><tr><th>Prototype</th><th>Type</th><th>URL</th><th></th></tr></thead>
-              <tbody id="bob-tbody"></tbody>
-            </table>
-            <div class="profile-empty" id="bob-empty">No prototypes yet</div>
-            <div class="member-upload-section">
-              <div class="member-upload-label">Add a new prototype</div>
-              <div class="member-upload-row">
-                <input class="game-link-input" type="text" placeholder="Prototype name" id="bob-proto-name" />
-                <select class="game-link-input proto-type-select" id="bob-proto-type">
-                  <option value="Mini-game">Mini-game</option>
-                  <option value="Mini-lesson">Mini-lesson</option>
-                  <option value="Other">Other</option>
-                </select>
-                <input class="game-link-input" type="text" placeholder="URL" id="bob-proto-url" />
-                <button class="game-open-btn" onclick="addMemberProto('profile-bob', 'bob-proto-name', 'bob-proto-type', 'bob-proto-url')">Add</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tyler -->
-      <div class="profile" id="profile-tyler">
-        <div class="profile-header" onclick="toggleProfile('profile-tyler')">
-          <div class="profile-left">
-            <div class="profile-avatar" style="background:var(--gold)">T</div>
-            <div>
-              <div class="profile-name">Tyler</div>
-            </div>
-          </div>
-          <div class="profile-right">
-            <span class="profile-count" id="tyler-count"></span>
-            <span class="profile-chevron">▾</span>
-          </div>
-        </div>
-        <div class="profile-body">
-          <div class="profile-content">
-            <table class="profile-table" id="tyler-table" style="display:none">
-              <thead><tr><th>Prototype</th><th>Type</th><th>URL</th><th></th></tr></thead>
-              <tbody id="tyler-tbody"></tbody>
-            </table>
-            <div class="profile-empty" id="tyler-empty">No prototypes yet</div>
-            <div class="member-upload-section">
-              <div class="member-upload-label">Add a new prototype</div>
-              <div class="member-upload-row">
-                <input class="game-link-input" type="text" placeholder="Prototype name" id="tyler-proto-name" />
-                <select class="game-link-input proto-type-select" id="tyler-proto-type">
-                  <option value="Mini-game">Mini-game</option>
-                  <option value="Mini-lesson">Mini-lesson</option>
-                  <option value="Other">Other</option>
-                </select>
-                <input class="game-link-input" type="text" placeholder="URL" id="tyler-proto-url" />
-                <button class="game-open-btn" onclick="addMemberProto('profile-tyler', 'tyler-proto-name', 'tyler-proto-type', 'tyler-proto-url')">Add</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Jed -->
-      <div class="profile" id="profile-jed">
-        <div class="profile-header" onclick="toggleProfile('profile-jed')">
-          <div class="profile-left">
-            <div class="profile-avatar" style="background:#6b7ecc">J</div>
-            <div>
-              <div class="profile-name">Jed</div>
-            </div>
-          </div>
-          <div class="profile-right">
-            <span class="profile-count" id="jed-count"></span>
-            <span class="profile-chevron">▾</span>
-          </div>
-        </div>
-        <div class="profile-body">
-          <div class="profile-content">
-            <table class="profile-table" id="jed-table" style="display:none">
-              <thead><tr><th>Prototype</th><th>Type</th><th>URL</th><th></th></tr></thead>
-              <tbody id="jed-tbody"></tbody>
-            </table>
-            <div class="profile-empty" id="jed-empty">No prototypes yet</div>
-            <div class="member-upload-section">
-              <div class="member-upload-label">Add a new prototype</div>
-              <div class="member-upload-row">
-                <input class="game-link-input" type="text" placeholder="Prototype name" id="jed-proto-name" />
-                <select class="game-link-input proto-type-select" id="jed-proto-type">
-                  <option value="Mini-game">Mini-game</option>
-                  <option value="Mini-lesson">Mini-lesson</option>
-                  <option value="Other">Other</option>
-                </select>
-                <input class="game-link-input" type="text" placeholder="URL" id="jed-proto-url" />
-                <button class="game-open-btn" onclick="addMemberProto('profile-jed', 'jed-proto-name', 'jed-proto-type', 'jed-proto-url')">Add</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ═══ DOCUMENTS ═══════════════════════════════════════════════ -->
-  <div class="section" id="documents">
-    <div class="section-header">
-      <h2 class="section-title">Project Documents</h2>
-      <span class="section-count">2 docs</span>
-    </div>
-    <div class="cards-grid">
-      <div class="card doc-card">
-        <div class="card-title">Product Vision</div>
-        <div class="card-desc">Core concept, three-phase roadmap, design principles.</div>
-        <div class="doc-link-row">
-          <input class="game-link-input doc-link-input" type="text" placeholder="Paste document URL…" />
-          <a class="game-open-btn disabled" href="#" onclick="return false;">Open ↗</a>
-        </div>
-      </div>
-      <div class="card doc-card">
-        <div class="card-title">Curriculum Map</div>
-        <div class="card-desc">~50 Orton-Gillingham activities with modalities and sample items.</div>
-        <div class="doc-link-row">
-          <input class="game-link-input doc-link-input" type="text" placeholder="Paste document URL…" />
-          <a class="game-open-btn disabled" href="#" onclick="return false;">Open ↗</a>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- ═══ FRAMEWORKS ══════════════════════════════════════════════ -->
