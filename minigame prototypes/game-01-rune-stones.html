@@ -198,11 +198,16 @@ const ROUNDS = [
   { phonemes:['t','m','a'], seq:['m','a','t'],     support:'none' },
 ];
 
-// Phoneme-to-speech approximations for Web Speech API
-// Consonants use a minimal schwa (e.g. "kuh") to produce an isolated sound.
-// Doubling fricatives (fff, mmm) creates a sustained sound without letter names.
-// TODO (production): replace entirely with pre-recorded phoneme audio.
-const SAY = {k:'kuh',p:'puh',f:'fff',a:'aah',u:'uh',o:'oh',t:'tuh',m:'mmm',s:'sss'};
+// Pre-recorded phoneme audio from ElevenLabs
+const AUD_PATH = '../audio/harp/';
+const phonemeAudio = {};
+['k','p','f','a','u','o','t','m','s','n','e','i'].forEach(p => {
+  const a = new Audio();
+  a.preload = 'auto';
+  a.src = AUD_PATH + p + '.wav';
+  a.onerror = () => { a.src = AUD_PATH + p + '.mp3'; };
+  phonemeAudio[p] = a;
+});
 
 // Runic glyphs shown when stone labels are hidden (Round 3)
 const RUNES = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ','ᛇ','ᛈ','ᛉ','ᛊ','ᛏ','ᛒ','ᛖ','ᛗ'];
@@ -564,11 +569,21 @@ function say(text,onEnd){
   if(onEnd) u.onend=onEnd;
   speechSynthesis.speak(u);
 }
-// Phonemes use a faster rate so the added schwa vowel (in "kuh","puh") is brief
+// Play phoneme from pre-recorded audio, fallback to speech API
 function sayPhoneme(ph,onEnd){
+  const a = phonemeAudio[ph];
+  if(a){
+    a.currentTime = 0;
+    a.onended = () => { if(onEnd) onEnd(); };
+    a.play().catch(() => sayPhonemeFallback(ph, onEnd));
+  } else {
+    sayPhonemeFallback(ph, onEnd);
+  }
+}
+function sayPhonemeFallback(ph,onEnd){
   if(!window.speechSynthesis){if(onEnd)onEnd();return;}
   speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(SAY[ph]||ph);
+  const u=new SpeechSynthesisUtterance(ph);
   u.rate=0.75; u.pitch=1.0; u.volume=1;
   if(onEnd) u.onend=onEnd;
   speechSynthesis.speak(u);
