@@ -658,13 +658,15 @@ function buildSeqRow(seq,support){
   seq.forEach((_,i)=>{
     const d=document.createElement('div');
     d.className='sq'; d.id='sq'+i;
-    d.textContent = support==='full' ? `/${seq[i]}/` : '·';
+    d.textContent='·'; // always blank until correctly tapped
     el.appendChild(d);
   });
 }
 
-function markTap(i){
-  const el=$('sq'+i); if(el) el.classList.add('hit');
+function markTap(i, phoneme){
+  const el=$('sq'+i); if(!el) return;
+  el.classList.add('hit');
+  el.textContent = `/${phoneme}/`; // reveal the phoneme on correct tap
 }
 
 function updateLives(n){
@@ -752,12 +754,7 @@ function playCastingSequence(){
   state='SPEAKING';
   setMsg('Listen carefully…');
 
-  let delay=400;
-  R.seq.forEach((ph,i)=>{
-    setTimeout(()=>{ highlightStone(R.phonemes.indexOf(ph),'speak'); },delay);
-    delay+=750;
-  });
-
+  // Play the sequence audio only — no stone highlights
   setTimeout(()=>{
     saySeq(R.seq,0,()=>{
       setTimeout(()=>{
@@ -790,7 +787,7 @@ function onStoneTap(idx){
   if(idx===expected){
     highlightStone(idx,'ok');
     sayPhoneme(R.seq[tapIdx]);
-    markTap(tapIdx);
+    markTap(tapIdx, R.seq[tapIdx]);
     flashEl.style.background='rgba(80,255,140,0.18)'; flash(flashEl);
     tapIdx++;
     if(tapIdx>=R.seq.length) setTimeout(roundWin,600);
