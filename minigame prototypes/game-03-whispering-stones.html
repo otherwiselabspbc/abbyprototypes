@@ -182,13 +182,15 @@ function loadRound(){
   r.words.forEach((w,i)=>{const el=document.createElement('div');el.className='stone';
     el.textContent=w.toUpperCase();el.onclick=()=>tapStone(i,el);container.appendChild(el);});
   startTimer();
-  say('Listen carefully to each word.',()=>setTimeout(()=>playAll(),300));
+  if(rIdx===0){say('Listen carefully to each word.',()=>setTimeout(()=>playAll(),300));}
+  else{setTimeout(()=>playAll(),400);}
 }
 
 function playAll(){
   const r=ROUNDS[rIdx];let i=0;
   function next(){if(i>=r.words.length){canAnswer=true;active=true;
-    document.getElementById('prompt').textContent="Which one doesn't rhyme? Tap it!";return;}
+    document.getElementById('prompt').textContent="Which one doesn't rhyme? Tap it!";
+    say("Which one doesn't rhyme? Tap it!");return;}
     const stones=document.querySelectorAll('.stone');stones[i].classList.add('playing');heard.add(i);
     say(r.words[i],()=>{stones[i].classList.remove('playing');i++;setTimeout(next,250);});}
   next();
