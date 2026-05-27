@@ -118,14 +118,14 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
 <div id="msg"></div>
 <div id="round-banner"></div>
 <button id="next-round" class="btn">Continue ›</button>
-<button id="replay-seq" class="btn" style="font-size:14px;padding:12px 32px;letter-spacing:2px">↺ Replay Sequence</button>
-<button id="ready" class="btn" style="font-size:14px;padding:12px 32px;letter-spacing:2px">Cast Sequence ›</button>
+<button id="replay-seq" class="btn" style="font-size:14px;padding:12px 32px;letter-spacing:2px">↺ Replay Spell</button>
+<button id="ready" class="btn" style="font-size:14px;padding:12px 32px;letter-spacing:2px">Cast Spell ›</button>
 
 <!-- Title -->
 <div id="s-title" class="screen">
   <div class="eyebrow">Phoneme Quest · Stage I</div>
   <div class="big-title">The Rune<br>Stones</div>
-  <p class="tagline">Three ancient stones hold trapped sounds. Learn their voices — then cast the sequence.</p>
+  <p class="tagline">Three ancient stones hold trapped sounds. Learn their voices — then cast the spell.</p>
   <button class="btn" id="btn-start">Begin Ritual</button>
   <div class="skill-tag">Phonological Awareness · Sequence Detection</div>
 </div>
@@ -144,7 +144,7 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
 <!-- Fail -->
 <div id="s-fail" class="screen off">
   <div class="fail-title">Spell Broken</div>
-  <p class="fail-sub">The sequence was lost to the wind.<br>Breathe. Try once more.</p>
+  <p class="fail-sub">The spell was lost to the wind.<br>Breathe. Try once more.</p>
   <button class="btn" id="btn-retry">Try Again</button>
 </div>
 
@@ -747,7 +747,7 @@ function playCastingSequence(){
     saySeq(R.seq,0,()=>{
       setTimeout(()=>{
         state='TAPPING';
-        setMsg('Tap the sequence →');
+        setMsg('Tap the spell →');
         $('replay-seq').classList.add('on');
       },300);
     });
@@ -756,7 +756,7 @@ function playCastingSequence(){
 
 function beginCasting(){
   $('ready').classList.remove('on');
-  say('Listen to the spell sequence, then cast it yourself by matching the sound to the letter in the correct order.', ()=>{
+  say('Listen to the spell, then cast it yourself by matching the sound to the letter in the correct order.', ()=>{
     setTimeout(playCastingSequence, 300);
   });
 }
@@ -788,7 +788,7 @@ function onStoneTap(idx){
     buildSeqRow(R.seq,R.support); // reset visual progress
     if(lives<=0){ setTimeout(gameFail,600); return; }
     setMsg('Try again…');
-    setTimeout(()=>{ if(state==='TAPPING') setMsg('Tap the sequence →'); },1200);
+    setTimeout(()=>{ if(state==='TAPPING') setMsg('Tap the spell →'); },1200);
   }
 }
 
@@ -832,7 +832,7 @@ function gameWin(){
   groups.forEach((g,i)=>{
     setTimeout(()=>burst(new THREE.Vector3(STONE_XZ[i][0],0,STONE_XZ[i][1]),0xffd060,35),i*120);
   });
-  say('The ritual is complete. You have mastered the sequence.');
+  say('The ritual is complete. You have mastered the spell.');
   setTimeout(()=>showScreen('s-win'),700);
 }
 
