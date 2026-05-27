@@ -156,12 +156,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 // DATA — one phoneme per round, 4 gem choices (1 correct + 3 distractors)
 // ══════════════════════════════════════
 const ROUNDS=[
-  {target:'p', choices:['p','k','f','b']},
+  {target:'p', choices:['p','k','f','m']},
   {target:'a', choices:['o','a','u','e']},
   {target:'m', choices:['n','s','m','t']},
   {target:'f', choices:['f','p','k','s']},
   {target:'i', choices:['e','o','i','a']},
-  {target:'t', choices:['k','t','b','n']},
+  {target:'t', choices:['k','t','s','n']},
   {target:'s', choices:['f','n','s','m']},
   {target:'o', choices:['u','a','o','e']},
 ];
@@ -212,7 +212,7 @@ function gemSVG(style){
 // ══════════════════════════════════════
 const AUD_PATH='audio/harp/';
 const aud={};
-['k','p','f','a','u','o','t','m','s','n','b','e','i'].forEach(p=>{
+['k','p','f','a','u','o','t','m','s','n','e','i'].forEach(p=>{
   // Try WAV first, fall back to MP3
   const a=new Audio();
   a.preload='auto';
