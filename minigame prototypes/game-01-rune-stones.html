@@ -78,13 +78,6 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
 .btn:hover{animation-play-state:paused;transform:scale(1.1) !important;box-shadow:0 0 40px rgba(180,120,255,0.85),0 0 80px rgba(120,80,200,0.4),inset 0 1px 0 rgba(255,255,255,0.15);border-color:rgba(200,150,255,0.9);transition:transform .15s,box-shadow .15s,border-color .15s}
 .btn:active{animation:none;transform:scale(0.96) !important;}
 
-/* ── HOW TO PLAY ── */
-#s-howto{background:radial-gradient(ellipse at center,rgba(25,8,55,0.97) 0%,rgba(8,2,16,0.98) 100%)}
-.steps{display:flex;flex-direction:column;gap:16px;margin-bottom:40px;max-width:310px;width:100%}
-.step{display:flex;align-items:flex-start;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(150,100,220,0.2);border-radius:8px;padding:14px 16px}
-.step-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#3d1f6b,#5a2d8a);border:1px solid rgba(150,100,220,0.5);display:flex;align-items:center;justify-content:center;font-size:14px;color:#c8a84b;font-weight:bold}
-.step-text{font-size:clamp(14px,3.5vw,17px);color:#c0b0d8;line-height:1.45;padding-top:4px}
-
 /* ── WAND (tip anchored at cursor) ── */
 #wand{position:fixed;top:0;left:0;width:8px;height:148px;transform-origin:top center;transform:rotate(20deg);z-index:25;display:none;pointer-events:none;will-change:transform,top,left}
 #wand.on{display:block}
@@ -135,27 +128,6 @@ body{background:#080210;overflow:hidden;font-family:'Palatino Linotype',Palatino
   <p class="tagline">Three ancient stones hold trapped sounds. Learn their voices — then cast the sequence.</p>
   <button class="btn" id="btn-start">Begin Ritual</button>
   <div class="skill-tag">Phonological Awareness · Sequence Detection</div>
-</div>
-
-<!-- How To Play -->
-<div id="s-howto" class="screen off">
-  <div class="eyebrow">How to Play</div>
-  <div class="big-title" style="font-size:clamp(32px,8vw,52px);margin-bottom:28px">The Ritual</div>
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-text">Tap each stone to hear the sound it holds.</div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-text">Press <strong style="color:#e8d5a3">Cast Sequence</strong> and listen carefully to the order.</div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-text">Tap the stones again in that same order to cast the spell.</div>
-    </div>
-  </div>
-  <button class="btn" id="btn-howto">I'm Ready!</button>
 </div>
 
 <!-- Win -->
@@ -562,11 +534,15 @@ function tickParticles(){
 
 // ─── AUDIO ────────────────────────────────────────────────────────────────────
 function say(text,onEnd){
-  if(!window.speechSynthesis){if(onEnd)onEnd();return;}
+  if(!text||!window.speechSynthesis){if(onEnd)onEnd();return;}
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
   u.rate=0.55; u.pitch=1.1; u.volume=1;
-  if(onEnd) u.onend=onEnd;
+  let done=false;
+  function finish(){if(!done){done=true;if(onEnd)onEnd();}}
+  u.onend=finish;
+  u.onerror=finish;
+  setTimeout(finish, text.length*120+2000); // safety timeout
   speechSynthesis.speak(u);
 }
 // Play phoneme from pre-recorded audio, fallback to speech API
@@ -599,7 +575,7 @@ const flash=el=>{el.style.opacity='1';setTimeout(()=>el.style.opacity='0',160);}
 const flashEl=$('flash');
 
 function showScreen(id){
-  ['s-title','s-howto','s-win','s-fail'].forEach(s=>$(s).classList.add('off'));
+  ['s-title','s-win','s-fail'].forEach(s=>$(s).classList.add('off'));
   if(id) $(id).classList.remove('off');
 }
 
@@ -661,20 +637,6 @@ function moveWand(cx,cy){
 document.addEventListener('mousemove',e=>moveWand(e.clientX,e.clientY));
 document.addEventListener('touchmove',e=>moveWand(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
 
-function speakHowTo(){
-  const steps=[
-    'Here is how to play.',
-    'Step 1. Tap each stone to hear the sound it holds.',
-    'Step 2. Press Cast Sequence and listen carefully to the order.',
-    'Step 3. Tap the stones again in that same order to cast the spell.',
-    "When you're ready, press I'm Ready!"
-  ];
-  function next(i){
-    if(i>=steps.length) return;
-    say(steps[i],()=>setTimeout(()=>next(i+1),180));
-  }
-  next(0);
-}
 
 function setMsg(txt){
   const el=$('msg');
@@ -779,6 +741,7 @@ function startRound(){
   setTimeout(()=>{
     state='EXPLORE';
     setMsg('Touch each stone to hear its sound ✦');
+    say('Touch each stone to hear its sound.');
     $('ready').classList.add('on');
   },1100+groups.length*260);
 }
@@ -808,7 +771,9 @@ function playCastingSequence(){
 
 function beginCasting(){
   $('ready').classList.remove('on');
-  playCastingSequence();
+  say('Listen to the spell sequence, then cast it yourself by matching the sound to the letter in the correct order.', ()=>{
+    setTimeout(playCastingSequence, 300);
+  });
 }
 
 function onStoneTap(idx){
@@ -898,11 +863,6 @@ function gameFail(){
 
 // ─── BUTTON WIRING ────────────────────────────────────────────────────────────
 $('btn-start').addEventListener('click',()=>{
-  say(''); // warm up speech synthesis
-  setTimeout(()=>{ showScreen('s-howto'); speakHowTo(); },80);
-});
-$('btn-howto').addEventListener('click',()=>{
-  speechSynthesis.cancel();
   showScreen(null);
   startGame();
 });
