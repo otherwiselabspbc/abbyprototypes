@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>curriculum-mapping — OL Design Skills</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#faf9f5;font-family:'Inter',sans-serif;color:#2a2a2a;min-height:100vh}
+header{background:#ed6a5a;padding:32px 24px 28px;text-align:center}
+header h1{font-family:'Lora',serif;font-size:clamp(22px,4vw,32px);color:#fff;font-weight:700;margin-bottom:6px}
+header p{font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0 auto;line-height:1.6;font-family:'Lora',serif}
+.back{display:inline-block;margin:20px 24px;font-size:13px;color:#ed6a5a;text-decoration:none;font-weight:600}
+.back:hover{text-decoration:underline}
+main{max-width:800px;margin:0 auto;padding:0 20px 60px}
+h2{font-family:'Lora',serif;font-size:22px;font-weight:700;color:#3a3a3a;margin:32px 0 12px;padding-bottom:8px;border-bottom:3px solid #ed6a5a}
+h3{font-family:'Lora',serif;font-size:17px;font-weight:700;color:#3a3a3a;margin:24px 0 8px}
+h4{font-family:'Lora',serif;font-size:14px;font-weight:700;color:#5a5a5a;margin:18px 0 6px}
+p{font-size:13px;color:#4a4a4a;line-height:1.7;margin-bottom:10px}
+ul{margin:8px 0 14px 20px;font-size:13px;color:#4a4a4a;line-height:1.7}
+li{margin-bottom:4px}
+strong{color:#3a3a3a}
+em{color:#7a7040;font-style:normal;background:rgba(244,241,187,0.5);padding:1px 4px;border-radius:3px}
+code.inline{background:#f0ede8;padding:2px 6px;border-radius:4px;font-size:12px;color:#c04a3a}
+pre{background:#2a2a2a;color:#e0ddd8;padding:18px;border-radius:10px;overflow-x:auto;font-size:12px;line-height:1.6;margin:12px 0 16px}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+hr{border:none;border-top:2px solid #eae8e2;margin:28px 0}
+.table-wrap{overflow-x:auto;margin:12px 0 16px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:10px 12px;background:#ed6a5a;color:#fff;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-family:'Lora',serif}
+td{padding:10px 12px;border-bottom:1px solid #eae8e2;color:#3a3a3a}
+tr:hover td{background:#faf8f2}
+.tag{display:inline-block;background:rgba(155,193,188,0.25);color:#4a6a66;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;margin-top:8px}
+footer{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lora',serif}
+</style>
+</head>
+<body>
+<header>
+  <h1>curriculum-mapping</h1>
+  <p>Use before designing any mini-game to ensure it correctly targets a specific reading skill from the Lindamood Bell-informed curriculum. Always read alongside VISION.md and Reading_Exercise_to_Game_Mec</p>
+</header>
+<a class="back" href="index.html">← Back to Project HQ</a>
+<main>
+<div class="tag">/curriculum-mapping</div>
+<hr>
+<h2>Skill Domains (in developmental order)</h2>
+<p>1. Print Concepts</p>
+<p>2. Letter Knowledge</p>
+<p>3. Phonological Awareness</p>
+<p>4. Alphabetic Principle</p>
+<p>5. Decoding</p>
+<p>6. Encoding</p>
+<h2>Before building any game, identify:</h2>
+<p>1. <strong>Target domain</strong> — which of the 6 domains above?</p>
+<p>2. <strong>Target skill</strong> — what specific skill within that domain?</p>
+<p>3. <strong>Input modality</strong> — how does the child receive information?</p>
+<ul>
+<li>Visual (sees letters, words, symbols)</li>
+<li>Auditory (hears sounds, words, instructions)</li>
+<li>Both</li>
+</ul>
+<p>4. <strong>Output modality</strong> — how does the child respond?</p>
+<ul>
+<li>Tactile (tap, swipe, trace, drag, write)</li>
+<li>Speech (say, blend, repeat)</li>
+<li>Both</li>
+</ul>
+<p>5. <strong>Interaction type</strong> — what is the core mechanic?</p>
+<ul>
+<li>Tap, Swipe, Trace, Drag, Hear+Say, See+Say, Write</li>
+</ul>
+<h2>Modality rules</h2>
+<ul>
+<li>Never skip the input before asking for output</li>
+</ul>
+<p>  (e.g. child must HEAR sound before tapping letter)</p>
+<ul>
+<li>Always match stimulus to response type from the CSV</li>
+<li>Speech output requires microphone access — flag this early</li>
+<li>Writing/tracing requires touch or stylus — design for finger first</li>
+</ul>
+<h2>Sample item requirements</h2>
+<ul>
+<li>Use the exact sample items from the CSV where provided</li>
+<li>Real words vs nonsense words — check the CSV notes column</li>
+<li>Never mix skill domains in a single mini-game</li>
+<li>One targeted skill per game — no exceptions</li>
+</ul>
+<h2>Difficulty progression within a game</h2>
+<ul>
+<li>Round 1: Supported (visual + audio cues present)</li>
+<li>Round 2: Reduced support (one cue removed)</li>
+<li>Round 3: Independent (no cues, just stimulus and response)</li>
+</ul>
+<h2>Red flags — stop and check with cofounder if:</h2>
+<ul>
+<li>The game mechanic requires a skill the child hasn&#x27;t learned yet</li>
+<li>Speech output is required but microphone isn&#x27;t available</li>
+<li>You&#x27;re unsure whether to use real or nonsense words</li>
+<li>The modality chain from the CSV isn&#x27;t fully represented</li>
+</ul>
+</main>
+<footer>OL Design Skills · Auto-generated May 27, 2026</footer>
+</body>
+</html>

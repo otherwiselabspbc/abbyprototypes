@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>explicit-instruction — OL Design Skills</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#faf9f5;font-family:'Inter',sans-serif;color:#2a2a2a;min-height:100vh}
+header{background:#ed6a5a;padding:32px 24px 28px;text-align:center}
+header h1{font-family:'Lora',serif;font-size:clamp(22px,4vw,32px);color:#fff;font-weight:700;margin-bottom:6px}
+header p{font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0 auto;line-height:1.6;font-family:'Lora',serif}
+.back{display:inline-block;margin:20px 24px;font-size:13px;color:#ed6a5a;text-decoration:none;font-weight:600}
+.back:hover{text-decoration:underline}
+main{max-width:800px;margin:0 auto;padding:0 20px 60px}
+h2{font-family:'Lora',serif;font-size:22px;font-weight:700;color:#3a3a3a;margin:32px 0 12px;padding-bottom:8px;border-bottom:3px solid #ed6a5a}
+h3{font-family:'Lora',serif;font-size:17px;font-weight:700;color:#3a3a3a;margin:24px 0 8px}
+h4{font-family:'Lora',serif;font-size:14px;font-weight:700;color:#5a5a5a;margin:18px 0 6px}
+p{font-size:13px;color:#4a4a4a;line-height:1.7;margin-bottom:10px}
+ul{margin:8px 0 14px 20px;font-size:13px;color:#4a4a4a;line-height:1.7}
+li{margin-bottom:4px}
+strong{color:#3a3a3a}
+em{color:#7a7040;font-style:normal;background:rgba(244,241,187,0.5);padding:1px 4px;border-radius:3px}
+code.inline{background:#f0ede8;padding:2px 6px;border-radius:4px;font-size:12px;color:#c04a3a}
+pre{background:#2a2a2a;color:#e0ddd8;padding:18px;border-radius:10px;overflow-x:auto;font-size:12px;line-height:1.6;margin:12px 0 16px}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+hr{border:none;border-top:2px solid #eae8e2;margin:28px 0}
+.table-wrap{overflow-x:auto;margin:12px 0 16px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:10px 12px;background:#ed6a5a;color:#fff;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-family:'Lora',serif}
+td{padding:10px 12px;border-bottom:1px solid #eae8e2;color:#3a3a3a}
+tr:hover td{background:#faf8f2}
+.tag{display:inline-block;background:rgba(155,193,188,0.25);color:#4a6a66;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;margin-top:8px}
+footer{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lora',serif}
+</style>
+</head>
+<body>
+<header>
+  <h1>explicit-instruction</h1>
+  <p>Defines how instruction within each mini-game should be structured. Based on evidence-based reading curriculum principles (OG, Lindamood-Bell, Wilson Reading). Covers the 80/20 instruction-to-practice</p>
+</header>
+<a class="back" href="index.html">← Back to Project HQ</a>
+<main>
+<div class="tag">/explicit-instruction</div>
+<hr>
+<h2>Core Principle: Explicit and Systematic</h2>
+<p>Evidence-based reading instruction requires two things:</p>
+<p>1. <strong>Explicit</strong> — The game directly tells the student what needs to be learned. Students do not infer, discover, or extract the rule on their own. The concept is stated clearly before any practice begins.</p>
+<p>2. <strong>Systematic</strong> — Concepts are taught in a specific order. Each concept builds on the previous one. You cannot teach a complex rule before teaching its prerequisites.</p>
+<p><strong>This is non-negotiable.</strong> Every mini-game must include explicit instruction of the skill it targets, not just practice of that skill.</p>
+<hr>
+<h2>The 80/20 Ratio</h2>
+<p>A well-structured lesson is approximately:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Component</th><th>Proportion</th><th>In-game equivalent</th>
+</tr></thead><tbody>
+<tr><td><strong>Explicit instruction</strong></td><td>80%</td><td>Tutorial phase, concept introduction, supervised learning, feedback loops, re-teaching after errors</td></tr>
+<tr><td><strong>Practice</strong></td><td>20%</td><td>The actual mini-game sprint (independent play)</td></tr>
+</tbody></table></div>
+<p><strong>What this means for game design:</strong> The mini-game itself (the timed sprint, the challenge) is only 20% of the experience. The other 80% is the game teaching the concept, showing examples, providing guided practice with feedback, and re-teaching when the student gets it wrong.</p>
+<p>The 80% does NOT have to feel like a lecture. It can be:</p>
+<ul>
+<li>An NPC explaining a rule in-character</li>
+<li>A visual demonstration with animation</li>
+<li>A guided round where the game walks the student through the answer</li>
+<li>Process feedback after a wrong answer that re-teaches the concept</li>
+</ul>
+<p><strong>The practice (20%) is where the student proves they&#x27;ve learned.</strong> It&#x27;s the independent sprint — timer running, no scaffolding, real challenge.</p>
+<hr>
+<h2>The 3-Stage Learning Structure</h2>
+<p>Every mini-game session follows three stages:</p>
+<h3>Stage 1: Tutorial (Explicit Instruction)</h3>
+<p><strong>What happens:</strong> The concept is directly introduced alongside the game mechanic. The student learns both WHAT the skill is and HOW to demonstrate it in the game.</p>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>Directly state the rule or concept. &quot;When the letter I is followed by LD, it says its name — like in WILD.&quot;</li>
+<li>Show, don&#x27;t just tell. Visual and auditory examples alongside the stated rule.</li>
+<li>The game mechanic is taught simultaneously — &quot;You&#x27;ll hear a word. Drag the letters to build it.&quot;</li>
+<li>The student should understand the learning objective. They should know WHAT they&#x27;re practicing and WHY.</li>
+</ul>
+<p><strong>Key insight from meeting:</strong> Explicit instruction should involve BOTH teaching how to play the game AND teaching the underlying concept. Not one or the other — both at once.</p>
+<h3>Stage 2: Supervised Learning</h3>
+<p><strong>What happens:</strong> The student attempts the task, but cannot progress until they demonstrate understanding. The game actively monitors and intervenes.</p>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>If the student gets it right → proceed to Stage 3</li>
+<li>If the student gets it wrong → the game provides process feedback (explains WHY it&#x27;s wrong), then either:</li>
+<li>Returns to more explicit instruction (re-teaches the concept)</li>
+<li>Provides a guided attempt (walks through the answer step by step)</li>
+<li>The student cannot skip this stage. They must demonstrate understanding before independent practice.</li>
+</ul>
+<p><strong>This is where hint escalation lives:</strong> Nudge → Directive → Bottom-out (reveal answer with explanation). Each escalation level is a form of returning to explicit instruction.</p>
+<h3>Stage 3: Independent Practice (The Sprint)</h3>
+<p><strong>What happens:</strong> The student practices the skill independently. Timer running, no scaffolding, real challenge. This is the mini-game sprint.</p>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>Minimal support — the student has already been taught</li>
+<li>Speed and accuracy matter (timer, urgency)</li>
+<li>Feedback is still provided on errors, but lighter than Stage 2</li>
+<li>Success = the student has demonstrated the skill</li>
+</ul>
+<hr>
+<h2>Systematic Concept Linking</h2>
+<p>Concepts must be taught in order. Each concept depends on prerequisites.</p>
+<p><strong>Example from meeting:</strong></p>
+<p>&gt; You can&#x27;t teach &quot;when I is followed by LD, it says its name&quot; (as in WILD) unless the student already knows:</p>
+<p>&gt; 1. What a long vowel is</p>
+<p>&gt; 2. What the letter I sounds like normally</p>
+<p>&gt; 3. What it means for a vowel to &quot;say its name&quot;</p>
+<p><strong>Rule:</strong> Before introducing a complex rule in a game, verify that all prerequisite concepts have been taught in earlier games or in this game&#x27;s tutorial phase. If not, teach the prerequisites first.</p>
+<p><strong>How to apply:</strong></p>
+<ul>
+<li>Check the curriculum sequence (use <code class="inline">/curriculum-mapping</code>)</li>
+<li>Each game&#x27;s tutorial phase must establish or confirm prerequisites</li>
+<li>Never assume the student knows something — either teach it or reference where they learned it (&quot;Remember how we learned that vowels have two sounds?&quot;)</li>
+</ul>
+<hr>
+<h2>Translating Explicit Instruction into Game Format</h2>
+<h3>What explicit instruction looks like in a classroom:</h3>
+<p>1. Teacher states the rule directly</p>
+<p>2. Teacher shows examples</p>
+<p>3. Teacher does guided practice with students</p>
+<p>4. Students practice independently</p>
+<p>5. Teacher provides feedback on errors and re-teaches as needed</p>
+<h3>What explicit instruction looks like in a mini-game:</h3>
+<p>1. <strong>NPC or oracle states the concept</strong> — spoken aloud, with visual support</p>
+<p>2. <strong>Animated demonstration</strong> — the game shows the concept in action (auto-play a round)</p>
+<p>3. <strong>Guided round</strong> — the student tries, but with heavy scaffolding (highlights, spoken hints)</p>
+<p>4. <strong>Independent sprint</strong> — the timed challenge (this is the &quot;game&quot; part)</p>
+<p>5. <strong>Process feedback on errors</strong> — wrong answers explain WHY and re-teach the concept</p>
+<h3>Contextualization (from Robert Borges)</h3>
+<p>Learning is more motivating when it&#x27;s contextualized:</p>
+<ul>
+<li><strong>Good:</strong> &quot;You need to decode this word to unlock the passage&quot; (the skill serves the quest)</li>
+<li><strong>Bad:</strong> &quot;Practice reading this word&quot; (the skill is the point, no context)</li>
+</ul>
+<p>The explicit instruction should frame WHY the student needs this skill — within the game&#x27;s narrative. The vocabulary word helps solve the quest. The decoded spell opens the door. The phoneme identifies the right gem.</p>
+<hr>
+<h2>Concealing Failure</h2>
+<p><strong>From the meeting:</strong> Students should not realize they are failing.</p>
+<p><strong>How to implement:</strong></p>
+<ul>
+<li>No &quot;WRONG&quot; screens, red X marks, or failure counts</li>
+<li>Wrong answers trigger re-teaching, not punishment: &quot;That&#x27;s K — listen again&quot; (names what they tapped, replays the target)</li>
+<li>Hint escalation naturally guides toward the answer — the student always succeeds eventually</li>
+<li>The bottom-out (revealing the answer) is framed as learning, not failure: &quot;The answer is SHRINE. It ends with a silent E.&quot;</li>
+<li>Timer expiration is framed as the spell fading or the quest pausing — not the student failing</li>
+</ul>
+<p><strong>The student should feel:</strong> &quot;I&#x27;m learning this&quot; — not &quot;I got it wrong.&quot;</p>
+<hr>
+<h2>Student Awareness of Learning</h2>
+<p><strong>From the meeting:</strong> Students are motivated when they feel they are learning. Don&#x27;t hide the fact that this is educational.</p>
+<p>This seems contradictory to &quot;conceal failure,&quot; but it&#x27;s not:</p>
+<ul>
+<li><strong>Show the student they are GROWING</strong> — &quot;You decoded that word!&quot; &quot;You matched the sound!&quot;</li>
+<li><strong>Hide when they are STRUGGLING</strong> — errors feel like part of the process, not setbacks</li>
+<li><strong>Appropriate difficulty is key</strong> — if the challenge matches their level, getting it right feels earned and motivating</li>
+</ul>
+<p><strong>The student should feel:</strong> &quot;I just learned something real&quot; — pride and competence, not shame.</p>
+<hr>
+<h2>Session Structure (Multiple Games)</h2>
+<p>A longer play session should follow this pattern:</p>
+<pre><code>
+Quick Drill (review) → Teach Concept (explicit) → Practice (game) → Teach New Concept → Practice → ...
+</code></pre>
+<p>Each mini-game fits into a broader unit. Within a session:</p>
+<p>1. <strong>Review drill</strong> — a quick sprint on previously mastered skills (retention)</p>
+<p>2. <strong>New concept introduction</strong> — explicit instruction on the new skill</p>
+<p>3. <strong>Supervised practice</strong> — guided attempts at the new skill</p>
+<p>4. <strong>Independent practice</strong> — the timed sprint</p>
+<p>5. <strong>Return to explicit instruction</strong> — feedback on errors, reinforce what was learned</p>
+<p>6. <strong>Next concept</strong> — repeat the cycle</p>
+<p><strong>One lesson plan may correspond to multiple mini-games</strong> — each covering a different activity within the lesson.</p>
+<hr>
+<h2>WRS Lesson Plan Structure (Reference)</h2>
+<p>The Wilson Reading System lesson plan is a 10-step sequence that shows how a full structured literacy session is organized. Each step maps to potential mini-game types.</p>
+<h3>Steps 1-5: Reading (Sound → Word → Sentence)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Step</th><th>Name</th><th>What it does</th><th>Mini-game mapping</th>
+</tr></thead><tbody>
+<tr><td><strong>1</strong></td><td>Sounds Quick Drill</td><td>Quick automatic letter-sound recognition</td><td><strong>Enchanted Gems</strong> — hear sound, identify letter. Fast drill, timed.</td></tr>
+<tr><td><strong>2</strong></td><td>Teach &amp; Review Concepts for Reading</td><td>Teach word structure, segment and decode words with target patterns</td><td>Explicit instruction phase — NPC teaches the rule, then guided practice</td></tr>
+<tr><td><strong>3</strong></td><td>Word Cards</td><td>Whole-word recognition, vocabulary, high-frequency word automaticity</td><td>Flash-style word recognition game — see word, hear it, build automaticity</td></tr>
+<tr><td><strong>4</strong></td><td>Wordlist Reading</td><td>Independent single-word decoding, progress tracking</td><td><strong>Spell Caster</strong> — hear word, build it from letters. Independent sprint.</td></tr>
+<tr><td><strong>5</strong></td><td>Sentence Reading</td><td>Decode in context, reinforce vocabulary and comprehension</td><td><strong>Quest Catcher</strong> — vocabulary in sentence context</td></tr>
+</tbody></table></div>
+<h3>Steps 6-8: Spelling (Reverse Direction)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Step</th><th>Name</th><th>What it does</th><th>Mini-game mapping</th>
+</tr></thead><tbody>
+<tr><td><strong>6</strong></td><td>Quick Drill in Reverse</td><td>Hear sound → write/identify letter (opposite of Step 1)</td><td>Sound-to-letter matching game (encoding direction)</td></tr>
+<tr><td><strong>7</strong></td><td>Teach &amp; Review Concepts for Spelling</td><td>Break words into parts, count elements</td><td>Explicit instruction on spelling patterns</td></tr>
+<tr><td><strong>8</strong></td><td>Written Work Dictation</td><td>Independent spelling and proofreading</td><td>Encoding game — hear word, spell it letter by letter</td></tr>
+</tbody></table></div>
+<h3>Steps 9-10: Fluency &amp; Comprehension</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Step</th><th>Name</th><th>What it does</th><th>Mini-game mapping</th>
+</tr></thead><tbody>
+<tr><td><strong>9</strong></td><td>Controlled Text Passage Reading</td><td>Fluency, silent reading, comprehension with visualization</td><td>Passage reading with comprehension questions (future)</td></tr>
+<tr><td><strong>10</strong></td><td>Listening/Reading Fluency &amp; Comprehension</td><td>Age-appropriate literature, retell, background knowledge</td><td>Story comprehension with narrative (future)</td></tr>
+</tbody></table></div>
+<h3>Key structural insight:</h3>
+<p>The lesson flows from <strong>smallest unit to largest:</strong></p>
+<pre><code>
+Sound → Letter → Word → Sentence → Passage → Story
+</code></pre>
+<p>And then reverses for encoding:</p>
+<pre><code>
+Sound → Letter → Word (spelling direction)
+</code></pre>
+<p><strong>Each mini-game should know where it sits in this sequence.</strong> A sounds drill game (Step 1) is different from a word-building game (Step 4) which is different from a comprehension game (Step 9). The explicit instruction for each must match the level of complexity.</p>
+<p><strong>The 10 steps also show the rhythm of a session:</strong> quick drill → teach → practice → teach → practice → extended reading. Mini-games can be sequenced to follow this same rhythm within a play session.</p>
+<hr>
+<h2>Checklist — Apply to Every Game</h2>
+<ul>
+<li>[ ] The game explicitly states the concept being practiced (not just the mechanic)</li>
+<li>[ ] The concept is stated BEFORE any practice begins</li>
+<li>[ ] Prerequisites are taught or confirmed before introducing the concept</li>
+<li>[ ] The tutorial teaches BOTH the skill AND the game mechanic simultaneously</li>
+<li>[ ] There is a supervised learning phase where the student must demonstrate understanding</li>
+<li>[ ] Wrong answers return to explicit instruction (re-teaching), not just &quot;try again&quot;</li>
+<li>[ ] The student cannot skip to independent practice without passing supervised learning</li>
+<li>[ ] Failure is concealed — errors feel like learning, not setbacks</li>
+<li>[ ] The student knows WHAT they are learning and WHY (within the narrative context)</li>
+<li>[ ] The independent practice sprint is ~20% of the total experience</li>
+<li>[ ] Process feedback on every error explains WHY and re-teaches</li>
+</ul>
+<hr>
+<h2>When to Use This Skill</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Situation</th><th>Invoke</th>
+</tr></thead><tbody>
+<tr><td>Designing the tutorial/intro for a new game</td><td><code class="inline">/explicit-instruction</code></td></tr>
+<tr><td>Deciding how much scaffolding to include</td><td><code class="inline">/explicit-instruction</code></td></tr>
+<tr><td>Designing error feedback</td><td><code class="inline">/explicit-instruction</code></td></tr>
+<tr><td>Structuring a multi-game session</td><td><code class="inline">/explicit-instruction</code></td></tr>
+<tr><td>Evaluating if a game is &quot;just practice&quot; without teaching</td><td><code class="inline">/explicit-instruction</code></td></tr>
+</tbody></table></div>
+<p>Use alongside <code class="inline">/game-storyboard</code> (screen structure) and <code class="inline">/game-based-learning</code> (learning science) when building any new game.</p>
+</main>
+<footer>OL Design Skills · Auto-generated May 27, 2026</footer>
+</body>
+</html>

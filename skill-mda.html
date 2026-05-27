@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mda — OL Design Skills</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#faf9f5;font-family:'Inter',sans-serif;color:#2a2a2a;min-height:100vh}
+header{background:#ed6a5a;padding:32px 24px 28px;text-align:center}
+header h1{font-family:'Lora',serif;font-size:clamp(22px,4vw,32px);color:#fff;font-weight:700;margin-bottom:6px}
+header p{font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0 auto;line-height:1.6;font-family:'Lora',serif}
+.back{display:inline-block;margin:20px 24px;font-size:13px;color:#ed6a5a;text-decoration:none;font-weight:600}
+.back:hover{text-decoration:underline}
+main{max-width:800px;margin:0 auto;padding:0 20px 60px}
+h2{font-family:'Lora',serif;font-size:22px;font-weight:700;color:#3a3a3a;margin:32px 0 12px;padding-bottom:8px;border-bottom:3px solid #ed6a5a}
+h3{font-family:'Lora',serif;font-size:17px;font-weight:700;color:#3a3a3a;margin:24px 0 8px}
+h4{font-family:'Lora',serif;font-size:14px;font-weight:700;color:#5a5a5a;margin:18px 0 6px}
+p{font-size:13px;color:#4a4a4a;line-height:1.7;margin-bottom:10px}
+ul{margin:8px 0 14px 20px;font-size:13px;color:#4a4a4a;line-height:1.7}
+li{margin-bottom:4px}
+strong{color:#3a3a3a}
+em{color:#7a7040;font-style:normal;background:rgba(244,241,187,0.5);padding:1px 4px;border-radius:3px}
+code.inline{background:#f0ede8;padding:2px 6px;border-radius:4px;font-size:12px;color:#c04a3a}
+pre{background:#2a2a2a;color:#e0ddd8;padding:18px;border-radius:10px;overflow-x:auto;font-size:12px;line-height:1.6;margin:12px 0 16px}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+hr{border:none;border-top:2px solid #eae8e2;margin:28px 0}
+.table-wrap{overflow-x:auto;margin:12px 0 16px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:10px 12px;background:#ed6a5a;color:#fff;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-family:'Lora',serif}
+td{padding:10px 12px;border-bottom:1px solid #eae8e2;color:#3a3a3a}
+tr:hover td{background:#faf8f2}
+.tag{display:inline-block;background:rgba(155,193,188,0.25);color:#4a6a66;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;margin-top:8px}
+footer{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lora',serif}
+</style>
+</head>
+<body>
+<header>
+  <h1>mda</h1>
+  <p>Evaluate a game&#x27;s effectiveness using the MDA Framework (Mechanics, Dynamics, Aesthetics). Use when auditing whether a mini-game achieves its design goals — does the mechanic produce the right behavio</p>
+</header>
+<a class="back" href="index.html">← Back to Project HQ</a>
+<main>
+<div class="tag">/mda</div>
+<hr>
+<h2>What is MDA?</h2>
+<p>MDA decomposes games into three layers that are <strong>causally linked</strong>:</p>
+<pre><code>
+DESIGNER&#x27;S VIEW (builds left → right):
+  Mechanics  →  Dynamics  →  Aesthetics
+
+PLAYER&#x27;S VIEW (experiences right → left):
+  Aesthetics  →  Dynamics  →  Mechanics
+</code></pre>
+<div class="table-wrap"><table><thead><tr>
+<th>Layer</th><th>What it is</th><th>Example</th>
+</tr></thead><tbody>
+<tr><td><strong>Mechanics</strong></td><td>The rules, components, data, and algorithms — what the designer builds</td><td>&quot;4 stones each speak a word when tapped. Player taps the odd one out.&quot;</td></tr>
+<tr><td><strong>Dynamics</strong></td><td>The run-time behavior that emerges when the player interacts with the mechanics</td><td>&quot;Player listens to all 4, compares endings, forms a hypothesis, tests it&quot;</td></tr>
+<tr><td><strong>Aesthetics</strong></td><td>The emotional experience the player has as a result</td><td>&quot;Curiosity while listening, pride when correct, gentle surprise when wrong&quot;</td></tr>
+</tbody></table></div>
+<p><strong>The key insight:</strong> Designers build mechanics, but players experience aesthetics. Changes in mechanics cascade through dynamics into aesthetics. A small rule change can completely alter how the game <em>feels</em>.</p>
+<hr>
+<h2>The 8 Aesthetic Categories</h2>
+<p>These replace vague words like &quot;fun&quot; with specific emotional targets:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Aesthetic</th><th>What it feels like</th><th>Example</th>
+</tr></thead><tbody>
+<tr><td><strong>Sensation</strong></td><td>Game as sense-pleasure</td><td>Rich visuals, satisfying sounds, tactile feedback</td></tr>
+<tr><td><strong>Fantasy</strong></td><td>Game as make-believe</td><td>&quot;I&#x27;m a gardener growing magical plants&quot;</td></tr>
+<tr><td><strong>Narrative</strong></td><td>Game as drama / unfolding story</td><td>Plant growth arc: seed → sprout → bloom → harvest</td></tr>
+<tr><td><strong>Challenge</strong></td><td>Game as obstacle course</td><td>Tracing a letter correctly, finding the odd rhyme</td></tr>
+<tr><td><strong>Fellowship</strong></td><td>Game as social connection</td><td>NPC shop keeper warmth, visiting friends&#x27; gardens (Phase 2+)</td></tr>
+<tr><td><strong>Discovery</strong></td><td>Game as uncharted territory</td><td>New plants, mystery seeds, exploring the garden</td></tr>
+<tr><td><strong>Expression</strong></td><td>Game as self-discovery / creativity</td><td>Decorating your garden, choosing what to grow</td></tr>
+<tr><td><strong>Submission</strong></td><td>Game as pastime / comfort zone</td><td>Cozy daily garden tending, ambient atmosphere</td></tr>
+</tbody></table></div>
+<p><strong>Every game should name its target aesthetics.</strong> Different games prioritize different ones. Knowing which aesthetics you&#x27;re designing for prevents feature creep and misaligned mechanics.</p>
+<hr>
+<h2>How to Evaluate a Game with MDA</h2>
+<h3>Step 1: Name the Target Aesthetics</h3>
+<p>What should the player FEEL? List 3–4 primary aesthetics in priority order.</p>
+<p><strong>Example for OL garden games:</strong></p>
+<p>1. <strong>Challenge</strong> — &quot;I figured it out!&quot; (the literacy skill)</p>
+<p>2. <strong>Fantasy</strong> — &quot;I&#x27;m growing a magical garden&quot; (the narrative frame)</p>
+<p>3. <strong>Discovery</strong> — &quot;What will this plant look like?&quot; (curiosity drives return)</p>
+<p>4. <strong>Expression</strong> — &quot;This is MY garden&quot; (ownership, customization)</p>
+<h3>Step 2: Identify the Dynamics That Produce Those Aesthetics</h3>
+<p>For each target aesthetic, what run-time behaviors create it?</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Target Aesthetic</th><th>Required Dynamics</th>
+</tr></thead><tbody>
+<tr><td>Challenge</td><td>Barely-manageable difficulty, clear win condition, process feedback on failure, escalating hints</td></tr>
+<tr><td>Fantasy</td><td>Garden grows visibly as a result of learning, plants respond to player actions, world feels alive</td></tr>
+<tr><td>Discovery</td><td>New plant species as rewards, mystery seeds, ambient surprises (butterflies, weather)</td></tr>
+<tr><td>Expression</td><td>Shop choices, garden layout, which skills to practice in what order</td></tr>
+</tbody></table></div>
+<h3>Step 3: Trace Dynamics Back to Mechanics</h3>
+<p>For each dynamic, what mechanics produce it?</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Dynamic</th><th>Supporting Mechanics</th>
+</tr></thead><tbody>
+<tr><td>Barely-manageable difficulty</td><td>3-tier hint escalation, no lives/punishment, forgiving input tolerance</td></tr>
+<tr><td>Visible garden growth</td><td>5 growth stages per plant, sprout animation on correct answer, persistent golden plants</td></tr>
+<tr><td>New species as rewards</td><td>6 plant types mapped to skill domains, each unlocked by starting a new domain</td></tr>
+<tr><td>Shop choices</td><td>Seeds + Sunshine currency, purchasable items, cosmetic upgrades</td></tr>
+</tbody></table></div>
+<h3>Step 4: Check for Cascading Problems</h3>
+<p><strong>Work backwards from any negative player experience:</strong></p>
+<p>If the player feels <strong>bored</strong> (missing Challenge):</p>
+<ul>
+<li>Check dynamics: Is difficulty too low? Are there no meaningful choices?</li>
+<li>Check mechanics: Are rounds identical? Is hint escalation too aggressive?</li>
+</ul>
+<p>If the player feels <strong>frustrated</strong> (Challenge gone wrong):</p>
+<ul>
+<li>Check dynamics: Is feedback clear? Can the player understand WHY they failed?</li>
+<li>Check mechanics: Is the input tolerance too tight? Is the speech cutting off?</li>
+</ul>
+<p>If the player feels <strong>disconnected</strong> (missing Fantasy):</p>
+<ul>
+<li>Check dynamics: Does completing a round produce visible garden growth?</li>
+<li>Check mechanics: Is the sprout animation firing? Does the win screen reference the garden?</li>
+</ul>
+<p>If the player feels <strong>anxious</strong> (unwanted negative aesthetic):</p>
+<ul>
+<li>Check dynamics: Is there time pressure? Loss framing? Social comparison?</li>
+<li>Check mechanics: Remove timers, death mechanics, leaderboards.</li>
+</ul>
+<hr>
+<h2>MDA Audit Template</h2>
+<p>When evaluating a game, fill in this table:</p>
+<pre><code>
+GAME: [name]
+SKILL: [literacy target]
+
+TARGET AESTHETICS (ranked):
+1. _______________
+2. _______________
+3. _______________
+4. _______________
+
+MECHANICS → DYNAMICS → AESTHETICS CHAIN:
+
+Mechanic: _______________
+  → Produces dynamic: _______________
+    → Creates aesthetic: _______________
+    → Is this the INTENDED aesthetic? YES / NO
+    → If NO, what&#x27;s wrong?
+
+[Repeat for each core mechanic]
+
+UNINTENDED AESTHETICS:
+- Is the player feeling anything we DIDN&#x27;T design for?
+- Are any mechanics producing dynamics that undermine our target aesthetics?
+
+MISSING AESTHETICS:
+- Which target aesthetics are under-served?
+- What mechanics/dynamics could we add to strengthen them?
+</code></pre>
+<hr>
+<h2>MDA Applied to OL Prototypes</h2>
+<h3>The Garden Overworld</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Layer</th><th>Implementation</th>
+</tr></thead><tbody>
+<tr><td><strong>Mechanics</strong></td><td>Tile map, player movement, 6 plots, currency (Seeds/Sunshine), shop, growth stages, game links</td></tr>
+<tr><td><strong>Dynamics</strong></td><td>Player walks to a plot → sees growth status → chooses to play → earns currency → buys upgrades → returns daily to tend</td></tr>
+<tr><td><strong>Aesthetics</strong></td><td>Fantasy (I&#x27;m a gardener), Expression (my garden is unique), Discovery (what grows next?), Submission (cozy daily ritual)</td></tr>
+</tbody></table></div>
+<h3>A Mini-Game (e.g., Seed Script)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Layer</th><th>Implementation</th>
+</tr></thead><tbody>
+<tr><td><strong>Mechanics</strong></td><td>Letter path data, trace input detection, tolerance radius, stroke tracking, sprout animation, hint escalation, speech API</td></tr>
+<tr><td><strong>Dynamics</strong></td><td>Player sees dotted letter → traces with finger → trail persists → sprout grows as progress increases → correct trace triggers celebration → wrong lift triggers gentle hint</td></tr>
+<tr><td><strong>Aesthetics</strong></td><td>Challenge (trace accurately), Sensation (satisfying green trail, sprout animation, chime), Fantasy (tracing plants a seed), Discovery (what letter comes next?)</td></tr>
+</tbody></table></div>
+<hr>
+<h2>Common MDA Pitfalls</h2>
+<h3>1. &quot;Feature-driven&quot; instead of &quot;experience-driven&quot; design</h3>
+<p>Adding mechanics because they sound cool, without tracing them to a target aesthetic. Ask: &quot;What will the player FEEL because of this feature?&quot; If you can&#x27;t answer, don&#x27;t build it.</p>
+<h3>2. Aesthetic mismatch</h3>
+<p>The designer targets Challenge but the mechanics produce Frustration (too hard) or Boredom (too easy). Always test whether the dynamic actually creates the intended aesthetic, not just a nearby one.</p>
+<h3>3. Ignoring the player&#x27;s perspective</h3>
+<p>Designers see Mechanics → Dynamics → Aesthetics. Players see Aesthetics first. If the game doesn&#x27;t FEEL right in the first 10 seconds, the player won&#x27;t stay long enough to appreciate the mechanics.</p>
+<h3>4. Mechanics evaluated in isolation</h3>
+<p>&quot;Is this a good tracing algorithm?&quot; is the wrong question. &quot;Does this tracing algorithm produce dynamics that create the feeling of challenge + satisfaction?&quot; is the right one. No mechanic has value outside its effect on the player experience.</p>
+<h3>5. Tuning without aesthetic targets</h3>
+<p>Adjusting numbers (tolerance radius, hint timing, currency rates) without knowing which aesthetic you&#x27;re optimizing for leads to aimless iteration. Name the target first, then tune toward it.</p>
+<hr>
+<h2>When to Use MDA vs Other Skills</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Question</th><th>Use this skill</th>
+</tr></thead><tbody>
+<tr><td>&quot;Does this game produce the right <em>feelings</em>?&quot;</td><td><code class="inline">/mda</code></td></tr>
+<tr><td>&quot;Does this game follow evidence-based learning principles?&quot;</td><td><code class="inline">/game-based-learning</code></td></tr>
+<tr><td>&quot;Does this game activate all 8 motivation drives?&quot;</td><td><code class="inline">/octalysis</code></td></tr>
+<tr><td>&quot;Does this game target the right literacy skill?&quot;</td><td><code class="inline">/curriculum-mapping</code></td></tr>
+<tr><td>&quot;Does this game follow the correct screen-by-screen structure?&quot;</td><td><code class="inline">/game-storyboard</code></td></tr>
+<tr><td>&quot;Is the UI accessible and well-designed?&quot;</td><td><code class="inline">/ui-ux</code></td></tr>
+</tbody></table></div>
+<p>MDA is the <strong>&quot;does it feel right?&quot;</strong> skill. The others handle <strong>&quot;is it correct?&quot;</strong> Use MDA after the game is structurally sound to verify the experience matches the intent.</p>
+</main>
+<footer>OL Design Skills · Auto-generated May 27, 2026</footer>
+</body>
+</html>

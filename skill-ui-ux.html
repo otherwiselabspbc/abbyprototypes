@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ui-ux — OL Design Skills</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#faf9f5;font-family:'Inter',sans-serif;color:#2a2a2a;min-height:100vh}
+header{background:#ed6a5a;padding:32px 24px 28px;text-align:center}
+header h1{font-family:'Lora',serif;font-size:clamp(22px,4vw,32px);color:#fff;font-weight:700;margin-bottom:6px}
+header p{font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0 auto;line-height:1.6;font-family:'Lora',serif}
+.back{display:inline-block;margin:20px 24px;font-size:13px;color:#ed6a5a;text-decoration:none;font-weight:600}
+.back:hover{text-decoration:underline}
+main{max-width:800px;margin:0 auto;padding:0 20px 60px}
+h2{font-family:'Lora',serif;font-size:22px;font-weight:700;color:#3a3a3a;margin:32px 0 12px;padding-bottom:8px;border-bottom:3px solid #ed6a5a}
+h3{font-family:'Lora',serif;font-size:17px;font-weight:700;color:#3a3a3a;margin:24px 0 8px}
+h4{font-family:'Lora',serif;font-size:14px;font-weight:700;color:#5a5a5a;margin:18px 0 6px}
+p{font-size:13px;color:#4a4a4a;line-height:1.7;margin-bottom:10px}
+ul{margin:8px 0 14px 20px;font-size:13px;color:#4a4a4a;line-height:1.7}
+li{margin-bottom:4px}
+strong{color:#3a3a3a}
+em{color:#7a7040;font-style:normal;background:rgba(244,241,187,0.5);padding:1px 4px;border-radius:3px}
+code.inline{background:#f0ede8;padding:2px 6px;border-radius:4px;font-size:12px;color:#c04a3a}
+pre{background:#2a2a2a;color:#e0ddd8;padding:18px;border-radius:10px;overflow-x:auto;font-size:12px;line-height:1.6;margin:12px 0 16px}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+hr{border:none;border-top:2px solid #eae8e2;margin:28px 0}
+.table-wrap{overflow-x:auto;margin:12px 0 16px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:10px 12px;background:#ed6a5a;color:#fff;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-family:'Lora',serif}
+td{padding:10px 12px;border-bottom:1px solid #eae8e2;color:#3a3a3a}
+tr:hover td{background:#faf8f2}
+.tag{display:inline-block;background:rgba(155,193,188,0.25);color:#4a6a66;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;margin-top:8px}
+footer{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lora',serif}
+</style>
+</head>
+<body>
+<header>
+  <h1>ui-ux</h1>
+  <p>Review or apply UI/UX design principles to a game screen, component, or interaction. Covers general design principles plus literacy-specific pedagogy (OG &amp; Lindamood-Bell alignment, phase-based UI, mu</p>
+</header>
+<a class="back" href="index.html">← Back to Project HQ</a>
+<main>
+<div class="tag">/ui-ux</div>
+<hr>
+<h2>1. Visual Hierarchy</h2>
+<p>Establish clear reading order through size, weight, color, and contrast. The most important element should be unmistakably dominant — users should never wonder where to look first.</p>
+<ul>
+<li>The single most important element gets the largest size, highest contrast, and most prominent position.</li>
+<li>Body text minimum: 16px on mobile, 14px on desktop.</li>
+<li>Use no more than 2 typefaces and 3 type sizes per screen: title, body, label.</li>
+<li>Left-align body text. Center only short titles or single-line prompts.</li>
+<li>For dyslexic users: prefer warm cream on dark over pure white on black; avoid tight letter-spacing.</li>
+</ul>
+<h2>2. Consistency</h2>
+<p>Reuse the same patterns, colors, spacing, and interaction behaviors throughout. Users learn once, then apply everywhere. Define a small set of design tokens and never deviate.</p>
+<ul>
+<li>One color palette: 1 primary, 1 accent, 1 neutral, plus semantic colors (success/error).</li>
+<li>One border-radius value per element type (e.g., 8px cards, 24px pills, 50% circles) — applied consistently.</li>
+<li>Spacing system: multiples of 4px or 8px for all padding, margins, and gaps.</li>
+<li>If a pattern exists elsewhere in the product, reuse it before inventing something new.</li>
+</ul>
+<h2>3. Feedback &amp; Affordance</h2>
+<p>Every interactive element must communicate its state: default, hover, active, disabled, loading, success, error. Buttons should look pressable. Inputs should look fillable. Never leave a user wondering if their action registered.</p>
+<ul>
+<li>Feedback must be immediate (&lt; 100ms visual response), multimodal where possible: visual + audio.</li>
+<li>Hover: scale up slightly + glow or color shift. Active/press: scale down. Disabled: reduced opacity, no hover effects.</li>
+<li>Success: green glow, particle burst, or upward motion. Error: red flash, shake, or downward motion.</li>
+<li>Never hide a button — disable it instead, and explain why if not obvious.</li>
+</ul>
+<h2>4. Clarity over Cleverness</h2>
+<p>Labels, icons, and copy should be immediately understood without explanation. Avoid jargon. When in doubt, use words. A clever icon that requires a tooltip has failed.</p>
+<ul>
+<li>Action labels should be verbs: &quot;Tap a string,&quot; not &quot;String interaction.&quot;</li>
+<li>For children/educational contexts: use concrete, specific language. &quot;Listen, then tap in order&quot; not &quot;Reproduce the phoneme sequence.&quot;</li>
+<li>Error messages: say what went wrong in plain language, and tell the user exactly how to fix it.</li>
+</ul>
+<h2>5. Fitts&#x27;s Law / Target Sizing</h2>
+<p>Interactive targets should be large enough to hit comfortably. Place frequently used controls where they&#x27;re easiest to reach.</p>
+<ul>
+<li>Minimum tap target: 44×44px (Apple HIG) / 48×48dp (Material). Larger for children or motor-impaired users.</li>
+<li>Primary actions belong in the thumb zone: bottom 40% of screen on mobile.</li>
+<li>Minimum 8px gap between adjacent tap targets to prevent mis-taps.</li>
+<li>Avoid hover-only interactions — everything must work by touch.</li>
+<li>Add <code class="inline">touch-action: none</code> on canvas elements to prevent scroll interference during gameplay.</li>
+</ul>
+<h2>6. Progressive Disclosure</h2>
+<p>Show only what&#x27;s needed at each step. Hide complexity behind a secondary action. Reduces overwhelm without sacrificing depth.</p>
+<ul>
+<li>One primary action per screen. If two CTAs exist, one is primary (filled) and one is secondary (outlined/ghost).</li>
+<li>Onboarding: teach through play, not walls of text. Use the first interaction to demonstrate the mechanic — an animated demo beats written instructions.</li>
+<li>If instructions are necessary: 3 steps maximum, numbered, with icons or visuals.</li>
+<li>Avoid text blocks longer than 3 lines. Use whitespace as a structural tool.</li>
+</ul>
+<h2>7. Error Prevention &amp; Recovery</h2>
+<p>Design to prevent errors before they happen. When errors occur, recover gracefully.</p>
+<ul>
+<li>Disable unavailable options rather than letting users select them and fail.</li>
+<li>Validate inline — don&#x27;t wait for form submission.</li>
+<li>On wrong answer: show clearly what was wrong, reset to a recoverable state, allow retry.</li>
+<li>Where possible, give players a way to undo or recover from mistakes — lowers frustration, especially for children.</li>
+</ul>
+<h2>8. Proximity &amp; Grouping (Gestalt)</h2>
+<p>Elements that belong together should be visually grouped. Use whitespace as structure.</p>
+<ul>
+<li>Tight spacing within a group; generous whitespace between groups.</li>
+<li>Related controls (e.g., replay + continue buttons) should be visually near each other.</li>
+<li>Don&#x27;t mix unrelated elements in the same visual cluster.</li>
+</ul>
+<h2>9. Accessibility</h2>
+<ul>
+<li>Color contrast: WCAG AA minimum 4.5:1 for body text, 3:1 for large text (&gt;18px bold).</li>
+<li>Never rely on color alone to convey meaning — pair with shape, icon, or label.</li>
+<li>Support keyboard navigation with visible focus indicators.</li>
+<li>Use semantic HTML and ARIA roles where applicable.</li>
+<li>For dyslexic users: generous letter-spacing (0.05em+), rounded letterforms, avoid long italic passages.</li>
+</ul>
+<h2>10. Performance Perception</h2>
+<p>Perceived speed matters as much as actual speed. Keep users informed during any delay.</p>
+<ul>
+<li>Instant visual feedback (even just a state change) prevents repeated taps/clicks.</li>
+<li>Use skeleton screens or loading indicators for anything taking &gt; 300ms.</li>
+<li>Animate entrances with ease-out (fast start, slow end). Animate exits with ease-in.</li>
+<li>Micro-interaction duration: 80–150ms. State transitions: 200–350ms. Page transitions: 300–500ms. Never animate longer than 600ms unless it&#x27;s a deliberate reward moment.</li>
+</ul>
+<h2>11. Game-Specific Rules</h2>
+<ul>
+<li><strong>Clear game state</strong>: Score, health, round, timer — always visible and readable at a glance. Never bury this in a menu.</li>
+<li><strong>Reward moments</strong>: Win states, level-ups, and completions deserve satisfying visual + audio punctuation. A correct answer with no feedback is a missed opportunity.</li>
+<li><strong>Delight without distraction</strong>: Particle effects, glows, and sounds are rewards — use them for correct actions and wins, not as ambient decoration on every frame.</li>
+<li><strong>Undo &amp; forgiveness</strong>: Where possible, let players recover from mistakes. On wrong answer, reset progress within the round — don&#x27;t punish with a full restart.</li>
+<li><strong>Onboarding</strong>: The first interaction should teach the mechanic. Show a demo, then step aside. Never open a game with a wall of text.</li>
+<li><strong>State transitions</strong>: A brief pause (200ms) before a new state begins lets the player process what just happened. Don&#x27;t rush into the next moment.</li>
+</ul>
+<hr>
+<h2>12. Literacy-Pedagogy Alignment (OG &amp; Lindamood-Bell)</h2>
+<p>These principles apply specifically to games targeting early literacy. The UI must mirror the three core properties of structured literacy: <strong>structured, cumulative, and multisensory</strong>.</p>
+<h3>Phase-Based Interface Complexity</h3>
+<p>Never expose a child to interface complexity they aren&#x27;t ready for linguistically. Match the UI to the literacy level:</p>
+<p><strong>Phase 1 — Pre-literate / Phonemic Awareness</strong></p>
+<ul>
+<li>Zero reliance on written text for navigation or instructions</li>
+<li>All UI communicates via audio, animation, color, and iconography</li>
+<li>Animated characters or mascots deliver instructions via voice</li>
+<li>Tasks are purely auditory/oral: tapping sounds, matching mouth shapes, identifying rhymes</li>
+<li>Interactive mouth/sound animations the child can tap and replay (mirrors LiPS kinesthetic discovery)</li>
+<li>Tap targets must be extremely large and forgiving — motor precision is lowest at this stage</li>
+</ul>
+<p><strong>Phase 2 — Letter-Sound Introduction</strong></p>
+<ul>
+<li>Letters always appear paired with their sound (audio fires on appearance, not just on tap)</li>
+<li>Letter names and sounds reinforced simultaneously — never one without the other</li>
+<li>Each new phonogram introduced feels like a distinct, celebratory &quot;unlock&quot; moment</li>
+<li>Short labels (1–2 letters/words max) can appear, always backed by audio</li>
+<li>Introduce simple CVC words only — words the child can fully decode from known sounds</li>
+</ul>
+<p><strong>Phase 3 — Decoding &amp; Blending</strong></p>
+<ul>
+<li>Short decodable words and sentences can appear; always paired with a read-aloud option</li>
+<li>Font size minimum: 18–22px; clean, high-contrast typeface — no decorative fonts for instructional text</li>
+<li>Instructions can include 3–5 word phrases, still audio-backed</li>
+<li>Finger-tap interactions that physically segment words into phonemes (mirrors OG tapping method)</li>
+<li>Introduce sight words alongside decodable words — visually distinguish them (e.g., a &quot;star word&quot; badge)</li>
+</ul>
+<p><strong>Phase 4 — Fluency &amp; Comprehension</strong></p>
+<ul>
+<li>Written instructions can stand without audio support, though audio remains available on demand</li>
+<li>UI complexity can increase moderately: multi-step tasks, more navigation options</li>
+<li>Support visualization prompts (e.g., &quot;draw what you see in your head&quot;)</li>
+<li>Audio/read-aloud remains a persistent, accessible option — never remove it</li>
+</ul>
+<h3>Multisensory Design Requirements</h3>
+<p>Support all three channels simultaneously wherever possible:</p>
+<ul>
+<li><strong>Visual</strong>: High-contrast letters and words. Use color coding consistently — e.g., vowels always one color, consonants another (standard OG convention). Animate letter introductions.</li>
+<li><strong>Auditory</strong>: Every letter, phonogram, word, and instruction has an associated audio. Tap anything to hear it. Never rely on silent reading for task comprehension.</li>
+<li><strong>Kinesthetic</strong>: Drag-to-blend, tap-to-segment, trace-the-letter gestures. Physical interaction reinforces the neural pathway. Replicate OG air-writing and tapping with gesture/tap mechanics.</li>
+</ul>
+<h3>Cumulative Review Must Be Visible</h3>
+<p>Previously mastered skills should resurface in new levels — don&#x27;t let old content disappear.</p>
+<ul>
+<li>Show the child a visual &quot;skill map&quot; or constellation of what they&#x27;ve learned so far</li>
+<li>New concepts should visually connect to prior ones (e.g., a new letter &quot;snapping&quot; onto a chain of known letters)</li>
+<li>Frequent, distributed review is built into the progression — not optional</li>
+</ul>
+<h3>Mastery Before Progression</h3>
+<p>Do not unlock the next level on a single correct answer — require demonstrated consistency.</p>
+<ul>
+<li>Show a visible mastery indicator (stars, filled bar, glowing badge) that fills across multiple correct attempts</li>
+<li>&quot;Not ready yet&quot; should feel encouraging, not punishing: &quot;Almost there! Let&#x27;s practice a little more&quot; with a cheerful animation — never a red X</li>
+</ul>
+<h3>Diagnostic Awareness (Invisible Scaffolding)</h3>
+<ul>
+<li>Track which phonemes, patterns, and skills a child struggles with; surface more practice for those automatically</li>
+<li>If a child consistently misses a specific sound or pattern, gently re-route — don&#x27;t just repeat the same failed task</li>
+<li>A parent/teacher dashboard (separate from the child-facing UI) should surface this data clearly</li>
+</ul>
+<h3>Encouragement Architecture</h3>
+<p>Struggling readers have often already experienced significant failure. The UI must counteract this:</p>
+<ul>
+<li>Every attempt earns positive acknowledgment — not just correct ones</li>
+<li>Errors trigger gentle redirection, never a harsh buzzer or &quot;wrong&quot; visual</li>
+<li>Celebrate milestones loudly: completing a phoneme set, reading a first full word, finishing a level — these deserve full-screen celebration moments</li>
+<li>Frame the game as exploration and building, not testing and passing</li>
+</ul>
+<hr>
+<h2>How to Apply This Skill</h2>
+<p><strong>When reviewing a file or component:</strong></p>
+<p>1. Read the relevant HTML/CSS/JS for the target element.</p>
+<p>2. Call out specific violations with line references.</p>
+<p>3. Suggest concrete fixes — show corrected code, not just the principle.</p>
+<p>4. Flag what&#x27;s already working well so it isn&#x27;t accidentally changed.</p>
+<p><strong>When building something new:</strong></p>
+<p>1. Start with hierarchy — establish what the user must see first.</p>
+<p>2. Size tap targets before styling them.</p>
+<p>3. Add all interaction states (hover, active, disabled) before calling it done.</p>
+<p>4. Check contrast ratios for every text/background pair.</p>
+<p>5. Add at least one piece of delight (sound, animation, or particle) for the primary success state.</p>
+</main>
+<footer>OL Design Skills · Auto-generated May 27, 2026</footer>
+</body>
+</html>

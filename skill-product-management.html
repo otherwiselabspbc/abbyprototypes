@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>product-management — OL Design Skills</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#faf9f5;font-family:'Inter',sans-serif;color:#2a2a2a;min-height:100vh}
+header{background:#ed6a5a;padding:32px 24px 28px;text-align:center}
+header h1{font-family:'Lora',serif;font-size:clamp(22px,4vw,32px);color:#fff;font-weight:700;margin-bottom:6px}
+header p{font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0 auto;line-height:1.6;font-family:'Lora',serif}
+.back{display:inline-block;margin:20px 24px;font-size:13px;color:#ed6a5a;text-decoration:none;font-weight:600}
+.back:hover{text-decoration:underline}
+main{max-width:800px;margin:0 auto;padding:0 20px 60px}
+h2{font-family:'Lora',serif;font-size:22px;font-weight:700;color:#3a3a3a;margin:32px 0 12px;padding-bottom:8px;border-bottom:3px solid #ed6a5a}
+h3{font-family:'Lora',serif;font-size:17px;font-weight:700;color:#3a3a3a;margin:24px 0 8px}
+h4{font-family:'Lora',serif;font-size:14px;font-weight:700;color:#5a5a5a;margin:18px 0 6px}
+p{font-size:13px;color:#4a4a4a;line-height:1.7;margin-bottom:10px}
+ul{margin:8px 0 14px 20px;font-size:13px;color:#4a4a4a;line-height:1.7}
+li{margin-bottom:4px}
+strong{color:#3a3a3a}
+em{color:#7a7040;font-style:normal;background:rgba(244,241,187,0.5);padding:1px 4px;border-radius:3px}
+code.inline{background:#f0ede8;padding:2px 6px;border-radius:4px;font-size:12px;color:#c04a3a}
+pre{background:#2a2a2a;color:#e0ddd8;padding:18px;border-radius:10px;overflow-x:auto;font-size:12px;line-height:1.6;margin:12px 0 16px}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+hr{border:none;border-top:2px solid #eae8e2;margin:28px 0}
+.table-wrap{overflow-x:auto;margin:12px 0 16px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:10px 12px;background:#ed6a5a;color:#fff;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-family:'Lora',serif}
+td{padding:10px 12px;border-bottom:1px solid #eae8e2;color:#3a3a3a}
+tr:hover td{background:#faf8f2}
+.tag{display:inline-block;background:rgba(155,193,188,0.25);color:#4a6a66;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;margin-top:8px}
+footer{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lora',serif}
+</style>
+</head>
+<body>
+<header>
+  <h1>product-management</h1>
+  <p>Manage the end-to-end design process for OL Prototypes. Covers design stages (Double Diamond), decision logging, user research, prototyping, branding, backlog management, and playtesting methodology. </p>
+</header>
+<a class="back" href="index.html">← Back to Project HQ</a>
+<main>
+<div class="tag">/product-management</div>
+<hr>
+<h2>The Design Process (Double Diamond + Build)</h2>
+<pre><code>
+STAGE 0          STAGE 1        STAGE 2        STAGE 3         STAGE 4
+Vision &amp;     →   Discover   →   Define     →   Develop     →   Deliver
+Strategy         (diverge)      (converge)     (diverge)       (converge)
+                  ◇                ◇              ◇               ◇
+              What&#x27;s the      What&#x27;s the     Build &amp; test     Polish &amp;
+              problem?        solution?      many options     ship
+</code></pre>
+<p><strong>Current phase:</strong> Stage 3 (Develop) — building and testing mini-game prototypes.</p>
+<hr>
+<h2>Stage 0 — Vision &amp; Strategy</h2>
+<p><strong>Goal:</strong> Establish purpose, audience, and success criteria.</p>
+<p><strong>Artifacts:</strong></p>
+<div class="table-wrap"><table><thead><tr>
+<th>Document</th><th>Status</th><th>Location</th>
+</tr></thead><tbody>
+<tr><td>Product Vision</td><td>Done</td><td><code class="inline">game vision.md</code></td></tr>
+<tr><td>Curriculum Map</td><td>Done</td><td><code class="inline">Reading Exercise to Game Mechanic.csv</code></td></tr>
+<tr><td>Skill → Plant Mapping</td><td>Done</td><td>In vision doc</td></tr>
+<tr><td>Platform &amp; Constraints</td><td>In progress</td><td>Browser-first, mobile-touch, no mic for Phase 1</td></tr>
+</tbody></table></div>
+<p><strong>Open decisions to record:</strong></p>
+<ul>
+<li>Session length assumptions (5-min bursts? 15-min sessions?)</li>
+<li>Target device (iPad primary? Phone? Desktop browser?)</li>
+</ul>
+<hr>
+<h2>Stage 1 — Discover (Research)</h2>
+<p><strong>Goal:</strong> Understand learners, tutors, and families deeply.</p>
+<h3>User Research Methods for Dyslexic Learners</h3>
+<p><strong>Special rules:</strong></p>
+<ul>
+<li>No text-heavy surveys or consent forms — use verbal, picture-based, or emoji scales</li>
+<li>15-minute max sessions with kids (fatigue onset is fast)</li>
+<li>Pair kid with a trusted adult (tutor or parent nearby, not directing)</li>
+<li>Prefer observation + post-task debrief over think-aloud (verbalizing while reading adds cognitive load)</li>
+<li>Use &quot;Show me&quot; over &quot;Tell me&quot; — ask kids to point, act out, demonstrate</li>
+</ul>
+<div class="table-wrap"><table><thead><tr>
+<th>Method</th><th>When</th><th>Who</th><th>Output</th>
+</tr></thead><tbody>
+<tr><td>Contextual inquiry</td><td>Early</td><td>Watch OG tutor session</td><td>Journey map, pain points</td></tr>
+<tr><td>Tutor interview</td><td>Early</td><td>3–5 OG practitioners</td><td>Personas, insight log</td></tr>
+<tr><td>Parent interview</td><td>Early</td><td>3–5 caregivers</td><td>Home context, motivation</td></tr>
+<tr><td>Analogous audit</td><td>Early</td><td>—</td><td>What cozy games do these kids already love?</td></tr>
+<tr><td>Card sort</td><td>Define stage</td><td>Kids + tutors</td><td>Information architecture</td></tr>
+</tbody></table></div>
+<p><strong>Artifacts to produce:</strong></p>
+<ul>
+<li>3 User Personas: The Learner, The Tutor, The Parent</li>
+<li>Empathy Maps for each</li>
+<li>Current-state Journey Map (a typical tutoring session, a typical homework struggle)</li>
+<li>Research Insights Log (tagged observations and quotes)</li>
+</ul>
+<hr>
+<h2>Stage 2 — Define (Converge)</h2>
+<p><strong>Goal:</strong> Turn research into clear problem statements and design principles.</p>
+<p><strong>Activities:</strong></p>
+<ul>
+<li>Affinity diagram research insights</li>
+<li>Write &quot;How Might We&quot; questions</li>
+<li>Prioritize opportunity areas (learning impact × feasibility)</li>
+<li>Define design principles</li>
+</ul>
+<p><strong>Design Principles (current):</strong></p>
+<p>1. <strong>Evidence-based first.</strong> Every mechanic maps to a proven OG activity.</p>
+<p>2. <strong>Growth as metaphor.</strong> The garden grows because the learner grew.</p>
+<p>3. <strong>Never punish absence.</strong> Plants pause, never die.</p>
+<p>4. <strong>Mastery through play.</strong> If it doesn&#x27;t feel like a game, it&#x27;s not ready.</p>
+<p>5. <strong>Multisensory always.</strong> Visual + auditory + tactile, every time.</p>
+<p>6. <strong>Failure is fertilizer.</strong> Hints escalate, never punish. Every attempt earns acknowledgment.</p>
+<p><strong>Invoke:</strong> <code class="inline">/curriculum-mapping</code>, <code class="inline">/game-based-learning</code>, <code class="inline">/octalysis</code>, <code class="inline">/mda</code></p>
+<hr>
+<h2>Stage 3 — Develop (Build &amp; Test)</h2>
+<p><strong>Goal:</strong> Build and playtest many mini-game prototypes. This is where we are now.</p>
+<h3>Per-Game Build Pipeline</h3>
+<pre><code>
+Concept → Storyboard → Lo-fi Build → Playtest → Hi-fi Build → Playtest → Polish → Curriculum Review → Done
+</code></pre>
+<p>Limit work-in-progress to <strong>3 games in active build</strong> at once.</p>
+<h3>Game Design Document (One-Page GDD Template)</h3>
+<p>Fill this out before building any new game:</p>
+<pre><code>
+GAME:           [Fantasy name]
+FILE:           game-XX-[slug].html
+SKILL:          [Domain &gt; Subskill]
+CSV ROW:        [Row number]
+
+MECHANIC:       [One sentence: what the player does]
+GARDEN METAPHOR:[How this maps to plant growth]
+
+INPUT MODALITY: [Visual / Auditory / Both]
+OUTPUT MODALITY:[Tactile / Speech / Both]
+INTERACTION:    [Tap / Swipe / Trace / Drag / etc.]
+
+MDA BREAKDOWN:
+  Mechanics:    [Rules, components, algorithms]
+  Dynamics:     [Run-time behavior that emerges]
+  Aesthetics:   [Target feelings: Challenge, Fantasy, Discovery, etc.]
+
+OCTALYSIS:
+  Primary drives: [Which of the 8 core drives does this game activate?]
+  Watch out for:  [Any Black Hat drives to use carefully?]
+
+LEARN PHASE:
+  Step 1:       [Introduce concept]
+  Step 2:       [Show contrast]
+  Step 3:       [Guided practice]
+
+PRACTICE:
+  Round 1:      [Items/content]
+  Round 2:      [Items/content]
+  Round 3:      [Items/content]
+
+SAMPLE ITEMS:   [From CSV — real words / nonsense?]
+
+SUCCESS CRITERIA:
+  - Player can [specific skill] independently after Practice
+  - Average completion time: ~[X] minutes
+  - Hint escalation used in &lt; 50% of rounds (after 3+ plays)
+</code></pre>
+<h3>Invoke during build: <code class="inline">/game-storyboard</code>, <code class="inline">/ui-ux</code>, <code class="inline">/mda</code>, <code class="inline">/octalysis</code></h3>
+<hr>
+<h2>Stage 4 — Deliver (Polish &amp; Ship)</h2>
+<p><strong>Goal:</strong> Finalize, validate, and release.</p>
+<p><strong>Checklist:</strong></p>
+<ul>
+<li>[ ] All games pass curriculum alignment review (tutor sign-off)</li>
+<li>[ ] Accessibility audit (contrast, touch targets, audio support, dyslexia-friendly fonts)</li>
+<li>[ ] Full session playtest (overworld → 3+ games in sequence → return to garden)</li>
+<li>[ ] Device testing (mobile Safari, Chrome, tablet)</li>
+<li>[ ] Analytics instrumented (completion rate, error patterns, retry rate, time on task)</li>
+<li>[ ] Onboarding flow designed (first-time kid experience, first-time tutor experience)</li>
+<li>[ ] Retrospective written</li>
+</ul>
+<hr>
+<h2>Decision Log</h2>
+<p>Record every significant design decision. Store in <code class="inline">decisions.md</code> in project root.</p>
+<h3>Template</h3>
+<pre><code>
+## DEC-[NNN]: [Short title]
+
+**Date:** YYYY-MM-DD
+**Stage:** [Vision / Discover / Define / Develop / Deliver]
+**Domain:** [Overworld / Mini-game-N / Brand / Curriculum / Tech]
+
+**Question:** [What were we deciding?]
+
+**Options considered:**
+- (A) [Option] — [Pros] / [Cons]
+- (B) [Option] — [Pros] / [Cons]
+- (C) [Option] — [Pros] / [Cons]
+
+**Decision:** [Which option, stated clearly]
+
+**Rationale:** [Why — including evidence, playtest data, or principle cited]
+
+**Status:** Active / Revisit by [date] / Superseded by DEC-[NNN]
+</code></pre>
+<h3>Decisions already made (to retroactively log):</h3>
+<ul>
+<li>Garden overworld as hub between mini-games</li>
+<li>Plants pause but never die (encouragement architecture)</li>
+<li>5-screen storyboard structure (Landing → Learn → Transition → Practice → Win)</li>
+<li>3-tier hint escalation replacing lives/hearts</li>
+<li>Process feedback on every answer (not just outcome)</li>
+<li>Cozy pixel farm aesthetic (Stardew Valley / PvZ style)</li>
+<li>Press Start 2P for UI font</li>
+<li>Seeds + Sunshine as dual currency</li>
+<li>One skill per game, no exceptions</li>
+</ul>
+<hr>
+<h2>Branding &amp; Visual Identity</h2>
+<h3>Current Status: Established (iterate as needed)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Element</th><th>Status</th><th>Details</th>
+</tr></thead><tbody>
+<tr><td>Brand personality</td><td>Defined</td><td>Encouraging, whimsical, patient, cozy</td></tr>
+<tr><td>Tone of voice</td><td>Defined</td><td>Warm, never condescending, celebrates effort</td></tr>
+<tr><td>Color palette</td><td>In use</td><td>Earthy greens, warm browns, sky blue, golden sunlight, flower pops</td></tr>
+<tr><td>Typography</td><td>In use</td><td>Press Start 2P (UI), potential body font TBD</td></tr>
+<tr><td>Illustration style</td><td>In use</td><td>PvZ-style illustrated, smooth curves, rich shading</td></tr>
+<tr><td>Sound design</td><td>Partial</td><td>Ascending chime (correct), soft descending (wrong), speech via Web Speech API</td></tr>
+<tr><td>Character design</td><td>Partial</td><td>Pixel gardener in overworld; no mascot character yet</td></tr>
+</tbody></table></div>
+<h3>Open branding work:</h3>
+<ul>
+<li>[ ] Explore a mascot / guide character (NPC shop keeper personality)</li>
+<li>[ ] Audit font readability for dyslexic users (Press Start 2P is chunky but may need a sans-serif body alternative)</li>
+<li>[ ] Sound design brief: ambient garden music, plant growth sounds, daily check-in jingle</li>
+</ul>
+<hr>
+<h2>Playtesting</h2>
+<h3>Report Template</h3>
+<pre><code>
+## Playtest: [Game name] — [Stage: Paper / Lo-fi / Hi-fi / Polished]
+
+**Date:**
+**Participants:** [Count, ages, relevant context]
+**Facilitator:**
+**Device/Environment:**
+
+### Hypothesis
+[What we expected to learn]
+
+### Setup
+[Instructions given, any priming]
+
+### Observations
+- [Timestamped or sequenced notes]
+- [Direct quotes]
+- [Moments of confusion, delight, frustration]
+
+### Metrics (if hi-fi+)
+- Completion rate:
+- Avg attempts to succeed:
+- Time on task:
+- Error patterns:
+
+### Findings
+1. [Finding + evidence]
+2. [Finding + evidence]
+
+### Changes to make
+- [ ] [Change, priority: P1/P2/P3]
+
+### Open questions
+- [What we still don&#x27;t know]
+</code></pre>
+<h3>Playtest cadence</h3>
+<ul>
+<li><strong>Paper prototype:</strong> 1-2 kids, 15 min each, before any code</li>
+<li><strong>Lo-fi build:</strong> 3-5 kids moderated, after core loop works</li>
+<li><strong>Hi-fi build:</strong> 3-5 kids unmoderated, with pre/post skill check</li>
+<li><strong>Polished:</strong> Tutor-led full session in realistic conditions</li>
+</ul>
+<hr>
+<h2>Game Backlog Tracker</h2>
+<p>Maintain in <code class="inline">backlog.md</code> or a spreadsheet. Current state:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>#</th><th>Game</th><th>Skill Domain</th><th>CSV</th><th>Status</th><th>Playtest</th><th>Priority</th>
+</tr></thead><tbody>
+<tr><td>01</td><td>Rune Stones</td><td>PA — Phoneme Sequence</td><td>19</td><td>Done (legacy)</td><td>0</td><td>—</td></tr>
+<tr><td>02</td><td>Enchanted Harp</td><td>PA — Phoneme Sequence</td><td>19</td><td>Done (legacy)</td><td>0</td><td>—</td></tr>
+<tr><td>03</td><td>Whispering Stones</td><td>PA — Rhyme Detection</td><td>18</td><td>Done</td><td>0</td><td>—</td></tr>
+<tr><td>04</td><td>Block Breaker</td><td>Letter Knowledge — Tap</td><td>9</td><td>Done</td><td>0</td><td>—</td></tr>
+<tr><td>05</td><td>Seed Script</td><td>Letter Knowledge — Trace</td><td>10</td><td>Done</td><td>0</td><td>—</td></tr>
+<tr><td>06</td><td>Syllable Sprout</td><td>PA — Syllable Count</td><td>20</td><td>Done</td><td>0</td><td>—</td></tr>
+<tr><td>07</td><td>TBD</td><td>Print Concepts — Tap</td><td>2–6</td><td>Backlog</td><td>—</td><td>P1</td></tr>
+<tr><td>08</td><td>TBD</td><td>Alphabetic Principle</td><td>29–31</td><td>Backlog</td><td>—</td><td>P1</td></tr>
+<tr><td>09</td><td>TBD</td><td>PA — Phoneme Count</td><td>21</td><td>Backlog</td><td>—</td><td>P2</td></tr>
+<tr><td>10</td><td>TBD</td><td>PA — Syllable Blending</td><td>22</td><td>Backlog</td><td>—</td><td>P2</td></tr>
+<tr><td>11</td><td>TBD</td><td>PA — Phoneme Blending</td><td>23</td><td>Backlog</td><td>—</td><td>P2</td></tr>
+<tr><td>12</td><td>TBD</td><td>Decoding — Letter by Letter</td><td>38-42</td><td>Backlog</td><td>—</td><td>P2</td></tr>
+<tr><td>13</td><td>TBD</td><td>Encoding — Letter by Letter</td><td>47-50</td><td>Backlog</td><td>—</td><td>P3</td></tr>
+<tr><td>...</td><td>...</td><td>...</td><td>...</td><td>Backlog</td><td>—</td><td>P3</td></tr>
+</tbody></table></div>
+<h3>Prioritization weights</h3>
+<ul>
+<li><strong>Curriculum sequence (40%):</strong> Earlier OG skills are more foundational</li>
+<li><strong>Mechanic diversity (20%):</strong> Don&#x27;t build 5 tapping games in a row</li>
+<li><strong>Reusability (20%):</strong> Games whose engine enables other games</li>
+<li><strong>Risk/unknowns (20%):</strong> Build novel mechanics early to learn faster</li>
+</ul>
+<hr>
+<h2>Success Metrics</h2>
+<h3>Per game</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Metric</th><th>Target</th><th>How to measure</th>
+</tr></thead><tbody>
+<tr><td>Session completion rate</td><td>&gt;80%</td><td>Player finishes all 3 practice rounds</td></tr>
+<tr><td>Hint escalation rate</td><td>&lt;50% (after 3+ plays)</td><td>Fewer hints needed over time</td></tr>
+<tr><td>Voluntary replay rate</td><td>&gt;30%</td><td>Player chooses &quot;Play Again&quot;</td></tr>
+<tr><td>Time to complete</td><td>3-5 minutes</td><td>Timer in game</td></tr>
+<tr><td>Skill transfer</td><td>Tutor-verified</td><td>Can kid apply skill outside game?</td></tr>
+</tbody></table></div>
+<h3>Overall product</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Metric</th><th>Target</th><th>How to measure</th>
+</tr></thead><tbody>
+<tr><td>Daily return rate</td><td>&gt;40%</td><td>Same user returns next day</td></tr>
+<tr><td>Games per session</td><td>2-3</td><td>Session tracking</td></tr>
+<tr><td>Garden engagement</td><td>&gt;60% interact with garden between games</td><td>Overworld time</td></tr>
+<tr><td>Tutor NPS</td><td>&gt;50</td><td>Survey</td></tr>
+<tr><td>Parent satisfaction</td><td>&gt;4/5</td><td>Survey</td></tr>
+</tbody></table></div>
+<hr>
+<h2>When to Use This Skill vs Others</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>I need to...</th><th>Invoke</th>
+</tr></thead><tbody>
+<tr><td>Plan what to build next</td><td><code class="inline">/product-management</code></td></tr>
+<tr><td>Log a design decision</td><td><code class="inline">/product-management</code></td></tr>
+<tr><td>Plan a playtest</td><td><code class="inline">/product-management</code></td></tr>
+<tr><td>Choose a skill target for a new game</td><td><code class="inline">/curriculum-mapping</code></td></tr>
+<tr><td>Design the game&#x27;s screen-by-screen flow</td><td><code class="inline">/game-storyboard</code></td></tr>
+<tr><td>Check if the game teaches effectively</td><td><code class="inline">/game-based-learning</code></td></tr>
+<tr><td>Check if the game feels right</td><td><code class="inline">/mda</code></td></tr>
+<tr><td>Check if the game motivates return</td><td><code class="inline">/octalysis</code></td></tr>
+<tr><td>Audit the UI/accessibility</td><td><code class="inline">/ui-ux</code></td></tr>
+<tr><td>Check if it fits the product vision</td><td><code class="inline">/game-vision</code></td></tr>
+</tbody></table></div>
+</main>
+<footer>OL Design Skills · Auto-generated May 27, 2026</footer>
+</body>
+</html>

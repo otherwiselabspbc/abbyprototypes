@@ -4,7 +4,7 @@ build-hub.py — Scans the OL Prototypes project and generates index.html
 Run:  python3 build-hub.py
 """
 
-import os, re, glob, html
+import os, re, glob, html, textwrap
 from datetime import datetime
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -92,6 +92,156 @@ def scan_resources():
                         topics=grab('Topics'), skill=grab('Skill derived').replace('`','')))
     return res
 
+def md_to_html(md):
+    """Simple markdown-to-HTML converter for skill pages."""
+    # Remove frontmatter
+    md = re.sub(r'^---\s*\n.*?\n---\s*\n', '', md, flags=re.S)
+    # Remove the first line (skill invocation instruction)
+    md = re.sub(r'^When this skill is invoked.*?\n', '', md)
+    md = md.strip()
+    lines = md.split('\n')
+    out = []
+    in_table = False
+    in_list = False
+    in_code = False
+    for line in lines:
+        # Code blocks
+        if line.strip().startswith('```'):
+            if in_code:
+                out.append('</code></pre>')
+                in_code = False
+            else:
+                out.append('<pre><code>')
+                in_code = True
+            continue
+        if in_code:
+            out.append(esc(line))
+            continue
+        # Close list if needed
+        if in_list and not line.strip().startswith('- ') and not line.strip().startswith('* ') and line.strip():
+            out.append('</ul>')
+            in_list = False
+        # Close table if needed
+        if in_table and not line.strip().startswith('|'):
+            out.append('</tbody></table></div>')
+            in_table = False
+        # Horizontal rule
+        if re.match(r'^---+\s*$', line):
+            out.append('<hr>')
+            continue
+        # Headings
+        hm = re.match(r'^(#{1,4})\s+(.+)', line)
+        if hm:
+            lvl = len(hm.group(1))
+            out.append(f'<h{lvl}>{inline_md(hm.group(2))}</h{lvl}>')
+            continue
+        # Table
+        if line.strip().startswith('|'):
+            cells = [c.strip() for c in line.strip().strip('|').split('|')]
+            # Skip separator rows
+            if all(re.match(r'^[-:]+$', c) for c in cells):
+                continue
+            if not in_table:
+                out.append('<div class="table-wrap"><table><thead><tr>')
+                out.append(''.join(f'<th>{inline_md(c)}</th>' for c in cells))
+                out.append('</tr></thead><tbody>')
+                in_table = True
+            else:
+                out.append('<tr>' + ''.join(f'<td>{inline_md(c)}</td>' for c in cells) + '</tr>')
+            continue
+        # List items
+        lm = re.match(r'^\s*[-*]\s+(.+)', line)
+        if lm:
+            if not in_list:
+                out.append('<ul>')
+                in_list = True
+            out.append(f'<li>{inline_md(lm.group(1))}</li>')
+            continue
+        # Paragraphs
+        if line.strip():
+            out.append(f'<p>{inline_md(line)}</p>')
+        elif not in_code:
+            pass  # blank line
+    if in_list: out.append('</ul>')
+    if in_table: out.append('</tbody></table></div>')
+    if in_code: out.append('</code></pre>')
+    return '\n'.join(out)
+
+def inline_md(text):
+    """Convert inline markdown (bold, italic, code, links)."""
+    text = esc(text)
+    text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
+    text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
+    text = re.sub(r'`(.+?)`', r'<code class="inline">\1</code>', text)
+    return text
+
+def generate_skill_page(skill_dir, name, description, body_html, now):
+    """Generate a standalone HTML page for a skill."""
+    return f'''<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{esc(name)} — OL Design Skills</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+*{{margin:0;padding:0;box-sizing:border-box}}
+body{{background:#faf9f5;font-family:'Inter',sans-serif;color:#2a2a2a;min-height:100vh}}
+header{{background:#ed6a5a;padding:32px 24px 28px;text-align:center}}
+header h1{{font-family:'Lora',serif;font-size:clamp(22px,4vw,32px);color:#fff;font-weight:700;margin-bottom:6px}}
+header p{{font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0 auto;line-height:1.6;font-family:'Lora',serif}}
+.back{{display:inline-block;margin:20px 24px;font-size:13px;color:#ed6a5a;text-decoration:none;font-weight:600}}
+.back:hover{{text-decoration:underline}}
+main{{max-width:800px;margin:0 auto;padding:0 20px 60px}}
+h2{{font-family:'Lora',serif;font-size:22px;font-weight:700;color:#3a3a3a;margin:32px 0 12px;padding-bottom:8px;border-bottom:3px solid #ed6a5a}}
+h3{{font-family:'Lora',serif;font-size:17px;font-weight:700;color:#3a3a3a;margin:24px 0 8px}}
+h4{{font-family:'Lora',serif;font-size:14px;font-weight:700;color:#5a5a5a;margin:18px 0 6px}}
+p{{font-size:13px;color:#4a4a4a;line-height:1.7;margin-bottom:10px}}
+ul{{margin:8px 0 14px 20px;font-size:13px;color:#4a4a4a;line-height:1.7}}
+li{{margin-bottom:4px}}
+strong{{color:#3a3a3a}}
+em{{color:#7a7040;font-style:normal;background:rgba(244,241,187,0.5);padding:1px 4px;border-radius:3px}}
+code.inline{{background:#f0ede8;padding:2px 6px;border-radius:4px;font-size:12px;color:#c04a3a}}
+pre{{background:#2a2a2a;color:#e0ddd8;padding:18px;border-radius:10px;overflow-x:auto;font-size:12px;line-height:1.6;margin:12px 0 16px}}
+pre code{{background:none;padding:0;color:inherit;font-size:inherit}}
+hr{{border:none;border-top:2px solid #eae8e2;margin:28px 0}}
+.table-wrap{{overflow-x:auto;margin:12px 0 16px}}
+table{{width:100%;border-collapse:collapse;font-size:12px}}
+th{{text-align:left;padding:10px 12px;background:#ed6a5a;color:#fff;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-family:'Lora',serif}}
+td{{padding:10px 12px;border-bottom:1px solid #eae8e2;color:#3a3a3a}}
+tr:hover td{{background:#faf8f2}}
+.tag{{display:inline-block;background:rgba(155,193,188,0.25);color:#4a6a66;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;margin-top:8px}}
+footer{{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lora',serif}}
+</style>
+</head>
+<body>
+<header>
+  <h1>{esc(name)}</h1>
+  <p>{esc(description[:200])}</p>
+</header>
+<a class="back" href="index.html">← Back to Project HQ</a>
+<main>
+<div class="tag">/{esc(name)}</div>
+{body_html}
+</main>
+<footer>OL Design Skills · Auto-generated {esc(now)}</footer>
+</body>
+</html>'''
+
+def build_skill_pages(skills_data, now):
+    """Generate HTML pages for all skills, return mapping of dir->filename."""
+    pages = {}
+    for s in skills_data:
+        sf = os.path.join(SKILLS_DIR, s['dir'], 'SKILL.md')
+        content = open(sf, encoding='utf-8').read()
+        body = md_to_html(content)
+        page_html = generate_skill_page(s['dir'], s['name'], s['description'], body, now)
+        filename = f'skill-{s["dir"]}.html'
+        with open(os.path.join(ROOT, filename), 'w', encoding='utf-8') as f:
+            f.write(page_html)
+        pages[s['dir']] = filename
+    return pages
+
 def scan_docs():
     docs = []
     if os.path.isfile(os.path.join(ROOT, 'game vision.md')):
@@ -112,6 +262,9 @@ def generate():
     resources = scan_resources()
     now = datetime.now().strftime('%B %d, %Y')
 
+    # Build individual skill pages
+    skill_pages = build_skill_pages(skills, now)
+
     # Abby's game rows (no links by default)
     abby_game_rows = '\n          '.join(
         f'<tr><td>{esc(g["num"])}</td><td>{esc(g["title"])}</td>'
@@ -126,9 +279,10 @@ def generate():
     )
 
     skill_cards = '\n    '.join(
-        f'<div class="card"><div class="card-title">{esc(s["name"])}</div>'
+        f'<a href="{skill_pages[s["dir"]]}" class="card" style="text-decoration:none;color:inherit;display:block">'
+        f'<div class="card-title">{esc(s["name"])}</div>'
         f'<div class="card-desc">{esc(s["description"][:130])}{"..." if len(s["description"])>130 else ""}</div>'
-        f'<div class="card-meta"><span class="tag tag-teal">/{esc(s["name"])}</span></div></div>'
+        f'<div class="card-meta"><span class="tag tag-teal">/{esc(s["name"])}</span></div></a>'
         for s in skills
     )
 

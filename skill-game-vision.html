@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>game-vision — OL Design Skills</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#faf9f5;font-family:'Inter',sans-serif;color:#2a2a2a;min-height:100vh}
+header{background:#ed6a5a;padding:32px 24px 28px;text-align:center}
+header h1{font-family:'Lora',serif;font-size:clamp(22px,4vw,32px);color:#fff;font-weight:700;margin-bottom:6px}
+header p{font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0 auto;line-height:1.6;font-family:'Lora',serif}
+.back{display:inline-block;margin:20px 24px;font-size:13px;color:#ed6a5a;text-decoration:none;font-weight:600}
+.back:hover{text-decoration:underline}
+main{max-width:800px;margin:0 auto;padding:0 20px 60px}
+h2{font-family:'Lora',serif;font-size:22px;font-weight:700;color:#3a3a3a;margin:32px 0 12px;padding-bottom:8px;border-bottom:3px solid #ed6a5a}
+h3{font-family:'Lora',serif;font-size:17px;font-weight:700;color:#3a3a3a;margin:24px 0 8px}
+h4{font-family:'Lora',serif;font-size:14px;font-weight:700;color:#5a5a5a;margin:18px 0 6px}
+p{font-size:13px;color:#4a4a4a;line-height:1.7;margin-bottom:10px}
+ul{margin:8px 0 14px 20px;font-size:13px;color:#4a4a4a;line-height:1.7}
+li{margin-bottom:4px}
+strong{color:#3a3a3a}
+em{color:#7a7040;font-style:normal;background:rgba(244,241,187,0.5);padding:1px 4px;border-radius:3px}
+code.inline{background:#f0ede8;padding:2px 6px;border-radius:4px;font-size:12px;color:#c04a3a}
+pre{background:#2a2a2a;color:#e0ddd8;padding:18px;border-radius:10px;overflow-x:auto;font-size:12px;line-height:1.6;margin:12px 0 16px}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+hr{border:none;border-top:2px solid #eae8e2;margin:28px 0}
+.table-wrap{overflow-x:auto;margin:12px 0 16px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:10px 12px;background:#ed6a5a;color:#fff;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-family:'Lora',serif}
+td{padding:10px 12px;border-bottom:1px solid #eae8e2;color:#3a3a3a}
+tr:hover td{background:#faf8f2}
+.tag{display:inline-block;background:rgba(155,193,188,0.25);color:#4a6a66;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;margin-top:8px}
+footer{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lora',serif}
+</style>
+</head>
+<body>
+<header>
+  <h1>game-vision</h1>
+  <p>Reference the core product vision, design principles, and three-phase roadmap for OL Prototypes before building any game or feature. Use when making design decisions, scoping mechanics, or evaluating </p>
+</header>
+<a class="back" href="index.html">← Back to Project HQ</a>
+<main>
+<div class="tag">/game-vision</div>
+<p>Always read <code class="inline">game vision.md</code> in the project root for the full, up-to-date vision document.</p>
+<hr>
+<h2>One-Liner</h2>
+<p><strong>Learn to read by learning magic</strong> — an adventure RPG that adapts evidence-based dyslexia tutoring into 3D video game mechanics.</p>
+<h2>The Concept</h2>
+<p>Reading skills are reframed as <strong>magic skills</strong>. Phoneme awareness becomes incantation. Decoding becomes spell-casting. Fluency becomes mastery of the arcane. The learner is a young mage progressing through a magical world, and every reading skill they acquire unlocks new abilities, new rooms, and new regions of that world.</p>
+<h2>Tonal and Mechanical Inspirations</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Inspiration</th><th>What We Take From It</th>
+</tr></thead><tbody>
+<tr><td><strong>Harry Potter</strong></td><td>Wand magic, spoken spells, potions, the fantasy of learning magic at school</td></tr>
+<tr><td><strong>Breath of the Wild</strong></td><td>Open-world adventure, emergent mechanics, exploration-driven progression</td></tr>
+<tr><td><strong>Indiana Jones</strong></td><td>Environmental puzzles, discovery, the thrill of figuring things out</td></tr>
+<tr><td><strong>Sky: Children of the Light</strong></td><td>Mobile-first design, expressive world, social warmth, accessible controls</td></tr>
+<tr><td><strong>Wario Ware</strong></td><td>Bite-sized mini-games, rapid mechanic variety, playful experimentation</td></tr>
+</tbody></table></div>
+<h2>Three-Phase Roadmap</h2>
+<h3>Phase 1 — Mini-Games (Current Phase)</h3>
+<p>~20 standalone mini-games, each prototyping a novel mechanic that adapts a specific activity from evidence-based dyslexia tutoring (Orton-Gillingham, Lindamood-Bell, Wilson Reading) into a playable game interaction.</p>
+<p>Goals:</p>
+<ul>
+<li>Explore the design space rapidly</li>
+<li>Test which mechanics are fun, effective, and retainable</li>
+<li>Build a library of proven interactions</li>
+<li>String games together with a <strong>curriculum backbone</strong> so learners progress through skills in a researched sequence</li>
+</ul>
+<p>Think Wario Ware: short, varied, surprising — but each game targets a real skill.</p>
+<h3>Phase 2 — Escape Rooms</h3>
+<p>A closed-world escape room game that sequences the best mini-game mechanics into a structured progression. Each room:</p>
+<p>1. <strong>Learn</strong> a new magic/reading skill</p>
+<p>2. <strong>Practice</strong> it through guided repetition</p>
+<p>3. <strong>Demonstrate mastery</strong> to unlock the next room</p>
+<h3>Phase 3 — The Open World</h3>
+<p>A 3D world inspired by Sky: Children of the Light where the player explores, builds, and uses magic that IS the reading skill — not disconnected mini-games, but the fundamental way the world works.</p>
+<h2>Design Principles</h2>
+<ul>
+<li><strong>Evidence-based first.</strong> Every mechanic maps to a real activity from proven dyslexia intervention programs. Fun is the delivery vehicle, not a replacement for rigor.</li>
+<li><strong>Mobile-first.</strong> Touch, voice, and tilt before keyboard and mouse. Designed for devices learners actually have.</li>
+<li><strong>Mastery through play.</strong> No worksheets in disguise. If it doesn&#x27;t feel like a game, it&#x27;s not ready.</li>
+<li><strong>Curriculum-sequenced.</strong> Games follow a progression that builds skills systematically, from phonemic awareness through fluency.</li>
+<li><strong>Magic as metaphor.</strong> The fantasy of learning magic provides intrinsic motivation and makes skill progression feel like power progression.</li>
+</ul>
+<h2>Target Audience</h2>
+<p>Tweens with dyslexia (or at risk), their tutors, and their families. Playable independently or in structured tutoring sessions.</p>
+<h2>How to Apply This Skill</h2>
+<p><strong>When evaluating a proposed game or mechanic:</strong></p>
+<p>1. Does it map to a real skill from the curriculum? (Check <code class="inline">/curriculum-mapping</code>)</p>
+<p>2. Does it feel like magic — does the reading skill become a magical act?</p>
+<p>3. Is it mobile-first? Can it be played with touch alone?</p>
+<p>4. Is it self-contained enough for Phase 1, or does it depend on Phase 2/3 infrastructure?</p>
+<p>5. Would a tween with dyslexia find it genuinely fun — or just educational?</p>
+<p><strong>Red flags — check with cofounder if:</strong></p>
+<ul>
+<li>The mechanic requires reading fluency the learner may not yet have</li>
+<li>The magic metaphor feels forced or tacked on</li>
+<li>It would only work with keyboard/mouse</li>
+<li>It spans multiple skill domains (one skill per game — no exceptions in Phase 1)</li>
+</ul>
+</main>
+<footer>OL Design Skills · Auto-generated May 27, 2026</footer>
+</body>
+</html>

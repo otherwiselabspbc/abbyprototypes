@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>game-storyboard — OL Design Skills</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#faf9f5;font-family:'Inter',sans-serif;color:#2a2a2a;min-height:100vh}
+header{background:#ed6a5a;padding:32px 24px 28px;text-align:center}
+header h1{font-family:'Lora',serif;font-size:clamp(22px,4vw,32px);color:#fff;font-weight:700;margin-bottom:6px}
+header p{font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0 auto;line-height:1.6;font-family:'Lora',serif}
+.back{display:inline-block;margin:20px 24px;font-size:13px;color:#ed6a5a;text-decoration:none;font-weight:600}
+.back:hover{text-decoration:underline}
+main{max-width:800px;margin:0 auto;padding:0 20px 60px}
+h2{font-family:'Lora',serif;font-size:22px;font-weight:700;color:#3a3a3a;margin:32px 0 12px;padding-bottom:8px;border-bottom:3px solid #ed6a5a}
+h3{font-family:'Lora',serif;font-size:17px;font-weight:700;color:#3a3a3a;margin:24px 0 8px}
+h4{font-family:'Lora',serif;font-size:14px;font-weight:700;color:#5a5a5a;margin:18px 0 6px}
+p{font-size:13px;color:#4a4a4a;line-height:1.7;margin-bottom:10px}
+ul{margin:8px 0 14px 20px;font-size:13px;color:#4a4a4a;line-height:1.7}
+li{margin-bottom:4px}
+strong{color:#3a3a3a}
+em{color:#7a7040;font-style:normal;background:rgba(244,241,187,0.5);padding:1px 4px;border-radius:3px}
+code.inline{background:#f0ede8;padding:2px 6px;border-radius:4px;font-size:12px;color:#c04a3a}
+pre{background:#2a2a2a;color:#e0ddd8;padding:18px;border-radius:10px;overflow-x:auto;font-size:12px;line-height:1.6;margin:12px 0 16px}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+hr{border:none;border-top:2px solid #eae8e2;margin:28px 0}
+.table-wrap{overflow-x:auto;margin:12px 0 16px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:10px 12px;background:#ed6a5a;color:#fff;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-family:'Lora',serif}
+td{padding:10px 12px;border-bottom:1px solid #eae8e2;color:#3a3a3a}
+tr:hover td{background:#faf8f2}
+.tag{display:inline-block;background:rgba(155,193,188,0.25);color:#4a6a66;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;margin-top:8px}
+footer{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lora',serif}
+</style>
+</head>
+<body>
+<header>
+  <h1>game-storyboard</h1>
+  <p>Use when designing a new mini-game from scratch. Provides the complete screen-by-screen structure every game must follow, including the Learn and Practice phases. Synthesizes curriculum mapping, game-</p>
+</header>
+<a class="back" href="index.html">← Back to Project HQ</a>
+<main>
+<div class="tag">/game-storyboard</div>
+<p>Before using this skill, identify the target skill using <code class="inline">/curriculum-mapping</code>. You need:</p>
+<ul>
+<li><strong>Target domain</strong> (e.g., Phonological Awareness)</li>
+<li><strong>Target skill</strong> (e.g., Detection &gt; Rhyme)</li>
+<li><strong>Input modality</strong> (Visual, Auditory, or Both)</li>
+<li><strong>Output modality</strong> (Tactile, Speech, or Both)</li>
+<li><strong>Interaction type</strong> (Tap, Swipe, Trace, Drag, etc.)</li>
+<li><strong>Sample items</strong> from the CSV</li>
+</ul>
+<hr>
+<h2>Every Mini-Game Has 5 Screens</h2>
+<pre><code>
+LANDING → LEARN (3 steps) → TRANSITION → PRACTICE (3 rounds) → WIN
+</code></pre>
+<hr>
+<h2>Screen 1: Landing</h2>
+<p><strong>Purpose:</strong> Set the tone, preview the mechanic, invite the player in.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Element</th><th>Details</th>
+</tr></thead><tbody>
+<tr><td><strong>Title</strong></td><td>The game&#x27;s fantasy name (e.g., &quot;The Whispering Stones&quot;)</td></tr>
+<tr><td><strong>Eyebrow</strong></td><td>The skill domain in small text (e.g., &quot;Phonological Awareness&quot;)</td></tr>
+<tr><td><strong>Tagline</strong></td><td>1–2 sentences describing what the player will do, in plain language</td></tr>
+<tr><td><strong>Demo</strong></td><td>A looping animation that shows the core mechanic in action — no text explanation, just the game playing itself</td></tr>
+<tr><td><strong>Begin button</strong></td><td>Single primary CTA</td></tr>
+<tr><td><strong>Skill tag</strong></td><td>Small footer: skill name + age range</td></tr>
+</tbody></table></div>
+<h3>Rules</h3>
+<ul>
+<li>The demo teaches the mechanic through observation, not reading (UI/UX: onboarding through play, not text walls)</li>
+<li>No instructions — the demo IS the instruction</li>
+<li>The demo must use the same visual language as the actual game (same stones, strings, items)</li>
+</ul>
+<hr>
+<h2>Screen 2: Learn (3 Steps)</h2>
+<p><strong>Purpose:</strong> Teach the literacy skill itself — not the game mechanic, but the reading concept. This is the pretraining principle (d=0.8 effect size).</p>
+<p>The Learn phase is zero-stakes. The player cannot fail. Every interaction builds understanding.</p>
+<h3>Step 1 — Introduce the Concept</h3>
+<p>Show the simplest possible example of the target skill.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>What to show</th><th>How</th>
+</tr></thead><tbody>
+<tr><td>The core concept in one sentence</td><td>Title text, spoken aloud</td></tr>
+<tr><td>Two items that demonstrate the concept</td><td>Interactive elements (stones, strings, etc.) that auto-play</td></tr>
+<tr><td>The key pattern highlighted</td><td>Visual emphasis on the shared feature (e.g., ending sound highlighted in gold)</td></tr>
+<tr><td>A caption explaining what just happened</td><td>Dialog box with highlighted keywords, spoken aloud</td></tr>
+</tbody></table></div>
+<p><strong>Example (Rhyme Detection):</strong></p>
+<ul>
+<li>Title: &quot;Words that end with the same sound are called rhyming words.&quot;</li>
+<li>Two stones auto-speak &quot;cat&quot; and &quot;hat&quot;</li>
+<li>Endings &quot;-at&quot; and &quot;-at&quot; reveal in gold</li>
+<li>Caption: &#x27;&quot;Cat&quot; and &quot;hat&quot; both end with <strong>-at</strong>. They rhyme!&#x27;</li>
+</ul>
+<h3>Step 2 — Show the Contrast</h3>
+<p>Show what the concept looks like when it DOESN&#x27;T apply — the negative example.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>What to show</th><th>How</th>
+</tr></thead><tbody>
+<tr><td>The same format as Step 1</td><td>Identical layout and interaction pattern</td></tr>
+<tr><td>Two items that do NOT match</td><td>Auto-play both</td></tr>
+<tr><td>The difference highlighted</td><td>Different endings/sounds shown in contrasting colors</td></tr>
+<tr><td>A caption explaining the difference</td><td>Spoken aloud</td></tr>
+</tbody></table></div>
+<p><strong>Example (Rhyme Detection):</strong></p>
+<ul>
+<li>Title: &quot;Words with different ending sounds do not rhyme.&quot;</li>
+<li>Two stones auto-speak &quot;cat&quot; and &quot;dog&quot;</li>
+<li>Endings &quot;-at&quot; and &quot;-og&quot; reveal — one green, one gold</li>
+<li>Caption: &#x27;&quot;Cat&quot; ends with <strong>-at</strong>. &quot;Dog&quot; ends with <strong>-og</strong>. Different sounds — no rhyme.&#x27;</li>
+</ul>
+<h3>Step 3 — Guided Practice</h3>
+<p>The player exercises the skill with full scaffolding. They can tap and explore, but the answer is gently guided.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>What to show</th><th>How</th>
+</tr></thead><tbody>
+<tr><td>3 items (not 4 — reduced complexity)</td><td>Player taps each to hear/see</td></tr>
+<tr><td>A prompt to identify the target</td><td>Spoken aloud + dialog box</td></tr>
+<tr><td>Wrong answers get gentle redirection</td><td>No penalty, just &quot;That one rhymes. Try the one that sounds different.&quot; (spoken)</td></tr>
+<tr><td>Correct answer gets full explanation</td><td>Highlights + caption + spoken explanation</td></tr>
+</tbody></table></div>
+<h3>Learn Phase Rules</h3>
+<ul>
+<li><strong>All text is spoken aloud.</strong> Titles, captions, prompts, nudges — everything. (Modality principle: audio frees the visual channel. Phase 1 literacy: zero reliance on reading.)</li>
+<li><strong>Captions use highlighted keywords.</strong> Key terms in <code class="inline">&lt;em&gt;</code> (gold) and key patterns in <code class="inline">&lt;strong&gt;</code> (gold). This is visual signaling — draws the eye to the important information.</li>
+<li><strong>Each line of text is a complete clause.</strong> Use <code class="inline">&lt;br&gt;</code> to control line breaks. Never let the browser wrap mid-phrase. Students must be able to read each line left-to-right as a single thought.</li>
+<li><strong>Generous spacing.</strong> <code class="inline">word-spacing: 0.15em</code>, <code class="inline">line-height: 2.4+</code>, padding around highlighted words.</li>
+<li><strong>Continue button appears only after speech finishes.</strong> The player cannot skip the explanation.</li>
+<li><strong>No lives, no scoring, no failure.</strong> The Learn phase exists to build understanding, not test it.</li>
+</ul>
+<hr>
+<h2>Screen 3: Transition</h2>
+<p><strong>Purpose:</strong> Mark the shift from learning to practicing. Set expectations.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Element</th><th>Details</th>
+</tr></thead><tbody>
+<tr><td><strong>Eyebrow</strong></td><td>&quot;Learn Complete&quot;</td></tr>
+<tr><td><strong>Title</strong></td><td>&quot;Ready to Practice?&quot;</td></tr>
+<tr><td><strong>Subtitle</strong></td><td>1 sentence describing what Practice asks the player to do</td></tr>
+<tr><td><strong>Begin button</strong></td><td>&quot;Start Practice&quot;</td></tr>
+</tbody></table></div>
+<p>Keep this screen brief — it&#x27;s a breath between phases, not a wall of text.</p>
+<hr>
+<h2>Screen 4: Practice (3 Rounds)</h2>
+<p><strong>Purpose:</strong> The player demonstrates the skill independently. No scaffolding, no hints on first attempt. The gameplay IS the learning.</p>
+<h3>Round Structure</h3>
+<p>All 3 rounds use the same mechanic and the same UI. The only difference is the content (different word sets, different items). Difficulty is consistent — the Learn phase already handled progression.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Element</th><th>Details</th>
+</tr></thead><tbody>
+<tr><td><strong>HUD</strong></td><td>&quot;Practice&quot; label, round dots (1/3, 2/3, 3/3), round number</td></tr>
+<tr><td><strong>Instruction</strong></td><td>Brief prompt shown as a centered overlay, spoken aloud, auto-dismisses after ~2.5s</td></tr>
+<tr><td><strong>Game area</strong></td><td>The interactive elements (4 stones, strings, tiles, etc.)</td></tr>
+<tr><td><strong>No lives or hearts</strong></td><td>Replaced by hint escalation</td></tr>
+</tbody></table></div>
+<h3>Listening → Answering Flow</h3>
+<p>1. <strong>Listening phase:</strong> Player must interact with every element before answering (e.g., tap all 4 stones to hear their words). Instruction overlay: &quot;Tap each stone to hear its word.&quot;</p>
+<p>2. <strong>Answer phase:</strong> Once all elements are heard, the instruction changes: &quot;Now tap the stone that does not rhyme with the others.&quot; Player selects their answer.</p>
+<h3>Feedback: 3-Tier Hint Escalation</h3>
+<p>No lives. No round resets. Instead, wrong answers escalate support:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Tier</th><th>Trigger</th><th>What happens</th>
+</tr></thead><tbody>
+<tr><td><strong>1 — Nudge</strong></td><td>1st wrong answer</td><td>Process feedback explaining WHY the tapped item was wrong. &quot;Nap ends with -ap, so it rhymes with the others. Try to find the one that sounds different!&quot; Spoken aloud. Player tries again.</td></tr>
+<tr><td><strong>2 — Directive</strong></td><td>2nd wrong answer</td><td>Auto-plays the correct answer and a wrong answer back-to-back. &quot;Cap ends with -ap and pan ends with -an. Can you find the one that is different?&quot; Spoken aloud. Player tries again.</td></tr>
+<tr><td><strong>3 — Bottom-out</strong></td><td>3rd wrong answer</td><td>Reveals the answer with full explanation. &quot;The answer is pan. It ends with -an, but the others end with -ap.&quot; Highlights the correct item. Auto-advances to next round.</td></tr>
+</tbody></table></div>
+<h3>Feedback: Correct Answer</h3>
+<ul>
+<li>Play ascending chime</li>
+<li>Show process feedback: &quot;Pan ends with -an, but the others end with -ap.&quot;</li>
+<li>Spoken aloud</li>
+<li>Correct item animates (shatter/disappear), others celebrate</li>
+<li>Auto-advance to next round after ~2s</li>
+</ul>
+<h3>Practice Phase Rules</h3>
+<ul>
+<li><strong>All instructions are spoken aloud</strong> and shown as a centered overlay that auto-dismisses</li>
+<li><strong>Process feedback on EVERY answer</strong> — correct or wrong. Always explain WHY.</li>
+<li><strong>Hint escalation replaces lives.</strong> The game never punishes. It only increases support.</li>
+<li><strong>Wrong answer feedback stays visible longer</strong> (4–5s) than prompts (2.5s) — the player needs time to process</li>
+<li><strong>Sound celebrates success</strong> (ascending arpeggio) <strong>and softens failure</strong> (gentle descending tone, not a buzzer)</li>
+<li><strong>Items come from the CSV sample items.</strong> Real words only unless the CSV notes column says otherwise.</li>
+<li><strong>3 rounds minimum.</strong> Each round uses a different word/item set from the CSV.</li>
+</ul>
+<hr>
+<h2>Screen 5: Win</h2>
+<p><strong>Purpose:</strong> Celebrate mastery. Make the player feel powerful.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Element</th><th>Details</th>
+</tr></thead><tbody>
+<tr><td><strong>Eyebrow</strong></td><td>&quot;Quest Complete&quot;</td></tr>
+<tr><td><strong>Title</strong></td><td>&quot;Well Done!&quot; (large, celebratory)</td></tr>
+<tr><td><strong>Subtitle</strong></td><td>1–2 sentences reinforcing what the player learned</td></tr>
+<tr><td><strong>Badge</strong></td><td>Skill name + icon. &quot;Skill Unlocked: Rhyme Detection&quot;</td></tr>
+<tr><td><strong>Particle burst</strong></td><td>Full-screen celebration (rainbow colors, confetti feel)</td></tr>
+<tr><td><strong>Play Again button</strong></td><td>Restarts Practice (not Learn)</td></tr>
+</tbody></table></div>
+<h3>Win Screen Rules</h3>
+<ul>
+<li>This is a <strong>full-screen reward moment.</strong> Go big — particles, chime, scale animation.</li>
+<li>The badge names the real literacy skill, not the game mechanic. The player should feel they gained a reading power, not just beat a level.</li>
+</ul>
+<hr>
+<h2>Content Requirements (from Curriculum Mapping)</h2>
+<p>Before storyboarding, fill in this table:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Field</th><th>Value</th>
+</tr></thead><tbody>
+<tr><td>Target domain</td><td></td></tr>
+<tr><td>Target skill</td><td></td></tr>
+<tr><td>CSV row</td><td></td></tr>
+<tr><td>Input modality</td><td></td></tr>
+<tr><td>Output modality</td><td></td></tr>
+<tr><td>Interaction type</td><td></td></tr>
+<tr><td>Sample items (Learn)</td><td></td></tr>
+<tr><td>Sample items (Practice, 3 sets)</td><td></td></tr>
+<tr><td>Real words or nonsense?</td><td></td></tr>
+<tr><td>Magic metaphor</td><td></td></tr>
+</tbody></table></div>
+<h3>Modality Chain</h3>
+<p>The game must implement the full modality chain from the CSV:</p>
+<p>1. <strong>Stimulus</strong> — how the child receives the information (Visual, Auditory, or Both)</p>
+<p>2. <strong>Response</strong> — how the child responds (Tactile, Speech, or Both)</p>
+<p>3. <strong>Feedback</strong> — how the game confirms (Visual, Auditory, or Both)</p>
+<p>Never skip the input before asking for output. The child must HEAR the sound before tapping. They must SEE the letter before tracing. The CSV defines this chain — follow it exactly.</p>
+<hr>
+<h2>Visual &amp; Audio Checklist</h2>
+<ul>
+<li>[ ] Warm, bright, inviting aesthetic — not dark or clinical</li>
+<li>[ ] Appropriate to the game&#x27;s theme and narrative (magic, adventure, exploration)</li>
+<li>[ ] Interactive elements are visually distinct from decorative ones</li>
+<li>[ ] Correct = ascending chime + visual celebration</li>
+<li>[ ] Wrong = gentle tone + soft visual feedback (never a harsh buzzer)</li>
+<li>[ ] All instructions spoken in warm, friendly voice</li>
+<li>[ ] Text uses generous spacing for readability</li>
+<li>[ ] Highlighted keywords in accent color</li>
+<li>[ ] Line breaks at clause boundaries, never mid-phrase</li>
+<li>[ ] Background: ambient elements that support the theme without distracting</li>
+</ul>
+<hr>
+<h2>Storyboard Output Format</h2>
+<p>When storyboarding a new game, output this structure:</p>
+<pre><code>
+GAME: [Fantasy name]
+SKILL: [Domain &gt; Subskill &gt; Specific skill]
+CSV ROW: [Row number]
+MECHANIC: [Core interaction in one sentence]
+MAGIC METAPHOR: [How the reading skill becomes a magical act]
+
+LANDING
+- Title: ...
+- Tagline: ...
+- Demo: [describe the looping animation]
+
+LEARN STEP 1 — Introduce
+- Title: &quot;...&quot;
+- Items: [word1], [word2]
+- Caption: &quot;...&quot;
+
+LEARN STEP 2 — Contrast
+- Title: &quot;...&quot;
+- Items: [word1], [word2]
+- Caption: &quot;...&quot;
+
+LEARN STEP 3 — Guided Practice
+- Title: &quot;...&quot;
+- Items: [word1], [word2], [word3]
+- Correct: [which item]
+- Caption (correct): &quot;...&quot;
+
+PRACTICE ROUND 1: [item1], [item2], [item3], [item4] — odd: [which]
+PRACTICE ROUND 2: [item1], [item2], [item3], [item4] — odd: [which]
+PRACTICE ROUND 3: [item1], [item2], [item3], [item4] — odd: [which]
+
+WIN
+- Badge: &quot;Skill Unlocked: [Skill Name]&quot;
+</code></pre>
+</main>
+<footer>OL Design Skills · Auto-generated May 27, 2026</footer>
+</body>
+</html>

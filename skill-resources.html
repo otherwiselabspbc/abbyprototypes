@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>resources — OL Design Skills</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#faf9f5;font-family:'Inter',sans-serif;color:#2a2a2a;min-height:100vh}
+header{background:#ed6a5a;padding:32px 24px 28px;text-align:center}
+header h1{font-family:'Lora',serif;font-size:clamp(22px,4vw,32px);color:#fff;font-weight:700;margin-bottom:6px}
+header p{font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0 auto;line-height:1.6;font-family:'Lora',serif}
+.back{display:inline-block;margin:20px 24px;font-size:13px;color:#ed6a5a;text-decoration:none;font-weight:600}
+.back:hover{text-decoration:underline}
+main{max-width:800px;margin:0 auto;padding:0 20px 60px}
+h2{font-family:'Lora',serif;font-size:22px;font-weight:700;color:#3a3a3a;margin:32px 0 12px;padding-bottom:8px;border-bottom:3px solid #ed6a5a}
+h3{font-family:'Lora',serif;font-size:17px;font-weight:700;color:#3a3a3a;margin:24px 0 8px}
+h4{font-family:'Lora',serif;font-size:14px;font-weight:700;color:#5a5a5a;margin:18px 0 6px}
+p{font-size:13px;color:#4a4a4a;line-height:1.7;margin-bottom:10px}
+ul{margin:8px 0 14px 20px;font-size:13px;color:#4a4a4a;line-height:1.7}
+li{margin-bottom:4px}
+strong{color:#3a3a3a}
+em{color:#7a7040;font-style:normal;background:rgba(244,241,187,0.5);padding:1px 4px;border-radius:3px}
+code.inline{background:#f0ede8;padding:2px 6px;border-radius:4px;font-size:12px;color:#c04a3a}
+pre{background:#2a2a2a;color:#e0ddd8;padding:18px;border-radius:10px;overflow-x:auto;font-size:12px;line-height:1.6;margin:12px 0 16px}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+hr{border:none;border-top:2px solid #eae8e2;margin:28px 0}
+.table-wrap{overflow-x:auto;margin:12px 0 16px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:10px 12px;background:#ed6a5a;color:#fff;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-family:'Lora',serif}
+td{padding:10px 12px;border-bottom:1px solid #eae8e2;color:#3a3a3a}
+tr:hover td{background:#faf8f2}
+.tag{display:inline-block;background:rgba(155,193,188,0.25);color:#4a6a66;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;margin-top:8px}
+footer{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lora',serif}
+</style>
+</head>
+<body>
+<header>
+  <h1>resources</h1>
+  <p>Central library of all research sources, readings, and references used in the OL Prototypes design process. Search by topic, type, or skill. Get summaries, key takeaways, and see how each resource sha</p>
+</header>
+<a class="back" href="index.html">← Back to Project HQ</a>
+<main>
+<div class="tag">/resources</div>
+<ul>
+<li><code class="inline">/resources</code> — show the full library</li>
+<li><code class="inline">/resources add [title]</code> — log a new resource</li>
+<li><code class="inline">/resources topic feedback</code> — filter by topic</li>
+<li><code class="inline">/resources summarize [title]</code> — show key learnings from a specific resource</li>
+</ul>
+<p>When adding a new resource, always fill in ALL fields in the entry template below.</p>
+<hr>
+<h2>Resource Library</h2>
+<h3>R-001: Handbook of Game-Based Learning</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Field</th><th>Value</th>
+</tr></thead><tbody>
+<tr><td><strong>Title</strong></td><td>Handbook of Game-Based Learning</td></tr>
+<tr><td><strong>Authors</strong></td><td>Jan L. Plass, Richard E. Mayer, Bruce D. Homer</td></tr>
+<tr><td><strong>Year</strong></td><td>2019</td></tr>
+<tr><td><strong>Publisher</strong></td><td>MIT Press</td></tr>
+<tr><td><strong>Type</strong></td><td>Academic textbook</td></tr>
+<tr><td><strong>Pages</strong></td><td>601</td></tr>
+<tr><td><strong>File</strong></td><td><code class="inline">~/Downloads/vdoc.pub_handbook-of-game-based-learning.pdf</code></td></tr>
+<tr><td><strong>Topics</strong></td><td>Cognitive load, feedback design, motivation (SDT), emotional design, narrative, adaptivity, multimedia principles, collaboration vs competition</td></tr>
+<tr><td><strong>Skill derived</strong></td><td><code class="inline">/game-based-learning</code></td></tr>
+<tr><td><strong>Date added</strong></td><td>2026-04-15</td></tr>
+</tbody></table></div>
+<p><strong>Key takeaways:</strong></p>
+<p>1. <strong>Cognitive load is the balancing act.</strong> Three types: extraneous (minimize), essential (manage), generative (maximize). Every game element must serve the learning goal or it&#x27;s a distractor.</p>
+<p>2. <strong>Modality principle (d=1.4).</strong> Spoken narration &gt; on-screen text for instructions. Frees the visual channel for gameplay.</p>
+<p>3. <strong>Pretraining principle (d=0.8).</strong> Introduce key concepts before gameplay begins — this became our Learn phase.</p>
+<p>4. <strong>Process feedback (d=1.31).</strong> Explaining WHY an answer is wrong beats outcome-only (&quot;correct/incorrect&quot;). This became our 3-tier hint escalation.</p>
+<p>5. <strong>Self-Determination Theory.</strong> Three needs: competence, autonomy, relatedness. External rewards (points, badges) frequently UNDERMINE intrinsic motivation.</p>
+<p>6. <strong>Emotional design.</strong> Warm/bright colors, round shapes, and face-like characters enhance learning outcomes. Dark/muted palettes suppress engagement.</p>
+<p>7. <strong>&quot;Chocolate-covered broccoli&quot; warning.</strong> Gamifying a bad task doesn&#x27;t make it fun — the gameplay must BE the learning.</p>
+<p>8. <strong>Confusion can be productive</strong> — but only when the learner can resolve it AND the game provides scaffolds.</p>
+<p><strong>How it shaped our product:</strong></p>
+<ul>
+<li>Learn &amp; Practice two-phase structure (pretraining principle)</li>
+<li>All instructions spoken aloud (modality principle)</li>
+<li>3-tier hint escalation with process feedback (feedback research)</li>
+<li>Warm, bright color palette (emotional design)</li>
+<li>No external leaderboards or competitive pressure (SDT warnings)</li>
+<li>Every wrong answer explains WHY (process &gt; outcome feedback)</li>
+</ul>
+<hr>
+<h3>R-002: Actionable Gamification — Beyond Points, Badges, and Leaderboards</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Field</th><th>Value</th>
+</tr></thead><tbody>
+<tr><td><strong>Title</strong></td><td>Actionable Gamification: Beyond Points, Badges, and Leaderboards</td></tr>
+<tr><td><strong>Authors</strong></td><td>Yu-kai Chou</td></tr>
+<tr><td><strong>Year</strong></td><td>2016</td></tr>
+<tr><td><strong>Publisher</strong></td><td>Self-published (Octalysis Media)</td></tr>
+<tr><td><strong>Type</strong></td><td>Practitioner book</td></tr>
+<tr><td><strong>Pages</strong></td><td>501</td></tr>
+<tr><td><strong>File</strong></td><td><code class="inline">~/Downloads/Actionable-Gamification-Full-Book.pdf</code></td></tr>
+<tr><td><strong>Topics</strong></td><td>8 Core Drives of motivation, White Hat vs Black Hat gamification, extrinsic vs intrinsic motivation, game technique taxonomy</td></tr>
+<tr><td><strong>Skill derived</strong></td><td><code class="inline">/octalysis</code></td></tr>
+<tr><td><strong>Date added</strong></td><td>2026-04-15</td></tr>
+</tbody></table></div>
+<p><strong>Key takeaways:</strong></p>
+<p>1. <strong>8 Core Drives.</strong> All human motivation traces to: Epic Meaning, Accomplishment, Creativity, Ownership, Social Influence, Scarcity, Unpredictability, Loss &amp; Avoidance.</p>
+<p>2. <strong>White Hat (top) = empowering, fulfilling.</strong> Black Hat (bottom) = urgent, obsessive. White Hat sustains long-term. Black Hat creates short-term action but burnout.</p>
+<p>3. <strong>CD3 (Creativity &amp; Feedback) is the &quot;golden corner.&quot;</strong> Both White Hat AND intrinsic. Games that last centuries (Chess, Poker) live here. This is the antidote to gamification fatigue.</p>
+<p>4. <strong>The &quot;Toll&quot; problem.</strong> If learning feels like a tax before the fun, the design has failed. Learning must be the player&#x27;s ALLY in the satisfaction loop.</p>
+<p>5. <strong>External rewards undermine intrinsic motivation (Overjustification Effect).</strong> Paying people for creative tasks reduces creative quality.</p>
+<p>6. <strong>CD8 (Loss &amp; Avoidance) is the most dangerous drive.</strong> Extraordinarily powerful but demoralizing long-term. Should only be used at critical bumps.</p>
+<p>7. <strong>Players are brutally efficient.</strong> They skip anything not in the satisfaction loop.</p>
+<p><strong>How it shaped our product:</strong></p>
+<ul>
+<li>Garden overworld activates CD1 (meaning), CD4 (ownership), CD3 (creativity via shop/customization)</li>
+<li>Plants never die (CD8 capped at 2/10 for our vulnerable audience)</li>
+<li>Shop currency earned through learning, not purchased (CD4 without pay-to-win)</li>
+<li>Mystery seeds and ambient surprises for CD7 (unpredictability)</li>
+<li>Ideal OL profile: heavily White Hat, moderately Right Brain, minimal Black Hat</li>
+</ul>
+<hr>
+<h3>R-003: MDA — A Formal Approach to Game Design and Game Research</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Field</th><th>Value</th>
+</tr></thead><tbody>
+<tr><td><strong>Title</strong></td><td>MDA: A Formal Approach to Game Design and Game Research</td></tr>
+<tr><td><strong>Authors</strong></td><td>Robin Hunicke, Marc LeBlanc, Robert Zubek</td></tr>
+<tr><td><strong>Year</strong></td><td>2004</td></tr>
+<tr><td><strong>Publisher</strong></td><td>GDC (Game Developers Conference)</td></tr>
+<tr><td><strong>Type</strong></td><td>Academic paper</td></tr>
+<tr><td><strong>Pages</strong></td><td>5</td></tr>
+<tr><td><strong>File</strong></td><td><code class="inline">~/Downloads/MDA.pdf</code></td></tr>
+<tr><td><strong>Topics</strong></td><td>Game design decomposition, mechanics vs dynamics vs aesthetics, 8 aesthetic categories, experience-driven design</td></tr>
+<tr><td><strong>Skill derived</strong></td><td><code class="inline">/mda</code></td></tr>
+<tr><td><strong>Date added</strong></td><td>2026-04-15</td></tr>
+</tbody></table></div>
+<p><strong>Key takeaways:</strong></p>
+<p>1. <strong>Three causally linked layers.</strong> Designers build Mechanics → which produce Dynamics → which create Aesthetics (player feelings). Players experience it in reverse.</p>
+<p>2. <strong>8 aesthetics replace &quot;fun.&quot;</strong> Sensation, Fantasy, Narrative, Challenge, Fellowship, Discovery, Expression, Submission. Name your targets before building.</p>
+<p>3. <strong>Small mechanic changes cascade.</strong> Adjusting one rule can completely alter how the game feels. Always trace changes through all three layers.</p>
+<p>4. <strong>Experience-driven &gt; feature-driven.</strong> Ask &quot;What will the player FEEL?&quot; not &quot;What feature should we add?&quot;</p>
+<p>5. <strong>No mechanic has value in isolation.</strong> &quot;Is this a good tracing algorithm?&quot; is the wrong question. &quot;Does this tracing algorithm create challenge + satisfaction?&quot; is the right one.</p>
+<p><strong>How it shaped our product:</strong></p>
+<ul>
+<li>Every new game starts by naming target aesthetics (Challenge, Fantasy, Discovery, Expression)</li>
+<li>MDA audit runs before shipping — does the mechanic actually produce the intended feeling?</li>
+<li>Used to diagnose why games feel &quot;off&quot; — trace backward from the unintended aesthetic to find the broken mechanic</li>
+</ul>
+<hr>
+<h3>R-004: Otherwise Labs Check-in — Explicit &amp; Systematic Instruction</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Field</th><th>Value</th>
+</tr></thead><tbody>
+<tr><td><strong>Title</strong></td><td>Abby &lt;&gt; Bob Otherwise Labs check-in — Meeting Notes</td></tr>
+<tr><td><strong>Authors</strong></td><td>Tyler Ogata, Abigail Garewal, Robert Borges</td></tr>
+<tr><td><strong>Year</strong></td><td>2026</td></tr>
+<tr><td><strong>Publisher</strong></td><td>Internal meeting (Gemini notes)</td></tr>
+<tr><td><strong>Type</strong></td><td>Meeting notes</td></tr>
+<tr><td><strong>Pages</strong></td><td>5</td></tr>
+<tr><td><strong>File</strong></td><td><code class="inline">~/Downloads/Abby __ Bob Otherwise Labs check-in - 2026_05_07 15_00 PDT - Notes by Gemini.pdf</code></td></tr>
+<tr><td><strong>Topics</strong></td><td>Explicit instruction, systematic teaching, 80/20 ratio, 3-stage learning structure, concealing failure, lesson plan structure, contextualized learning</td></tr>
+<tr><td><strong>Skill derived</strong></td><td><code class="inline">/explicit-instruction</code></td></tr>
+<tr><td><strong>Date added</strong></td><td>2026-05-14</td></tr>
+</tbody></table></div>
+<p><strong>Key takeaways:</strong></p>
+<p>1. <strong>80/20 ratio.</strong> Lessons are 80% explicit instruction and 20% practice. Mini-games are the 20% — the game must also contain the 80%.</p>
+<p>2. <strong>Explicit means directly telling.</strong> The game states the rule/concept clearly before practice begins. Students don&#x27;t infer or discover it on their own.</p>
+<p>3. <strong>3-stage structure.</strong> Tutorial (teach concept + mechanic) → Supervised Learning (must demonstrate understanding to proceed) → Independent Practice (the sprint).</p>
+<p>4. <strong>Systematic linking.</strong> Concepts must be taught in order. Can&#x27;t teach &quot;I says its name before LD&quot; without first teaching what a long vowel is.</p>
+<p>5. <strong>Contextualize learning.</strong> &quot;You need to decode this word to unlock the passage&quot; is better than &quot;practice reading this word.&quot;</p>
+<p>6. <strong>Conceal failure.</strong> Errors should feel like part of the learning process, not setbacks. No red X marks. Wrong answers trigger re-teaching.</p>
+<p>7. <strong>Students should know they&#x27;re learning.</strong> Awareness of growth is motivating. Pride comes from feeling the skill develop — don&#x27;t hide that this is educational.</p>
+<p>8. <strong>One lesson plan = multiple mini-games.</strong> Each lesson covers different activities; each could be a separate game within a session.</p>
+<p><strong>How it shaped our product:</strong></p>
+<ul>
+<li>The <code class="inline">/explicit-instruction</code> skill was created to codify these principles</li>
+<li>Every game must now include explicit concept teaching, not just game-mechanic practice</li>
+<li>The 3-stage structure (Tutorial → Supervised → Independent) replaces our previous simpler Learn/Practice split</li>
+<li>Error feedback must re-teach the concept, not just indicate wrongness</li>
+</ul>
+<hr>
+<h3>R-005: WRS Lesson Plan Poster</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Field</th><th>Value</th>
+</tr></thead><tbody>
+<tr><td><strong>Title</strong></td><td>WRS Lesson Plan Outline</td></tr>
+<tr><td><strong>Authors</strong></td><td>Wilson Reading System</td></tr>
+<tr><td><strong>Year</strong></td><td>—</td></tr>
+<tr><td><strong>Publisher</strong></td><td>Wilson Language Training</td></tr>
+<tr><td><strong>Type</strong></td><td>Reference poster / infographic</td></tr>
+<tr><td><strong>Pages</strong></td><td>1</td></tr>
+<tr><td><strong>File</strong></td><td><code class="inline">~/Downloads/WRS Lesson Plan Poster.avif</code></td></tr>
+<tr><td><strong>Topics</strong></td><td>Lesson plan structure, 10-step lesson sequence, reading and spelling instruction flow, session rhythm</td></tr>
+<tr><td><strong>Skill derived</strong></td><td>Added to <code class="inline">/explicit-instruction</code></td></tr>
+<tr><td><strong>Date added</strong></td><td>2026-05-14</td></tr>
+</tbody></table></div>
+<p><strong>Key takeaways:</strong></p>
+<p>1. <strong>10-step lesson structure.</strong> Sounds drill → Teach concepts → Word cards → Wordlist reading → Sentence reading → Reverse drill → Teach spelling → Written dictation → Passage reading → Fluency &amp; comprehension.</p>
+<p>2. <strong>Smallest to largest.</strong> The lesson flows: Sound → Letter → Word → Sentence → Passage → Story. Then reverses for encoding.</p>
+<p>3. <strong>Each step has a clear purpose.</strong> Steps 1-5 are reading direction. Steps 6-8 are spelling direction. Steps 9-10 are extended application.</p>
+<p>4. <strong>Quick drills bookend the teaching.</strong> Fast sound recognition at the start (Step 1) and fast sound-to-letter at the midpoint (Step 6) act as warm-ups.</p>
+<p>5. <strong>Teaching always precedes practice.</strong> Steps 2 and 7 are explicit instruction. Steps 4, 5, 8 are independent practice. The pattern is always: teach → practice → teach → practice.</p>
+<p><strong>How it shaped our product:</strong></p>
+<ul>
+<li>Maps each mini-game type to a WRS step (Enchanted Gems = Step 1, Spell Caster = Step 4, Quest Catcher = Step 5)</li>
+<li>Shows how mini-games should be sequenced in a session: drill → teach → practice → teach → practice</li>
+<li>Confirms that our games span multiple WRS steps, not just one</li>
+</ul>
+<hr>
+<h2>Topic Index</h2>
+<p>Quick lookup — which resource covers which topic:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Topic</th><th>Resources</th>
+</tr></thead><tbody>
+<tr><td>Cognitive load</td><td>R-001 (Ch 4, 12)</td></tr>
+<tr><td>Feedback design</td><td>R-001 (Ch 8)</td></tr>
+<tr><td>Motivation theory</td><td>R-001 (Ch 6), R-002 (full book)</td></tr>
+<tr><td>Emotional design</td><td>R-001 (Ch 5, 14)</td></tr>
+<tr><td>Narrative in games</td><td>R-001 (Ch 11), R-003</td></tr>
+<tr><td>Adaptivity / scaffolding</td><td>R-001 (Ch 10)</td></tr>
+<tr><td>Player motivation drives</td><td>R-002 (8 Core Drives)</td></tr>
+<tr><td>White Hat vs Black Hat</td><td>R-002 (Ch 14)</td></tr>
+<tr><td>Extrinsic vs intrinsic</td><td>R-001 (Ch 6), R-002 (Ch 13)</td></tr>
+<tr><td>Game feel / aesthetics</td><td>R-003</td></tr>
+<tr><td>Mechanics → Dynamics → Aesthetics</td><td>R-003</td></tr>
+<tr><td>Collaboration vs competition</td><td>R-001 (Ch 13), R-002 (CD5)</td></tr>
+<tr><td>Dyslexia / OG methodology</td><td>(curriculum CSV), R-004</td></tr>
+<tr><td>Multimedia principles</td><td>R-001 (Ch 12)</td></tr>
+<tr><td>Scarcity / retention</td><td>R-002 (Ch 10)</td></tr>
+<tr><td>Loss aversion</td><td>R-002 (Ch 12)</td></tr>
+<tr><td>Explicit instruction</td><td>R-004</td></tr>
+<tr><td>Systematic teaching / concept sequencing</td><td>R-004</td></tr>
+<tr><td>Lesson plan structure</td><td>R-004</td></tr>
+<tr><td>Concealing failure</td><td>R-004, R-001 (Ch 5)</td></tr>
+<tr><td>80/20 instruction ratio</td><td>R-004</td></tr>
+<tr><td>3-stage learning (tutorial/supervised/practice)</td><td>R-004</td></tr>
+</tbody></table></div>
+<hr>
+<h2>Resource Entry Template</h2>
+<p>When adding a new resource, copy this block:</p>
+<pre><code>
+### R-[NNN]: [Title]
+
+| Field | Value |
+|---|---|
+| **Title** | |
+| **Authors** | |
+| **Year** | |
+| **Publisher** | |
+| **Type** | [Academic paper / Textbook / Practitioner book / Article / Video / Talk] |
+| **Pages** | |
+| **File** | [Path to local file, or URL] |
+| **Topics** | [Comma-separated keywords] |
+| **Skill derived** | [Which /skill was created from it, if any] |
+| **Date added** | |
+
+**Key takeaways:**
+1. ...
+2. ...
+3. ...
+
+**How it shaped our product:**
+- ...
+</code></pre>
+<hr>
+<h2>How to Use This Skill</h2>
+<ul>
+<li><strong>&quot;What does the research say about X?&quot;</strong> → Check the Topic Index, then read the relevant resource&#x27;s key takeaways.</li>
+<li><strong>&quot;I just read a new paper.&quot;</strong> → <code class="inline">/resources add</code> and fill in the template. Extract 3-7 key takeaways and document how they apply to OL Prototypes.</li>
+<li><strong>&quot;Which resource covers feedback?&quot;</strong> → Check the Topic Index row for &quot;Feedback design.&quot;</li>
+<li><strong>&quot;Give me the full summary of R-002.&quot;</strong> → Read the entry above or load the original PDF for deeper detail.</li>
+<li><strong>&quot;How did [resource] shape the product?&quot;</strong> → Each entry has a &quot;How it shaped our product&quot; section linking theory to concrete decisions.</li>
+</ul>
+</main>
+<footer>OL Design Skills · Auto-generated May 27, 2026</footer>
+</body>
+</html>
