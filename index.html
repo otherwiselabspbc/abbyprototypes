@@ -4,421 +4,2145 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OL Project HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#faf9f5;font-family:'Inter',sans-serif;color:#2a2a2a;min-height:100vh}
+:root {
+  --coral:     #d95f4b;
+  --coral-dk:  #b84a38;
+  --coral-lt:  #faeae7;
+  --teal:      #2d7d74;
+  --teal-lt:   #e3f4f2;
+  --gold:      #a07c1e;
+  --gold-lt:   #faf3dc;
+  --cream:     #f6f6f7;
+  --ink:       #111318;
+  --ink-mid:   #3c3f4a;
+  --ink-soft:  #7b7f8e;
+  --border:    #e2e4e9;
+  --white:     #ffffff;
+  --shadow-sm: 0 1px 4px rgba(17,19,24,.06);
+  --shadow-md: 0 4px 16px rgba(17,19,24,.09);
+  --shadow-lg: 0 12px 40px rgba(17,19,24,.12);
+  --r:         10px;
+}
 
-header{background:#ed6a5a;padding:44px 24px 36px;text-align:center}
-header h1{font-family:'Lora',serif;font-size:clamp(26px,5vw,40px);color:#fff;font-weight:700;margin-bottom:8px}
-header p{font-size:14px;color:rgba(255,255,255,0.88);max-width:520px;margin:0 auto;line-height:1.65;font-family:'Lora',serif}
-header .meta{font-size:11px;color:rgba(255,255,255,0.55);margin-top:10px}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box }
 
-main{max-width:920px;margin:0 auto;padding:28px 20px}
-.section{margin-bottom:40px}
-.section-title{font-family:'Lora',serif;font-size:20px;font-weight:700;color:#3a3a3a;
-  margin-bottom:16px;padding-bottom:10px;border-bottom:3px solid #ed6a5a}
+html { scroll-behavior: smooth }
 
-/* Storyboard link */
-.sb-link{display:block;background:#f4f1bb;border:2px solid #e0dda0;border-radius:14px;
-  padding:24px;text-decoration:none;color:#2a2a2a;transition:all .15s;margin-bottom:32px}
-.sb-link:hover{border-color:#ed6a5a;box-shadow:0 4px 16px rgba(237,106,90,0.12)}
-.sb-head{display:flex;align-items:center;gap:14px;margin-bottom:10px}
-.sb-icon{font-size:28px}
-.sb-title{font-family:'Lora',serif;font-size:18px;font-weight:700;color:#3a3a3a}
-.sb-desc{font-size:13px;color:#5a5a5a;line-height:1.55}
-.sb-pills{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.sb-pill{font-size:10px;font-weight:600;padding:3px 10px;border-radius:10px;
-  background:rgba(155,193,188,0.3);color:#4a6a66}
+body {
+  background: var(--cream);
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-/* Team profiles — stacked vertically */
-.profiles{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
-.profile{background:#fff;border:2px solid #eae8e2;border-radius:14px;overflow:hidden}
-.profile-header{padding:16px 18px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
-  -webkit-tap-highlight-color:transparent}
-.profile-header:hover{background:#faf8f2}
-.profile-info{display:flex;align-items:center;gap:12px}
-.profile-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:16px;font-weight:700;color:#fff}
-.profile-name{font-family:'Lora',serif;font-size:15px;font-weight:700;color:#3a3a3a}
-.profile-role{font-size:10px;color:#999}
-.profile-arrow{font-size:14px;color:#ccc;transition:transform .2s}
-.profile.open .profile-arrow{transform:rotate(180deg)}
-.profile-body{display:none}
-.profile.open .profile-body{display:block}
-.profile-content{padding:12px 18px 18px;border-top:1px solid #f0ede8}
-.profile-empty{font-size:12px;color:#bbb;padding:20px 0;text-align:center;font-style:italic}
-.profile-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:12px}
-.profile-table th{text-align:left;padding:8px 10px;background:#ed6a5a;color:#fff;font-weight:600;
-  font-size:9px;text-transform:uppercase;letter-spacing:1px;font-family:'Lora',serif}
-.profile-table td{padding:8px 10px;border-bottom:1px solid #f0ede8;color:#3a3a3a}
-.profile-count{font-size:10px;color:#999;font-weight:600}
+/* ── HEADER ──────────────────────────────────── */
+header {
+  position: relative;
+  background: var(--ink);
+  overflow: hidden;
+  padding: 64px 24px 56px;
+  text-align: center;
+}
 
-/* Cards */
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
-.card{background:#fff;border-radius:12px;padding:18px;border:2px solid #eae8e2;transition:border-color .15s,box-shadow .15s}
-.card:hover{border-color:#9bc1bc;box-shadow:0 3px 12px rgba(155,193,188,0.15)}
-.card-title{font-family:'Lora',serif;font-weight:700;font-size:15px;color:#3a3a3a;margin-bottom:5px}
-.card-desc{font-size:12px;color:#6a6a6a;line-height:1.55}
-.card-meta{font-size:10px;color:#999;margin-top:8px;display:flex;gap:10px;flex-wrap:wrap}
+header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 80% at 20% 50%, rgba(237,106,90,.22) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 70% at 80% 30%, rgba(74,158,151,.18) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 60% at 60% 80%, rgba(196,154,42,.14) 0%, transparent 60%);
+  pointer-events: none;
+}
 
-.tag{background:#f4f1bb;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;color:#7a7040}
-.tag-teal{background:rgba(155,193,188,0.25);color:#4a6a66}
+/* Decorative grid overlay */
+header::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
 
-/* Tables */
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th{text-align:left;padding:10px 12px;background:#ed6a5a;color:#fff;font-weight:600;
-  font-size:10px;text-transform:uppercase;letter-spacing:1px;font-family:'Lora',serif}
-td{padding:10px 12px;border-bottom:1px solid #eae8e2;color:#3a3a3a}
-tr:hover td{background:#faf8f2}
+.header-inner { position: relative; z-index: 1; max-width: 640px; margin: 0 auto }
 
-.status{display:inline-block;padding:3px 10px;border-radius:8px;font-size:9px;
-  font-weight:700;text-transform:uppercase;letter-spacing:1px}
-.status-done{background:rgba(155,193,188,0.25);color:#4a6a66}
-.status-wip{background:rgba(237,106,90,0.12);color:#c04a3a}
+.header-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.45);
+  margin-bottom: 18px;
+  padding: 5px 14px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px;
+}
 
-/* Roadmap */
-.roadmap{position:relative;padding-left:36px}
-.roadmap::before{content:'';position:absolute;left:14px;top:0;bottom:0;width:3px;background:#eae8e2}
-.rm-stage{position:relative;margin-bottom:24px}
-.rm-dot{position:absolute;left:-30px;top:6px;width:18px;height:18px;border-radius:50%;border:3px solid #eae8e2;background:#faf9f5;z-index:2}
-.rm-stage.done .rm-dot{background:#9bc1bc;border-color:#9bc1bc}
-.rm-stage.active .rm-dot{background:#ed6a5a;border-color:#ed6a5a;box-shadow:0 0 0 4px rgba(237,106,90,0.2)}
-.rm-stage.future .rm-dot{background:#faf9f5;border-color:#ddd}
-.rm-header{display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 0;-webkit-tap-highlight-color:transparent}
-.rm-header:hover .rm-title{color:#ed6a5a}
-.rm-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:1px}
-.rm-badge-done{background:rgba(155,193,188,0.25);color:#4a6a66}
-.rm-badge-active{background:rgba(237,106,90,0.12);color:#c04a3a}
-.rm-badge-future{background:#eae8e2;color:#999}
-.rm-title{font-family:'Lora',serif;font-size:15px;font-weight:700;color:#3a3a3a;transition:color .15s}
-.rm-body{display:none}
-.rm-stage.open .rm-body{display:block}
-.rm-content{padding:10px 0 4px;margin-left:8px;padding-left:16px;border-left:2px solid #eae8e2}
-.rm-items{list-style:none;padding:0}
-.rm-items li{font-size:12px;color:#5a5a5a;line-height:1.7;padding:2px 0;display:flex;align-items:flex-start;gap:8px}
-.rm-items li::before{content:'';display:inline-block;width:14px;height:14px;border-radius:3px;border:2px solid #ddd;flex-shrink:0;margin-top:2px}
-.rm-items li.done::before{background:#9bc1bc;border-color:#9bc1bc;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 7l3 3 5-5' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
-.rm-items li.done{color:#999;text-decoration:line-through;text-decoration-color:#ccc}
+.header-eyebrow::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--coral);
+  animation: pulse 2s ease-in-out infinite;
+}
 
-footer{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lora',serif}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1) }
+  50%      { opacity: .5; transform: scale(.8) }
+}
+
+header h1 {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(32px, 6vw, 56px);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.08;
+  letter-spacing: -1.5px;
+  margin-bottom: 16px;
+}
+
+header h1 span { color: var(--coral) }
+
+header p {
+  font-size: 15px;
+  color: rgba(255,255,255,.6);
+  line-height: 1.7;
+  max-width: 460px;
+  margin: 0 auto 24px;
+}
+
+.header-stats {
+  display: inline-flex;
+  gap: 0;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.header-stat {
+  padding: 10px 20px;
+  border-right: 1px solid rgba(255,255,255,.1);
+  text-align: center;
+}
+
+.header-stat:last-child { border-right: none }
+
+.header-stat-num {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.header-stat-label {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.35);
+  margin-top: 2px;
+}
+
+/* ── NAV ─────────────────────────────────────── */
+nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-inner {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-inner::-webkit-scrollbar { display: none }
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 14px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+}
+
+.nav-link:hover { color: var(--coral); border-color: var(--coral-lt) }
+.nav-link.active { color: var(--coral); border-color: var(--coral) }
+
+.nav-icon { font-size: 14px }
+
+/* ── MAIN LAYOUT ──────────────────────────────── */
+main {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 44px 24px 80px;
+}
+
+/* ── SECTION SHELL ────────────────────────────── */
+.section { margin-bottom: 56px }
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--ink);
+}
+
+.section-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  background: var(--border);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+/* ── STORYBOARD BANNER ───────────────────────── */
+.sb-banner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: var(--ink);
+  border-radius: var(--r);
+  padding: 28px 32px;
+  text-decoration: none;
+  color: #fff;
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.sb-banner:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg) }
+
+.sb-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 100% at 90% 50%, rgba(237,106,90,.2) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.sb-icon-wrap {
+  flex-shrink: 0;
+  width: 54px; height: 54px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.08);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  border: 1px solid rgba(255,255,255,.1);
+}
+
+.sb-text { flex: 1; position: relative; z-index: 1 }
+
+.sb-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  margin-bottom: 6px;
+}
+
+.sb-desc { font-size: 13px; color: rgba(255,255,255,.6); line-height: 1.6 }
+
+.sb-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.sb-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.1);
+  color: rgba(255,255,255,.6);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.sb-arrow {
+  font-size: 22px;
+  color: rgba(255,255,255,.3);
+  flex-shrink: 0;
+  transition: transform .2s;
+  position: relative; z-index: 1;
+}
+
+.sb-banner:hover .sb-arrow { transform: translateX(4px) }
+
+/* ── PROTOTYPE CATEGORIES ─────────────────────── */
+.proto-category {
+  margin-bottom: 40px;
+}
+
+.proto-category-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+
+.proto-category-narrative .proto-category-header {
+  border-color: #e8e2f5;
+  background: #fdfbff;
+}
+
+.proto-category-icon {
+  font-size: 26px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.proto-category-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: var(--ink);
+  margin-bottom: 5px;
+}
+
+.proto-category-desc {
+  font-size: 12.5px;
+  color: var(--ink-mid);
+  line-height: 1.65;
+}
+
+/* ── GAME NOTES ───────────────────────────────── */
+.game-notes-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-top: 14px;
+  margin-bottom: 6px;
+}
+
+.game-notes {
+  width: 100%;
+  min-height: 72px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--ink-mid);
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 11px;
+  resize: vertical;
+  outline: none;
+  line-height: 1.6;
+  transition: border-color .15s;
+}
+
+.game-notes::placeholder { color: #ccc; font-style: italic }
+.game-notes:focus { border-color: var(--coral) }
+
+/* ── GAME PROTOTYPE CARDS ────────────────────── */
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.game-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  transition: border-color .2s, box-shadow .2s, transform .2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-card:hover {
+  border-color: var(--coral);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.game-card-top {
+  padding: 20px 20px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.game-num {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  opacity: .4;
+  flex-shrink: 0;
+  margin-top: 3px;
+  min-width: 24px;
+}
+
+.game-info { flex: 1 }
+
+.game-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: var(--ink);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.game-domain {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+}
+
+.game-skill-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--teal-lt);
+  color: var(--teal);
+}
+
+.game-body { padding: 16px 20px; flex: 1 }
+
+.game-mechanics-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.game-mechanics {
+  font-size: 12.5px;
+  color: var(--ink-mid);
+  line-height: 1.65;
+}
+
+.game-mechanics-placeholder {
+  font-size: 12px;
+  color: var(--border);
+  font-style: italic;
+}
+
+.game-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.game-tag {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--gold-lt);
+  color: var(--gold);
+}
+
+.game-footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #fdfcf9;
+}
+
+.game-link-input {
+  flex: 1;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-mid);
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  outline: none;
+  transition: border-color .15s;
+  min-width: 0;
+}
+
+.game-link-input::placeholder { color: var(--border) }
+.game-link-input:focus { border-color: var(--coral) }
+
+.game-open-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: var(--coral);
+  color: #fff;
+  text-decoration: none;
+  transition: background .15s;
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+
+.game-open-btn:hover { background: var(--coral-dk) }
+.game-open-btn:disabled, .game-open-btn.disabled {
+  background: var(--border);
+  color: var(--ink-soft);
+  cursor: default;
+}
+
+.game-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.status-wip {
+  background: rgba(237,106,90,.1);
+  color: var(--coral-dk);
+}
+
+.status-done {
+  background: var(--teal-lt);
+  color: var(--teal);
+}
+
+.status-wip::before, .status-done::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  display: inline-block;
+}
+
+/* Lesson cards — slightly different accent */
+.game-card.lesson-card { border-color: #e8e2f5 }
+.game-card.lesson-card:hover { border-color: #9b7ec8 }
+.game-card.lesson-card .game-skill-tag {
+  background: #f0ebfc;
+  color: #7c5cbf;
+}
+
+/* ── TEAM PROFILES ────────────────────────────── */
+.profiles { display: flex; flex-direction: column; gap: 10px }
+
+.profile {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  transition: border-color .15s;
+}
+
+.profile:hover { border-color: #d4cfc7 }
+
+.profile-header {
+  padding: 16px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.profile-left { display: flex; align-items: center; gap: 14px }
+
+.profile-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.profile-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.1px;
+  color: var(--ink);
+}
+
+.profile-role {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-top: 1px;
+}
+
+.profile-right { display: flex; align-items: center; gap: 12px }
+
+.profile-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-soft);
+  background: var(--cream);
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+.profile-chevron {
+  font-size: 12px;
+  color: #ccc;
+  transition: transform .2s;
+}
+
+.profile.open .profile-chevron { transform: rotate(180deg) }
+
+.profile-body { display: none }
+.profile.open .profile-body { display: block }
+
+.profile-content {
+  padding: 4px 20px 20px;
+  border-top: 1px solid var(--border);
+}
+
+.profile-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 12px;
+}
+
+.profile-table th {
+  text-align: left;
+  padding: 9px 12px;
+  background: var(--ink);
+  color: rgba(255,255,255,.75);
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.profile-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink-mid);
+  vertical-align: middle;
+}
+
+.profile-table tr:last-child td { border-bottom: none }
+.profile-table tr:hover td { background: var(--cream) }
+
+.profile-empty {
+  font-size: 12px;
+  color: #ccc;
+  padding: 24px 0;
+  text-align: center;
+  font-style: italic;
+}
+
+/* ── CARDS (Documents / Skills) ───────────────── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px 20px;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.card:hover { border-color: var(--teal); box-shadow: var(--shadow-sm) }
+
+.card-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.1px;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.card-desc {
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.card-meta {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.card-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--teal-lt);
+  color: var(--teal);
+}
+
+/* ── TABLES ───────────────────────────────────── */
+.table-wrap { overflow-x: auto; border-radius: var(--r); border: 1.5px solid var(--border) }
+
+table { width: 100%; border-collapse: collapse; font-size: 12.5px }
+
+thead th {
+  text-align: left;
+  padding: 11px 14px;
+  background: var(--ink);
+  color: rgba(255,255,255,.7);
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+tbody td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink-mid);
+  vertical-align: middle;
+}
+
+tbody tr:last-child td { border-bottom: none }
+tbody tr:hover td { background: var(--cream) }
+
+.status-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.status-active { background: var(--teal-lt); color: var(--teal) }
+
+/* ── ROADMAP ──────────────────────────────────── */
+.roadmap { position: relative; padding-left: 40px }
+
+.roadmap::before {
+  content: '';
+  position: absolute;
+  left: 16px; top: 8px; bottom: 8px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--teal) 0%, var(--border) 60%);
+}
+
+.rm-stage { position: relative; margin-bottom: 20px }
+
+.rm-dot {
+  position: absolute;
+  left: -32px; top: 14px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 2.5px solid var(--border);
+  z-index: 2;
+  transition: transform .2s;
+}
+
+.rm-stage.done .rm-dot { background: var(--teal); border-color: var(--teal) }
+.rm-stage.active .rm-dot {
+  background: var(--coral);
+  border-color: var(--coral);
+  box-shadow: 0 0 0 5px rgba(237,106,90,.15);
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%,100% { box-shadow: 0 0 0 5px rgba(237,106,90,.15) }
+  50%      { box-shadow: 0 0 0 8px rgba(237,106,90,.08) }
+}
+
+.rm-stage.future .rm-dot { opacity: .4 }
+
+.rm-trigger {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-radius: var(--r);
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  transition: border-color .15s, box-shadow .15s;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rm-trigger:hover { border-color: var(--coral); box-shadow: var(--shadow-sm) }
+
+.rm-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.rm-badge-done  { background: var(--teal-lt); color: var(--teal) }
+.rm-badge-wip   { background: rgba(237,106,90,.12); color: var(--coral-dk) }
+.rm-badge-future{ background: var(--border); color: var(--ink-soft) }
+
+.rm-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+  color: var(--ink);
+  flex: 1;
+}
+
+.rm-chevron {
+  font-size: 12px;
+  color: #ccc;
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+
+.rm-stage.open .rm-chevron { transform: rotate(180deg) }
+
+.rm-body { display: none; padding-top: 8px; padding-left: 4px }
+.rm-stage.open .rm-body { display: block }
+
+.rm-items { list-style: none; padding: 14px 18px; background: var(--white); border: 1.5px solid var(--border); border-top: none; border-radius: 0 0 var(--r) var(--r); margin-top: -2px }
+
+.rm-items li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12.5px;
+  color: var(--ink-mid);
+  line-height: 1.6;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.rm-items li:last-child { border-bottom: none }
+
+.rm-check {
+  flex-shrink: 0;
+  width: 16px; height: 16px;
+  border-radius: 4px;
+  border: 2px solid var(--border);
+  margin-top: 2px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--cream);
+}
+
+.rm-items li.done .rm-check {
+  background: var(--teal);
+  border-color: var(--teal);
+}
+
+.rm-items li.done .rm-check::after {
+  content: '';
+  width: 8px; height: 5px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translateY(-1px);
+  display: block;
+}
+
+.rm-items li.done span { color: var(--ink-soft); text-decoration: line-through; text-decoration-color: var(--border) }
+
+/* Roadmap legend */
+.rm-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.rm-legend-item { display: flex; align-items: center; gap: 6px }
+
+.rm-legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+
+/* Member prototype upload */
+.member-upload-section {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+}
+
+.member-upload-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.member-upload-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.member-upload-row .game-link-input { flex: 1; min-width: 120px }
+
+/* Document card link row */
+.doc-card { display: flex; flex-direction: column; gap: 10px }
+.doc-link-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+.doc-link-row .doc-link-input { flex: 1 }
+
+/* ── MEETING NOTES ────────────────────────────── */
+.notes-timeline { display: flex; flex-direction: column; gap: 0 }
+
+.note-entry {
+  display: flex;
+  gap: 0;
+  position: relative;
+}
+
+/* Vertical line */
+.note-entry::before {
+  content: '';
+  position: absolute;
+  left: 119px;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: var(--border);
+  z-index: 0;
+}
+
+.note-entry:last-child::before { display: none }
+
+.note-date-col {
+  width: 120px;
+  flex-shrink: 0;
+  padding: 18px 20px 18px 0;
+  text-align: right;
+}
+
+.note-date-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.note-date-year {
+  font-size: 10px;
+  color: var(--border);
+  display: block;
+  margin-top: 2px;
+}
+
+.note-dot-col {
+  width: 20px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 22px;
+  position: relative;
+  z-index: 1;
+}
+
+.note-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  transition: border-color .15s, background .15s;
+}
+
+.note-entry:hover .note-dot {
+  background: var(--coral);
+  border-color: var(--coral);
+}
+
+.note-card-col {
+  flex: 1;
+  padding: 10px 0 20px 20px;
+}
+
+.note-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.note-entry:hover .note-card {
+  border-color: var(--coral);
+  box-shadow: var(--shadow-sm);
+}
+
+.note-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  gap: 12px;
+}
+
+.note-card-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  flex: 1;
+}
+
+.note-card-title-placeholder {
+  color: var(--ink-soft);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.note-card-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.note-file-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-soft);
+  background: var(--cream);
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.note-chevron {
+  font-size: 11px;
+  color: #ccc;
+  transition: transform .2s;
+}
+
+.note-card.open .note-chevron { transform: rotate(180deg) }
+
+.note-card-body { display: none }
+.note-card.open .note-card-body { display: block }
+
+.note-card-content {
+  padding: 0 18px 18px;
+  border-top: 1px solid var(--border);
+}
+
+.note-file-preview {
+  margin-top: 14px;
+  background: var(--cream);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 12.5px;
+  color: var(--ink-mid);
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 320px;
+  overflow-y: auto;
+  font-family: 'Inter', sans-serif;
+}
+
+.note-file-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.note-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+
+.note-btn:hover { border-color: var(--coral); color: var(--coral) }
+.note-btn.primary { background: var(--coral); border-color: var(--coral); color: #fff }
+.note-btn.primary:hover { background: var(--coral-dk); border-color: var(--coral-dk) }
+
+/* Upload drop zone */
+.notes-upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--r);
+  padding: 28px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  margin-bottom: 28px;
+  background: var(--white);
+}
+
+.notes-upload-zone:hover, .notes-upload-zone.drag-over {
+  border-color: var(--coral);
+  background: var(--coral-lt);
+}
+
+
+
+.notes-upload-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-mid);
+  margin-bottom: 4px;
+}
+
+.notes-upload-sub {
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.notes-upload-sub strong { color: var(--coral) }
+
+.notes-empty {
+  text-align: center;
+  padding: 32px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+/* ── FOOTER ───────────────────────────────────── */
+footer {
+  background: var(--ink);
+  text-align: center;
+  padding: 28px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,.2);
+}
+
+/* ── RESPONSIVE ───────────────────────────────── */
+@media (max-width: 600px) {
+  .games-grid { grid-template-columns: 1fr }
+  .header-stats { flex-wrap: wrap }
+  .sb-banner { flex-direction: column; text-align: center }
+  .sb-arrow { display: none }
+  header h1 { letter-spacing: -.5px }
+}
 </style>
 </head>
 <body>
+
+<!-- ═══ HEADER ════════════════════════════════════════════════════ -->
 <header>
-  <h1>OL Project HQ</h1>
-  <p>An RPG that adapts evidence-based dyslexia tutoring into playful game mechanics.</p>
-  <div class="meta">Last updated: May 27, 2026 · 11 prototypes · 10 skills · 7 decisions</div>
+  <div class="header-inner">
+    <div class="header-eyebrow">OL Project HQ · Active</div>
+    <h1>OL<span> Project</span> HQ</h1>
+    <p>An RPG that adapts evidence-based dyslexia tutoring into playful game mechanics.</p>
+
+  </div>
 </header>
+
+<!-- ═══ NAV ═══════════════════════════════════════════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-link active" href="#prototypes">Prototypes</a>
+    <a class="nav-link" href="#team">Team</a>
+    <a class="nav-link" href="#documents">Documents</a>
+    <a class="nav-link" href="#frameworks">Frameworks</a>
+    <a class="nav-link" href="#resources">Research</a>
+    <a class="nav-link" href="#meeting-notes">Meeting Notes</a>
+    <a class="nav-link" href="#roadmap">Roadmap</a>
+  </div>
+</nav>
+
+<!-- ═══ MAIN ═══════════════════════════════════════════════════════ -->
 <main>
 
-<!-- Storyboard -->
-<a class="sb-link" href="storyboard.html">
-  <div class="sb-head">
-    <span class="sb-icon">🗺️</span>
-    <span class="sb-title">Game Storyboard</span>
-  </div>
-  <div class="sb-desc">Interactive zoomable board showing the full curriculum flow. Click domains to expand lessons, click games to see beat-by-beat storyboards with editable notes.</div>
-  <div class="sb-pills">
-    <span class="sb-pill">Print Concepts</span>
-    <span class="sb-pill">Letter Knowledge</span>
-    <span class="sb-pill">Phonological Awareness</span>
-    <span class="sb-pill">Alphabetic Principle</span>
-    <span class="sb-pill">Decoding</span>
-    <span class="sb-pill">Encoding</span>
-    <span class="sb-pill">Comprehension</span>
-  </div>
-</a>
+  <!-- ═══ STORYBOARD BANNER ═════════════════════════════════════ -->
+  <a class="sb-banner" href="storyboard.html">
+    <div class="sb-icon-wrap">&#x1f5fa;&#xfe0f;</div>
+    <div class="sb-text">
+      <div class="sb-title">Game Storyboard</div>
+      <div class="sb-desc">Interactive zoomable board showing the full curriculum flow. Click domains to expand lessons, click games to see beat-by-beat storyboards.</div>
+      <div class="sb-pills">
+        <span class="sb-pill">Print Concepts</span>
+        <span class="sb-pill">Letter Knowledge</span>
+        <span class="sb-pill">Phonological Awareness</span>
+        <span class="sb-pill">Alphabetic Principle</span>
+        <span class="sb-pill">Decoding</span>
+        <span class="sb-pill">Encoding</span>
+        <span class="sb-pill">Comprehension</span>
+      </div>
+    </div>
+    <span class="sb-arrow">→</span>
+  </a>
 
-<!-- Team Profiles -->
-<div class="section">
-  <div class="section-title">Team</div>
-  <div class="profiles">
+  <!-- ═══ PROTOTYPES ══════════════════════════════════════════════ -->
+  <div class="section" id="prototypes">
+    <div class="section-header">
+      <h2 class="section-title">Game Prototypes</h2>
+      <span class="section-count">11 total</span>
+    </div>
 
-    <!-- Abby -->
-    <div class="profile" id="profile-abby">
-      <div class="profile-header" onclick="toggleProfile('profile-abby')">
-        <div class="profile-info">
-          <div class="profile-avatar" style="background:#ed6a5a">A</div>
-          <div>
-            <div class="profile-name">Abby</div>
-            <div class="profile-role">Game Design · Prototyping</div>
+    <!-- ── Category: Short Mini-Games ── -->
+    <div class="proto-category">
+      <div class="proto-category-header">
+        
+        <div>
+          <div class="proto-category-title">Short Mini-Games</div>
+          <div class="proto-category-desc">Short-form challenges that emerge during a longer play session to test a player's knowledge. Each mini-game either unlocks a new feature of the overworld or is a necessary step to move the story forward.</div>
+        </div>
+        <span class="section-count" style="flex-shrink:0">9 games</span>
+      </div>
+
+      <div class="games-grid">
+
+        <!-- Enchanted Gems -->
+        <div class="game-card">
+          <div class="game-card-top">
+            <div class="game-num">—</div>
+            <div class="game-info">
+              <div class="game-name">Enchanted Gems</div>
+              <div class="game-domain">Literacy Skill Game</div>
+              <span class="game-skill-tag">Phoneme ID</span>
+            </div>
+            <span class="game-status-badge status-wip">In Progress</span>
+          </div>
+          <div class="game-body">
+            <div class="game-mechanics-label">Mechanics</div>
+            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
+            <div class="game-notes-label">Notes</div>
+            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
+          </div>
+          <div class="game-footer">
+            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/enchanted-harp.html" />
+            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/enchanted-harp.html" target="_blank" rel="noopener">Open ↗</a>
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <span class="profile-count">11 prototypes</span>
-          <span class="profile-arrow">▾</span>
-        </div>
-      </div>
-      <div class="profile-body">
-        <div class="profile-content">
-          <table class="profile-table">
-            <tr><th>#</th><th>Prototype</th><th>Domain</th><th>Skill</th><th>Status</th></tr>
-            <tr><td>—</td><td>Enchanted Gems</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
-          <tr><td>01</td><td>The Rune Stones</td><td>Phoneme Quest · Stage I</td><td>Phonological Awareness · Sequence Detection</td><td><span class="status status-wip">In Progress</span></td></tr>
-          <tr><td>02</td><td>The Enchanted Harp</td><td>Phoneme Quest · Stage II</td><td>Phonological Awareness · Sequence Detection</td><td><span class="status status-wip">In Progress</span></td></tr>
-          <tr><td>03</td><td>Whispering Stones</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
-          <tr><td>04</td><td>Block Breaker</td><td>Letter Knowledge</td><td>Letter Recognition · Ages 5–10</td><td><span class="status status-wip">In Progress</span></td></tr>
-          <tr><td>05</td><td>Seed Script</td><td>Letter Knowledge</td><td>Letter Tracing · Ages 5–10</td><td><span class="status status-wip">In Progress</span></td></tr>
-          <tr><td>06</td><td>Syllable Sprout</td><td>Phonological Awareness</td><td>Syllable Counting · Ages 5–10</td><td><span class="status status-wip">In Progress</span></td></tr>
-          <tr><td>—</td><td>Lesson: Every Letter Has a Sound</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
-          <tr><td>—</td><td>The Locked Door</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
-          <tr><td>—</td><td>Quest Catcher</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
-          <tr><td>—</td><td>Spell Caster</td><td></td><td></td><td><span class="status status-wip">In Progress</span></td></tr>
-          </table>
-        </div>
-      </div>
-    </div>
 
-    <!-- Bob -->
-    <div class="profile" id="profile-bob">
-      <div class="profile-header" onclick="toggleProfile('profile-bob')">
-        <div class="profile-info">
-          <div class="profile-avatar" style="background:#9bc1bc">B</div>
-          <div>
-            <div class="profile-name">Bob</div>
-            <div class="profile-role">—</div>
+        <!-- The Rune Stones -->
+        <div class="game-card">
+          <div class="game-card-top">
+            <div class="game-num">01</div>
+            <div class="game-info">
+              <div class="game-name">The Rune Stones</div>
+              <div class="game-domain">Phoneme Quest · Stage I · Legacy</div>
+              <span class="game-skill-tag">Phoneme Sequence</span>
+            </div>
+            <span class="game-status-badge status-wip">In Progress</span>
+          </div>
+          <div class="game-body">
+            <div class="game-mechanics-label">Mechanics</div>
+            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
+            <div class="game-tags">
+              <span class="game-tag">Ages 6–12</span>
+              <span class="game-tag">Legacy</span>
+            </div>
+            <div class="game-notes-label">Notes</div>
+            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
+          </div>
+          <div class="game-footer">
+            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-01-rune-stones.html" />
+            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-01-rune-stones.html" target="_blank" rel="noopener">Open ↗</a>
           </div>
         </div>
-        <span class="profile-arrow">▾</span>
-      </div>
-      <div class="profile-body">
-        <div class="profile-content">
-          <div class="profile-empty">No prototypes yet</div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Tyler -->
-    <div class="profile" id="profile-tyler">
-      <div class="profile-header" onclick="toggleProfile('profile-tyler')">
-        <div class="profile-info">
-          <div class="profile-avatar" style="background:#f4c952">T</div>
-          <div>
-            <div class="profile-name">Tyler</div>
-            <div class="profile-role">Curriculum · Instruction</div>
+        <!-- The Enchanted Harp -->
+        <div class="game-card">
+          <div class="game-card-top">
+            <div class="game-num">02</div>
+            <div class="game-info">
+              <div class="game-name">The Enchanted Harp</div>
+              <div class="game-domain">Phoneme Quest · Stage II · Legacy</div>
+              <span class="game-skill-tag">Phoneme Sequence</span>
+            </div>
+            <span class="game-status-badge status-wip">In Progress</span>
+          </div>
+          <div class="game-body">
+            <div class="game-mechanics-label">Mechanics</div>
+            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
+            <div class="game-tags">
+              <span class="game-tag">Ages 6–12</span>
+              <span class="game-tag">Legacy</span>
+            </div>
+            <div class="game-notes-label">Notes</div>
+            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
+          </div>
+          <div class="game-footer">
+            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-02-enchanted-harp.html" />
+            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-02-enchanted-harp.html" target="_blank" rel="noopener">Open ↗</a>
           </div>
         </div>
-        <span class="profile-arrow">▾</span>
+
+        <!-- The Whispering Stones -->
+        <div class="game-card">
+          <div class="game-card-top">
+            <div class="game-num">03</div>
+            <div class="game-info">
+              <div class="game-name">The Whispering Stones</div>
+              <div class="game-domain">Literacy Skill Game</div>
+              <span class="game-skill-tag">Rhyme Detection</span>
+            </div>
+            <span class="game-status-badge status-wip">In Progress</span>
+          </div>
+          <div class="game-body">
+            <div class="game-mechanics-label">Mechanics</div>
+            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
+            <div class="game-tags"><span class="game-tag">Ages 5–10</span></div>
+            <div class="game-notes-label">Notes</div>
+            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
+          </div>
+          <div class="game-footer">
+            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-03-whispering-stones.html" />
+            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-03-whispering-stones.html" target="_blank" rel="noopener">Open ↗</a>
+          </div>
+        </div>
+
+        <!-- Block Breaker -->
+        <div class="game-card">
+          <div class="game-card-top">
+            <div class="game-num">04</div>
+            <div class="game-info">
+              <div class="game-name">Block Breaker</div>
+              <div class="game-domain">Literacy Skill Game</div>
+              <span class="game-skill-tag">Letter Recognition</span>
+            </div>
+            <span class="game-status-badge status-wip">In Progress</span>
+          </div>
+          <div class="game-body">
+            <div class="game-mechanics-label">Mechanics</div>
+            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
+            <div class="game-tags"><span class="game-tag">Ages 5–10</span></div>
+            <div class="game-notes-label">Notes</div>
+            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
+          </div>
+          <div class="game-footer">
+            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-04-block-breaker.html" />
+            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-04-block-breaker.html" target="_blank" rel="noopener">Open ↗</a>
+          </div>
+        </div>
+
+        <!-- Seed Script -->
+        <div class="game-card">
+          <div class="game-card-top">
+            <div class="game-num">05</div>
+            <div class="game-info">
+              <div class="game-name">Seed Script</div>
+              <div class="game-domain">Literacy Skill Game</div>
+              <span class="game-skill-tag">Letter Tracing</span>
+            </div>
+            <span class="game-status-badge status-wip">In Progress</span>
+          </div>
+          <div class="game-body">
+            <div class="game-mechanics-label">Mechanics</div>
+            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
+            <div class="game-tags"><span class="game-tag">Ages 5–10</span></div>
+            <div class="game-notes-label">Notes</div>
+            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
+          </div>
+          <div class="game-footer">
+            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-05-seed-script.html" />
+            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-05-seed-script.html" target="_blank" rel="noopener">Open ↗</a>
+          </div>
+        </div>
+
+        <!-- Syllable Sprout -->
+        <div class="game-card">
+          <div class="game-card-top">
+            <div class="game-num">06</div>
+            <div class="game-info">
+              <div class="game-name">Syllable Sprout</div>
+              <div class="game-domain">Literacy Skill Game</div>
+              <span class="game-skill-tag">Syllable Counting</span>
+            </div>
+            <span class="game-status-badge status-wip">In Progress</span>
+          </div>
+          <div class="game-body">
+            <div class="game-mechanics-label">Mechanics</div>
+            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
+            <div class="game-tags"><span class="game-tag">Ages 5–10</span></div>
+            <div class="game-notes-label">Notes</div>
+            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
+          </div>
+          <div class="game-footer">
+            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-06-syllable-sprout.html" />
+            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/game-06-syllable-sprout.html" target="_blank" rel="noopener">Open ↗</a>
+          </div>
+        </div>
+
+        <!-- Quest Catcher -->
+        <div class="game-card">
+          <div class="game-card-top">
+            <div class="game-num">—</div>
+            <div class="game-info">
+              <div class="game-name">Quest Catcher</div>
+              <div class="game-domain">Literacy Skill Game</div>
+              <span class="game-skill-tag">Vocabulary</span>
+            </div>
+            <span class="game-status-badge status-wip">In Progress</span>
+          </div>
+          <div class="game-body">
+            <div class="game-mechanics-label">Mechanics</div>
+            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
+            <div class="game-notes-label">Notes</div>
+            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
+          </div>
+          <div class="game-footer">
+            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/quest-catcher.html" />
+            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/quest-catcher.html" target="_blank" rel="noopener">Open ↗</a>
+          </div>
+        </div>
+
+        <!-- Spell Caster -->
+        <div class="game-card">
+          <div class="game-card-top">
+            <div class="game-num">—</div>
+            <div class="game-info">
+              <div class="game-name">Spell Caster</div>
+              <div class="game-domain">Literacy Skill Game</div>
+              <span class="game-skill-tag">Decoding</span>
+            </div>
+            <span class="game-status-badge status-wip">In Progress</span>
+          </div>
+          <div class="game-body">
+            <div class="game-mechanics-label">Mechanics</div>
+            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
+            <div class="game-notes-label">Notes</div>
+            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
+          </div>
+          <div class="game-footer">
+            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/spell-caster.html" />
+            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/spell-caster.html" target="_blank" rel="noopener">Open ↗</a>
+          </div>
+        </div>
+
       </div>
-      <div class="profile-body">
-        <div class="profile-content">
-          <div class="profile-empty">No prototypes yet</div>
+    </div>
+
+    <!-- ── Category: Narrative Explorations ── -->
+    <div class="proto-category proto-category-narrative">
+      <div class="proto-category-header">
+        
+        <div>
+          <div class="proto-category-title">Narrative Explorations</div>
+          <div class="proto-category-desc">Experiments in how the game's story can authentically embed evidence-based dyslexia tutoring. These prototypes explore the ways narrative, character, and world-building can make structured literacy instruction feel natural and engaging.</div>
+        </div>
+        <span class="section-count" style="flex-shrink:0">2 games</span>
+      </div>
+
+      <div class="games-grid">
+
+        <!-- Lesson: Letter Sounds -->
+        <div class="game-card lesson-card">
+          <div class="game-card-top">
+            <div class="game-num">—</div>
+            <div class="game-info">
+              <div class="game-name">Lesson: Letter Sounds</div>
+              <div class="game-domain">Full Lesson · Explicit Instruction</div>
+              <span class="game-skill-tag">Letter Sounds</span>
+            </div>
+            <span class="game-status-badge status-wip">In Progress</span>
+          </div>
+          <div class="game-body">
+            <div class="game-mechanics-label">Mechanics</div>
+            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
+            <div class="game-notes-label">Notes</div>
+            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
+          </div>
+          <div class="game-footer">
+            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/lesson-letter-sounds.html" />
+            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/lesson-letter-sounds.html" target="_blank" rel="noopener">Open ↗</a>
+          </div>
+        </div>
+
+        <!-- The Locked Door -->
+        <div class="game-card lesson-card">
+          <div class="game-card-top">
+            <div class="game-num">—</div>
+            <div class="game-info">
+              <div class="game-name">The Locked Door</div>
+              <div class="game-domain">Full Lesson · Explicit Instruction</div>
+              <span class="game-skill-tag">Narrative</span>
+            </div>
+            <span class="game-status-badge status-wip">In Progress</span>
+          </div>
+          <div class="game-body">
+            <div class="game-mechanics-label">Mechanics</div>
+            <div class="game-mechanics game-mechanics-placeholder">Add mechanics description here…</div>
+            <div class="game-notes-label">Notes</div>
+            <textarea class="game-notes" placeholder="Add design notes, observations, next steps…"></textarea>
+          </div>
+          <div class="game-footer">
+            <input class="game-link-input" type="text" value="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/locked-door.html" />
+            <a class="game-open-btn" href="https://otherwiselabspbc.github.io/abbyprototypes/minigame%20prototypes/locked-door.html" target="_blank" rel="noopener">Open ↗</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ TEAM ════════════════════════════════════════════════════ -->
+  <div class="section" id="team">
+    <div class="section-header">
+      <h2 class="section-title">Team</h2>
+      <span class="section-count">3 members</span>
+    </div>
+    <div class="profiles">
+
+      <!-- Abby -->
+      <div class="profile" id="profile-abby">
+        <div class="profile-header" onclick="toggleProfile('profile-abby')">
+          <div class="profile-left">
+            <div class="profile-avatar" style="background:var(--coral)">A</div>
+            <div>
+              <div class="profile-name">Abby</div>
+              <div class="profile-role">Game Design · Prototyping</div>
+            </div>
+          </div>
+          <div class="profile-right">
+            <span class="profile-count">11 prototypes</span>
+            <span class="profile-chevron">▾</span>
+          </div>
+        </div>
+        <div class="profile-body">
+          <div class="profile-content">
+            <table class="profile-table">
+              <thead><tr><th>#</th><th>Prototype</th><th>Domain</th><th>Skill</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>—</td><td>Enchanted Gems</td><td>—</td><td>—</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>01</td><td>The Rune Stones</td><td>Phoneme Quest · Stage I</td><td>Phonological Awareness · Sequence Detection</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>02</td><td>The Enchanted Harp</td><td>Phoneme Quest · Stage II</td><td>Phonological Awareness · Sequence Detection</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>03</td><td>The Whispering Stones</td><td>Phonological Awareness</td><td>Rhyme Detection · Ages 6–12</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>04</td><td>Block Breaker</td><td>Letter Knowledge</td><td>Letter Recognition · Ages 5–10</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>05</td><td>Seed Script</td><td>Letter Knowledge</td><td>Letter Tracing · Ages 5–10</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>06</td><td>Syllable Sprout</td><td>Phonological Awareness</td><td>Syllable Counting · Ages 5–10</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>—</td><td>Lesson: Letter Sounds</td><td>—</td><td>—</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>—</td><td>The Locked Door</td><td>—</td><td>—</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>—</td><td>Quest Catcher</td><td>—</td><td>—</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+                <tr><td>—</td><td>Spell Caster</td><td>—</td><td>—</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
+              </tbody>
+            </table>
+            <div class="member-upload-section">
+              <div class="member-upload-label">Add a new prototype</div>
+              <div class="member-upload-row">
+                <input class="game-link-input" type="text" placeholder="Prototype name" id="abby-proto-name" />
+                <input class="game-link-input" type="text" placeholder="URL" id="abby-proto-url" />
+                <button class="game-open-btn" onclick="addMemberProto('profile-abby', 'abby-proto-name', 'abby-proto-url')">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bob -->
+      <div class="profile" id="profile-bob">
+        <div class="profile-header" onclick="toggleProfile('profile-bob')">
+          <div class="profile-left">
+            <div class="profile-avatar" style="background:var(--teal)">B</div>
+            <div>
+              <div class="profile-name">Bob</div>
+              <div class="profile-role">—</div>
+            </div>
+          </div>
+          <div class="profile-right">
+            <span class="profile-count" id="bob-count"></span>
+            <span class="profile-chevron">▾</span>
+          </div>
+        </div>
+        <div class="profile-body">
+          <div class="profile-content">
+            <table class="profile-table" id="bob-table" style="display:none">
+              <thead><tr><th>Prototype</th><th>URL</th><th></th></tr></thead>
+              <tbody id="bob-tbody"></tbody>
+            </table>
+            <div class="profile-empty" id="bob-empty">No prototypes yet</div>
+            <div class="member-upload-section">
+              <div class="member-upload-label">Add a new prototype</div>
+              <div class="member-upload-row">
+                <input class="game-link-input" type="text" placeholder="Prototype name" id="bob-proto-name" />
+                <input class="game-link-input" type="text" placeholder="URL" id="bob-proto-url" />
+                <button class="game-open-btn" onclick="addMemberProto('profile-bob', 'bob-proto-name', 'bob-proto-url')">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tyler -->
+      <div class="profile" id="profile-tyler">
+        <div class="profile-header" onclick="toggleProfile('profile-tyler')">
+          <div class="profile-left">
+            <div class="profile-avatar" style="background:var(--gold)">T</div>
+            <div>
+              <div class="profile-name">Tyler</div>
+              <div class="profile-role">Curriculum · Instruction</div>
+            </div>
+          </div>
+          <div class="profile-right">
+            <span class="profile-count" id="tyler-count"></span>
+            <span class="profile-chevron">▾</span>
+          </div>
+        </div>
+        <div class="profile-body">
+          <div class="profile-content">
+            <table class="profile-table" id="tyler-table" style="display:none">
+              <thead><tr><th>Prototype</th><th>URL</th><th></th></tr></thead>
+              <tbody id="tyler-tbody"></tbody>
+            </table>
+            <div class="profile-empty" id="tyler-empty">No prototypes yet</div>
+            <div class="member-upload-section">
+              <div class="member-upload-label">Add a new prototype</div>
+              <div class="member-upload-row">
+                <input class="game-link-input" type="text" placeholder="Prototype name" id="tyler-proto-name" />
+                <input class="game-link-input" type="text" placeholder="URL" id="tyler-proto-url" />
+                <button class="game-open-btn" onclick="addMemberProto('profile-tyler', 'tyler-proto-name', 'tyler-proto-url')">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ DOCUMENTS ═══════════════════════════════════════════════ -->
+  <div class="section" id="documents">
+    <div class="section-header">
+      <h2 class="section-title">Project Documents</h2>
+      <span class="section-count">2 docs</span>
+    </div>
+    <div class="cards-grid">
+      <div class="card doc-card">
+        <div class="card-title">Product Vision</div>
+        <div class="card-desc">Core concept, three-phase roadmap, design principles.</div>
+        <div class="doc-link-row">
+          <input class="game-link-input doc-link-input" type="text" placeholder="Paste document URL…" />
+          <a class="game-open-btn disabled" href="#" onclick="return false;">Open ↗</a>
+        </div>
+      </div>
+      <div class="card doc-card">
+        <div class="card-title">Curriculum Map</div>
+        <div class="card-desc">~50 Orton-Gillingham activities with modalities and sample items.</div>
+        <div class="doc-link-row">
+          <input class="game-link-input doc-link-input" type="text" placeholder="Paste document URL…" />
+          <a class="game-open-btn disabled" href="#" onclick="return false;">Open ↗</a>
         </div>
       </div>
     </div>
-
-  </div>
-</div>
-
-<!-- Prototype Categories -->
-<div class="section">
-  <div class="section-title">Prototype Categories</div>
-
-  <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
-    <div style="flex:1;min-width:260px;background:#fff;border:2px solid #eae8e2;border-radius:12px;padding:18px">
-      <div style="font-family:'Lora',serif;font-size:15px;font-weight:700;color:#3a3a3a;margin-bottom:6px">Sprint Mini-Games</div>
-      <div style="font-size:12px;color:#6a6a6a;line-height:1.55;margin-bottom:10px">Short-form challenges (~20-60 seconds) that test a specific skill. These would appear during a longer play session as gates — the player must pass them to unlock a new feature or move forward in the game.</div>
-      <div style="font-size:11px;color:#999">Enchanted Gems · Spell Caster · Whispering Stones · Block Breaker · Seed Script · Syllable Sprout</div>
-    </div>
-    <div style="flex:1;min-width:260px;background:#fff;border:2px solid #eae8e2;border-radius:12px;padding:18px">
-      <div style="font-family:'Lora',serif;font-size:15px;font-weight:700;color:#3a3a3a;margin-bottom:6px">Narrative Explorations</div>
-      <div style="font-size:12px;color:#6a6a6a;line-height:1.55;margin-bottom:10px">Longer-form experiments that explore how to embed evidence-based dyslexia tutoring inside a story the player cares about. These test different narrative frames for the explicit instruction model.</div>
-      <div style="font-size:11px;color:#999">The Locked Door · Quest Catcher · Lesson: Letter Sounds</div>
-    </div>
   </div>
 
-  <!-- Narrative Briefs -->
-  <div style="font-family:'Lora',serif;font-size:16px;font-weight:700;color:#3a3a3a;margin:24px 0 12px;padding-bottom:8px;border-bottom:2px solid #eae8e2">Narrative Exploration Briefs</div>
-
-  <div style="background:#fff;border:2px solid #eae8e2;border-radius:12px;padding:18px;margin-bottom:14px">
-    <div style="font-family:'Lora',serif;font-size:14px;font-weight:700;color:#ed6a5a;margin-bottom:4px">The Locked Door</div>
-    <div style="font-size:10px;color:#999;margin-bottom:8px">Skill: Letter Sounds (S, T, M, N) · Full lesson with explicit instruction</div>
-    <div style="font-size:12px;color:#4a4a4a;line-height:1.65;margin-bottom:10px">
-      <strong>Direction:</strong> An NPC guide discovers a locked magical door with 4 gem-shaped rune slots. Each letter-sound the player learns fills one slot. The narrative creates a reason to learn — you need these sounds to open the door and see what's behind it.
+  <!-- ═══ FRAMEWORKS ══════════════════════════════════════════════ -->
+  <div class="section" id="frameworks">
+    <div class="section-header">
+      <h2 class="section-title">Design Frameworks</h2>
+      <span class="section-count">10 skills</span>
     </div>
-    <div style="font-size:12px;color:#4a4a4a;line-height:1.65;margin-bottom:10px">
-      <strong>How mini-games fit in:</strong> The guided practice phase (picking the right gem after being taught each sound) is essentially a mini version of the Enchanted Gems sprint. The final sprint before the door opens IS the Enchanted Gems mechanic — floating gems, timed, same interaction. The narrative wraps around the sprint to give it purpose.
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:20px">
+      <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px">What is a skill?</div>
+      <div style="font-size:12.5px;color:var(--ink-mid);line-height:1.65">A skill is a prompt document that instructs Claude how to approach a specific design task — like evaluating a game with the MDA framework or checking curriculum alignment. To invoke one, type its slash command (e.g. <code style="font-family:'DM Mono',monospace;font-size:11px;background:var(--cream);padding:2px 6px;border-radius:4px;color:var(--coral)">/mda</code>) at the start of a message to Claude, and it will apply that skill's instructions to your work.</div>
     </div>
-    <div style="font-size:12px;color:#4a4a4a;line-height:1.65">
-      <strong>What we learned:</strong> The 80/20 explicit instruction ratio works well in narrative form. Teaching through an NPC character (The Guide) feels natural — the player receives instruction without feeling lectured. The door-opening payoff gives the sprint real stakes. The visual feedback of gems filling into the door creates a tangible sense of progress.
+    <div class="cards-grid">
+      <a href="skill-curriculum-mapping.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">curriculum-mapping</div><div class="card-desc">Use before designing any mini-game to ensure it correctly targets a specific reading skill from the Lindamood Bell-informed curriculum.</div><div class="card-meta"><span class="card-tag">/curriculum-mapping</span></div></a>
+      <a href="skill-explicit-instruction.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">explicit-instruction</div><div class="card-desc">Defines how instruction within each mini-game should be structured. Based on evidence-based reading curriculum principles (OG, Lindamood Bell).</div><div class="card-meta"><span class="card-tag">/explicit-instruction</span></div></a>
+      <a href="skill-game-based-learning.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">game-based-learning</div><div class="card-desc">Review or apply evidence-based game-based learning principles when designing, auditing, or iterating on any mini-game. Covers cognitive load, feedback, motivation.</div><div class="card-meta"><span class="card-tag">/game-based-learning</span></div></a>
+      <a href="skill-game-storyboard.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">game-storyboard</div><div class="card-desc">Use when designing a new mini-game from scratch. Provides the complete screen-by-screen structure every game must follow, including tutorial and sprint phases.</div><div class="card-meta"><span class="card-tag">/game-storyboard</span></div></a>
+      <a href="skill-game-vision.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">game-vision</div><div class="card-desc">Reference the core product vision, design principles, and three-phase roadmap for OL Prototypes before building any game or feature.</div><div class="card-meta"><span class="card-tag">/game-vision</span></div></a>
+      <a href="skill-mda.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">mda</div><div class="card-desc">Evaluate a game's effectiveness using the MDA Framework (Mechanics, Dynamics, Aesthetics). Use when auditing whether a mini-game achieves intended learning.</div><div class="card-meta"><span class="card-tag">/mda</span></div></a>
+      <a href="skill-octalysis.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">octalysis</div><div class="card-desc">Audit or design a game feature against the Octalysis Framework (Yu-kai Chou). Ensures the game engages all 8 Core Drives, balancing extrinsic and intrinsic motivation.</div><div class="card-meta"><span class="card-tag">/octalysis</span></div></a>
+      <a href="skill-product-management.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">product-management</div><div class="card-desc">Manage the end-to-end design process for OL Prototypes. Covers design stages (Double Diamond), decision logging, user research, prototype handoffs.</div><div class="card-meta"><span class="card-tag">/product-management</span></div></a>
+      <a href="skill-resources.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">resources</div><div class="card-desc">Central library of all research sources, readings, and references used in the OL Prototypes design process. Search by topic, type, or keyword.</div><div class="card-meta"><span class="card-tag">/resources</span></div></a>
+      <a href="skill-ui-ux.html" class="card" style="text-decoration:none;color:inherit"><div class="card-title">ui-ux</div><div class="card-desc">Review or apply UI/UX design principles to a game screen, component, or interaction. Covers general design principles plus literacy-specific accessibility.</div><div class="card-meta"><span class="card-tag">/ui-ux</span></div></a>
     </div>
   </div>
 
-  <div style="background:#fff;border:2px solid #eae8e2;border-radius:12px;padding:18px;margin-bottom:14px">
-    <div style="font-family:'Lora',serif;font-size:14px;font-weight:700;color:#ed6a5a;margin-bottom:4px">Quest Catcher — The Lost Treasure of Stonehollow</div>
-    <div style="font-size:10px;color:#999;margin-bottom:8px">Skill: Vocabulary in Context · 4-chapter continuous quest</div>
-    <div style="font-size:12px;color:#4a4a4a;line-height:1.65;margin-bottom:10px">
-      <strong>Direction:</strong> A single continuous quest with Scout Mira exploring a mountain. Each vocabulary word (crevice, navigate, dilapidated) is a prerequisite to the next step — you must understand the word to progress through the story. The vocabulary is not the goal; the adventure is. The words are keys that unlock the next chapter.
+  <!-- ═══ RESEARCH ════════════════════════════════════════════════ -->
+  <div class="section" id="resources">
+    <div class="section-header">
+      <h2 class="section-title">Research Sources</h2>
+      <span class="section-count">5 sources</span>
     </div>
-    <div style="font-size:12px;color:#4a4a4a;line-height:1.65;margin-bottom:10px">
-      <strong>How mini-games fit in:</strong> Each vocabulary question is a brief challenge embedded in the narrative — similar to how a sprint mini-game would pause the story for a skill check. The 4-option multiple choice mechanic could be swapped for any identification-style sprint. The key insight is that the challenge serves the quest, not the other way around.
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ID</th><th>Title</th><th>Authors</th><th>Type</th><th>Topics</th></tr></thead>
+        <tbody>
+          <tr><td>R-001</td><td>Handbook of Game-Based Learning</td><td>Plass, Mayer, Homer</td><td><span class="status-pill status-active">Textbook</span></td><td>Cognitive load, feedback design, motivation (SDT)…</td></tr>
+          <tr><td>R-002</td><td>Actionable Gamification</td><td>Yu-kai Chou</td><td><span class="status-pill status-active">Book</span></td><td>8 Core Drives of motivation, White Hat vs Black Hat…</td></tr>
+          <tr><td>R-003</td><td>MDA — A Formal Approach to Game Design</td><td>Hunicke, LeBlanc, Zubek</td><td><span class="status-pill status-active">Paper</span></td><td>Game design decomposition, mechanics vs dynamics vs aesthetics…</td></tr>
+          <tr><td>R-004</td><td>Otherwise Labs Check-in — Explicit &amp; Systematic Instruction</td><td>Ogata, Garewal, Borges</td><td><span class="status-pill status-active">Meeting Notes</span></td><td>Explicit instruction, systematic teaching, 80/20 rule…</td></tr>
+          <tr><td>R-005</td><td>WRS Lesson Plan Poster</td><td>Wilson Reading System</td><td><span class="status-pill status-active">Reference</span></td><td>Lesson plan structure, 10-step lesson sequence…</td></tr>
+        </tbody>
+      </table>
     </div>
-    <div style="font-size:12px;color:#4a4a4a;line-height:1.65">
-      <strong>What we learned:</strong> Framing vocabulary as a prerequisite to adventure (not the point of the game) dramatically changes how it feels. The visual scene progression (outside mountain → dark cave → crumbling chamber → treasure room) gives each word a concrete context. The celebration at the end — Mira recapping the journey using all the vocabulary words — reinforces learning through narrative payoff rather than a score screen. For 8-12 year olds, the heroic framing ("Quest Catcher") makes the educational content feel age-appropriate rather than babyish.
+  </div>
+
+  <!-- ═══ MEETING NOTES ══════════════════════════════════════════ -->
+  <div class="section" id="meeting-notes">
+    <div class="section-header">
+      <h2 class="section-title">Meeting Notes</h2>
+      <span class="section-count" id="notes-count">0 entries</span>
+    </div>
+
+    <!-- Upload zone -->
+    <div class="notes-upload-zone" id="notes-drop-zone" onclick="document.getElementById('notes-file-input').click()">
+      
+      <div class="notes-upload-label">Upload meeting notes</div>
+      <div class="notes-upload-sub">Drop files here or <strong>click to browse</strong> · .txt, .md, .pdf, .docx</div>
+      <input type="file" id="notes-file-input" multiple accept=".txt,.md,.pdf,.doc,.docx" style="display:none" />
+    </div>
+
+    <!-- Timeline -->
+    <div class="notes-timeline" id="notes-timeline">
+      <div class="notes-empty" id="notes-empty">No meeting notes yet — upload a file above to get started.</div>
     </div>
   </div>
 
-  <div style="background:#fff;border:2px solid #eae8e2;border-radius:12px;padding:18px;margin-bottom:14px">
-    <div style="font-family:'Lora',serif;font-size:14px;font-weight:700;color:#ed6a5a;margin-bottom:4px">Lesson: Letter Sounds (Basic)</div>
-    <div style="font-size:10px;color:#999;margin-bottom:8px">Skill: Letter Sounds (S, T, M, N) · Structured lesson without strong narrative</div>
-    <div style="font-size:12px;color:#4a4a4a;line-height:1.65;margin-bottom:10px">
-      <strong>Direction:</strong> A straightforward implementation of the WRS lesson plan structure — teach each sound explicitly, guided practice with gem selection, transition screen, then an independent sprint. This was the baseline before adding narrative. It follows the 80/20 ratio and 3-stage structure (Tutorial → Guided → Sprint) directly.
+  <!-- ═══ ROADMAP ═════════════════════════════════════════════════ -->
+  <div class="section" id="roadmap">
+    <div class="section-header">
+      <h2 class="section-title">Project Roadmap</h2>
     </div>
-    <div style="font-size:12px;color:#4a4a4a;line-height:1.65;margin-bottom:10px">
-      <strong>How mini-games fit in:</strong> The sprint phase at the end IS the Enchanted Gems mini-game, preceded by the full teach and guided phases. This shows the basic skeleton that any lesson would follow — the mini-game is the final 20% after 80% of explicit instruction.
+
+    <div class="rm-legend">
+      <div class="rm-legend-item"><div class="rm-legend-dot" style="background:var(--teal)"></div> Complete</div>
+      <div class="rm-legend-item"><div class="rm-legend-dot" style="background:var(--coral)"></div> In Progress</div>
+      <div class="rm-legend-item"><div class="rm-legend-dot" style="background:var(--border)"></div> Upcoming</div>
     </div>
-    <div style="font-size:12px;color:#4a4a4a;line-height:1.65">
-      <strong>What we learned:</strong> The structure is pedagogically sound but emotionally flat without narrative. Students go through the motions but don't have a reason to care beyond "learn this." This prototype confirmed that the explicit instruction model works mechanically, but needs a narrative frame (like The Locked Door) to create engagement. It served as the control group — proving that the teaching works, while the narrative explorations prove that the teaching can also be fun.
+
+    <div class="roadmap">
+
+      <div class="rm-stage done" onclick="toggleRM(this)">
+        <div class="rm-dot"></div>
+        <div class="rm-trigger">
+          <span class="rm-badge rm-badge-done">Complete</span>
+          <span class="rm-title">Stage 0 — Vision &amp; Strategy</span>
+          <span class="rm-chevron">▾</span>
+        </div>
+        <div class="rm-body">
+          <ul class="rm-items">
+            <li class="done"><div class="rm-check"></div><span>Product vision document</span></li>
+            <li class="done"><div class="rm-check"></div><span>Target audience defined</span></li>
+            <li class="done"><div class="rm-check"></div><span>Curriculum backbone mapped (CSV)</span></li>
+            <li class="done"><div class="rm-check"></div><span>Platform: browser-first, mobile touch</span></li>
+            <li class="done"><div class="rm-check"></div><span>Design principles established</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rm-stage done" onclick="toggleRM(this)">
+        <div class="rm-dot"></div>
+        <div class="rm-trigger">
+          <span class="rm-badge rm-badge-done">Complete</span>
+          <span class="rm-title">Stage 1 — Discover (Research)</span>
+          <span class="rm-chevron">▾</span>
+        </div>
+        <div class="rm-body">
+          <ul class="rm-items">
+            <li class="done"><div class="rm-check"></div><span>Handbook of Game-Based Learning (R-001)</span></li>
+            <li class="done"><div class="rm-check"></div><span>Actionable Gamification / Octalysis (R-002)</span></li>
+            <li class="done"><div class="rm-check"></div><span>MDA Framework (R-003)</span></li>
+            <li class="done"><div class="rm-check"></div><span>Meeting: Explicit &amp; Systematic Instruction (R-004)</span></li>
+            <li class="done"><div class="rm-check"></div><span>WRS Lesson Plan Structure (R-005)</span></li>
+            <li><div class="rm-check"></div><span>Interview OG tutors</span></li>
+            <li><div class="rm-check"></div><span>Interview parents/caregivers</span></li>
+            <li><div class="rm-check"></div><span>Observe live tutoring sessions</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rm-stage done" onclick="toggleRM(this)">
+        <div class="rm-dot"></div>
+        <div class="rm-trigger">
+          <span class="rm-badge rm-badge-done">Complete</span>
+          <span class="rm-title">Stage 2 — Define (Frameworks)</span>
+          <span class="rm-chevron">▾</span>
+        </div>
+        <div class="rm-body">
+          <ul class="rm-items">
+            <li class="done"><div class="rm-check"></div><span>10 design skills created</span></li>
+            <li class="done"><div class="rm-check"></div><span>7 key decisions logged</span></li>
+            <li class="done"><div class="rm-check"></div><span>80/20 instruction ratio established</span></li>
+            <li class="done"><div class="rm-check"></div><span>3-stage lesson structure (Tutorial → Guided → Sprint)</span></li>
+            <li class="done"><div class="rm-check"></div><span>Hint escalation replacing lives</span></li>
+            <li><div class="rm-check"></div><span>User personas (Learner, Tutor, Parent)</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rm-stage active open" onclick="toggleRM(this)">
+        <div class="rm-dot"></div>
+        <div class="rm-trigger">
+          <span class="rm-badge rm-badge-wip">In Progress</span>
+          <span class="rm-title">Stage 3 — Develop (Build &amp; Test)</span>
+          <span class="rm-chevron">▾</span>
+        </div>
+        <div class="rm-body">
+          <ul class="rm-items">
+            <li class="done"><div class="rm-check"></div><span>11 mini-game prototypes built</span></li>
+            <li class="done"><div class="rm-check"></div><span>Full lesson prototype (Locked Door)</span></li>
+            <li class="done"><div class="rm-check"></div><span>Interactive storyboard created</span></li>
+            <li class="done"><div class="rm-check"></div><span>Audio assets (ElevenLabs phonemes + words)</span></li>
+            <li><div class="rm-check"></div><span>Print Concepts game</span></li>
+            <li><div class="rm-check"></div><span>Encoding game</span></li>
+            <li><div class="rm-check"></div><span>Phoneme blending game</span></li>
+            <li><div class="rm-check"></div><span>Playtest with target users</span></li>
+            <li><div class="rm-check"></div><span>Font readability audit</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rm-stage future" onclick="toggleRM(this)">
+        <div class="rm-dot"></div>
+        <div class="rm-trigger">
+          <span class="rm-badge rm-badge-future">Upcoming</span>
+          <span class="rm-title">Stage 4 — Deliver (Polish &amp; Ship)</span>
+          <span class="rm-chevron">▾</span>
+        </div>
+        <div class="rm-body">
+          <ul class="rm-items">
+            <li><div class="rm-check"></div><span>Full session playtest (3+ games in sequence)</span></li>
+            <li><div class="rm-check"></div><span>Curriculum alignment sign-off</span></li>
+            <li><div class="rm-check"></div><span>Accessibility audit</span></li>
+            <li><div class="rm-check"></div><span>Device testing</span></li>
+            <li><div class="rm-check"></div><span>Analytics instrumentation</span></li>
+          </ul>
+        </div>
+      </div>
+
     </div>
   </div>
-</div>
-
-<!-- Documents -->
-<div class="section">
-  <div class="section-title">Project Documents (3)</div>
-  <div class="cards"><div class="card"><div class="card-title">Product Vision</div><div class="card-desc">Core concept, three-phase roadmap, design principles.</div></div>
-    <div class="card"><div class="card-title">Decision Log</div><div class="card-desc">7 design decisions with rationale and evidence.</div></div>
-    <div class="card"><div class="card-title">Curriculum Map</div><div class="card-desc">~50 Orton-Gillingham activities with modalities and sample items.</div></div></div>
-</div>
-
-<!-- Skills -->
-<div class="section">
-  <div class="section-title">Design Frameworks (10)</div>
-  <div class="cards"><a href="skill-curriculum-mapping.html" class="card" style="text-decoration:none;color:inherit;display:block"><div class="card-title">curriculum-mapping</div><div class="card-desc">Use before designing any mini-game to ensure it correctly targets a specific reading skill from the Lindamood Bell-informed curric...</div><div class="card-meta"><span class="tag tag-teal">/curriculum-mapping</span></div></a>
-    <a href="skill-explicit-instruction.html" class="card" style="text-decoration:none;color:inherit;display:block"><div class="card-title">explicit-instruction</div><div class="card-desc">Defines how instruction within each mini-game should be structured. Based on evidence-based reading curriculum principles (OG, Lin...</div><div class="card-meta"><span class="tag tag-teal">/explicit-instruction</span></div></a>
-    <a href="skill-game-based-learning.html" class="card" style="text-decoration:none;color:inherit;display:block"><div class="card-title">game-based-learning</div><div class="card-desc">Review or apply evidence-based game-based learning principles when designing, auditing, or iterating on any mini-game. Covers cogn...</div><div class="card-meta"><span class="tag tag-teal">/game-based-learning</span></div></a>
-    <a href="skill-game-storyboard.html" class="card" style="text-decoration:none;color:inherit;display:block"><div class="card-title">game-storyboard</div><div class="card-desc">Use when designing a new mini-game from scratch. Provides the complete screen-by-screen structure every game must follow, includin...</div><div class="card-meta"><span class="tag tag-teal">/game-storyboard</span></div></a>
-    <a href="skill-game-vision.html" class="card" style="text-decoration:none;color:inherit;display:block"><div class="card-title">game-vision</div><div class="card-desc">Reference the core product vision, design principles, and three-phase roadmap for OL Prototypes before building any game or featur...</div><div class="card-meta"><span class="tag tag-teal">/game-vision</span></div></a>
-    <a href="skill-mda.html" class="card" style="text-decoration:none;color:inherit;display:block"><div class="card-title">mda</div><div class="card-desc">Evaluate a game&#x27;s effectiveness using the MDA Framework (Mechanics, Dynamics, Aesthetics). Use when auditing whether a mini-game a...</div><div class="card-meta"><span class="tag tag-teal">/mda</span></div></a>
-    <a href="skill-octalysis.html" class="card" style="text-decoration:none;color:inherit;display:block"><div class="card-title">octalysis</div><div class="card-desc">Audit or design a game feature against the Octalysis Framework (Yu-kai Chou). Ensures the game engages all 8 Core Drives, balances...</div><div class="card-meta"><span class="tag tag-teal">/octalysis</span></div></a>
-    <a href="skill-product-management.html" class="card" style="text-decoration:none;color:inherit;display:block"><div class="card-title">product-management</div><div class="card-desc">Manage the end-to-end design process for OL Prototypes. Covers design stages (Double Diamond), decision logging, user research, pr...</div><div class="card-meta"><span class="tag tag-teal">/product-management</span></div></a>
-    <a href="skill-resources.html" class="card" style="text-decoration:none;color:inherit;display:block"><div class="card-title">resources</div><div class="card-desc">Central library of all research sources, readings, and references used in the OL Prototypes design process. Search by topic, type,...</div><div class="card-meta"><span class="tag tag-teal">/resources</span></div></a>
-    <a href="skill-ui-ux.html" class="card" style="text-decoration:none;color:inherit;display:block"><div class="card-title">ui-ux</div><div class="card-desc">Review or apply UI/UX design principles to a game screen, component, or interaction. Covers general design principles plus literac...</div><div class="card-meta"><span class="tag tag-teal">/ui-ux</span></div></a></div>
-</div>
-
-<!-- Resources -->
-<div class="section"><div class="section-title">Research Sources (6)</div><div class="table-wrap"><table><tr><th>ID</th><th>Title</th><th>Authors</th><th>Type</th><th>Topics</th></tr><tr><td>R-001</td><td>Handbook of Game-Based Learning</td><td>Jan L. Plass, Richard E. Mayer, Bruce D. Homer |</td><td><span class="tag">Academic textbook |</span></td><td>Cognitive load, feedback design, motivation (SDT),...</td></tr>
-      <tr><td>R-002</td><td>Actionable Gamification — Beyond Points, Badges, and Leaderboards</td><td>Yu-kai Chou |</td><td><span class="tag">Practitioner book |</span></td><td>8 Core Drives of motivation, White Hat vs Black Ha...</td></tr>
-      <tr><td>R-003</td><td>MDA — A Formal Approach to Game Design and Game Research</td><td>Robin Hunicke, Marc LeBlanc, Robert Zubek |</td><td><span class="tag">Academic paper |</span></td><td>Game design decomposition, mechanics vs dynamics v...</td></tr>
-      <tr><td>R-004</td><td>Otherwise Labs Check-in — Explicit &amp; Systematic Instruction</td><td>Tyler Ogata, Abigail Garewal, Robert Borges |</td><td><span class="tag">Meeting notes |</span></td><td>Explicit instruction, systematic teaching, 80/20 r...</td></tr>
-      <tr><td>R-005</td><td>WRS Lesson Plan Poster</td><td>Wilson Reading System |</td><td><span class="tag">Reference poster / infographic |</span></td><td>Lesson plan structure, 10-step lesson sequence, re...</td></tr>
-      <tr><td>?</td><td></td><td>|</td><td><span class="tag">[Academic paper / Textbook / Practitioner book / Article / Video / Talk] |</span></td><td>[Comma-separated keywords] |</td></tr></table></div></div>
-
-<!-- Decisions -->
-<div class="section"><div class="section-title">Decision Log (7)</div><div class="table-wrap"><table><tr><th>ID</th><th>Decision</th><th>Domain</th><th>Date</th><th>Status</th></tr><tr><td>DEC-001</td><td>Garden overworld as hub</td><td>Overworld</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
-      <tr><td>DEC-002</td><td>Plants pause but never die</td><td>Overworld</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
-      <tr><td>DEC-003</td><td>Learn &amp; Practice two-phase game structure</td><td>Mini-games</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
-      <tr><td>DEC-004</td><td>3-tier hint escalation replaces lives</td><td>Mini-games</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
-      <tr><td>DEC-005</td><td>Cozy pixel-to-illustrated aesthetic (Stardew Valley / PvZ)</td><td>Brand</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
-      <tr><td>DEC-006</td><td>Seeds + Sunshine dual currency</td><td>Overworld</td><td>2026-04-15</td><td><span class="status status-done">Active</span></td></tr>
-      <tr><td>DEC-007</td><td>One literacy skill per game</td><td>Curriculum</td><td>2026-04-13</td><td><span class="status status-done">Active</span></td></tr></table></div></div>
-
-<!-- Roadmap -->
-<div class="section">
-  <div class="section-title">Project Roadmap</div>
-  <div style="font-size:12px;color:#888;margin-bottom:14px;display:flex;gap:12px;flex-wrap:wrap">
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#9bc1bc;display:inline-block"></span> Complete</span>
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#ed6a5a;display:inline-block"></span> In Progress</span>
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#e4e0da;display:inline-block"></span> Upcoming</span>
-    <span style="font-size:10px;color:#aaa">Click to expand</span>
-  </div>
-  <div class="roadmap">
-
-    <div class="rm-stage done" onclick="this.classList.toggle('open')">
-      <div class="rm-dot"></div>
-      <div class="rm-header"><span class="rm-badge rm-badge-done">Complete</span><span class="rm-title">Stage 0 — Vision &amp; Strategy</span></div>
-      <div class="rm-body"><div class="rm-content">
-        <ul class="rm-items">
-          <li class="done">Product vision document</li>
-          <li class="done">Target audience defined</li>
-          <li class="done">Curriculum backbone mapped (CSV)</li>
-          <li class="done">Platform: browser-first, mobile touch</li>
-          <li class="done">Design principles established</li>
-        </ul>
-      </div></div>
-    </div>
-
-    <div class="rm-stage done" onclick="this.classList.toggle('open')">
-      <div class="rm-dot"></div>
-      <div class="rm-header"><span class="rm-badge rm-badge-done">Complete</span><span class="rm-title">Stage 1 — Discover (Research)</span></div>
-      <div class="rm-body"><div class="rm-content">
-        <ul class="rm-items">
-          <li class="done">Handbook of Game-Based Learning (R-001)</li>
-          <li class="done">Actionable Gamification / Octalysis (R-002)</li>
-          <li class="done">MDA Framework (R-003)</li>
-          <li class="done">Meeting: Explicit &amp; Systematic Instruction (R-004)</li>
-          <li class="done">WRS Lesson Plan Structure (R-005)</li>
-          <li>Interview OG tutors</li>
-          <li>Interview parents/caregivers</li>
-          <li>Observe live tutoring sessions</li>
-        </ul>
-      </div></div>
-    </div>
-
-    <div class="rm-stage done" onclick="this.classList.toggle('open')">
-      <div class="rm-dot"></div>
-      <div class="rm-header"><span class="rm-badge rm-badge-done">Complete</span><span class="rm-title">Stage 2 — Define (Frameworks)</span></div>
-      <div class="rm-body"><div class="rm-content">
-        <ul class="rm-items">
-          <li class="done">10 design skills created</li>
-          <li class="done">7 key decisions logged</li>
-          <li class="done">80/20 instruction ratio established</li>
-          <li class="done">3-stage lesson structure (Tutorial → Guided → Sprint)</li>
-          <li class="done">Hint escalation replacing lives</li>
-          <li>User personas (Learner, Tutor, Parent)</li>
-        </ul>
-      </div></div>
-    </div>
-
-    <div class="rm-stage active open" onclick="this.classList.toggle('open')">
-      <div class="rm-dot"></div>
-      <div class="rm-header"><span class="rm-badge rm-badge-active">In Progress</span><span class="rm-title">Stage 3 — Develop (Build &amp; Test)</span></div>
-      <div class="rm-body"><div class="rm-content">
-        <ul class="rm-items">
-          <li class="done">11 mini-game prototypes built</li>
-          <li class="done">Full lesson prototype (Locked Door)</li>
-          <li class="done">Interactive storyboard created</li>
-          <li class="done">Audio assets (ElevenLabs phonemes + words)</li>
-          <li>Print Concepts game</li>
-          <li>Encoding game</li>
-          <li>Phoneme blending game</li>
-          <li>Playtest with target users</li>
-          <li>Font readability audit</li>
-        </ul>
-      </div></div>
-    </div>
-
-    <div class="rm-stage future" onclick="this.classList.toggle('open')">
-      <div class="rm-dot"></div>
-      <div class="rm-header"><span class="rm-badge rm-badge-future">Upcoming</span><span class="rm-title">Stage 4 — Deliver (Polish &amp; Ship)</span></div>
-      <div class="rm-body"><div class="rm-content">
-        <ul class="rm-items">
-          <li>Full session playtest (3+ games in sequence)</li>
-          <li>Curriculum alignment sign-off</li>
-          <li>Accessibility audit</li>
-          <li>Device testing</li>
-          <li>Analytics instrumentation</li>
-        </ul>
-      </div></div>
-    </div>
-
-  </div>
-</div>
 
 </main>
-<footer>OL Project HQ · Auto-generated</footer>
+
+<footer>OL Project HQ · Updated May 2026</footer>
 
 <script>
-function toggleProfile(id){
-  const el=document.getElementById(id);
-  const isOpen=el.classList.contains('open');
-  // Close all profiles first
-  document.querySelectorAll('.profile').forEach(p=>p.classList.remove('open'));
-  // Open this one if it wasn't already open
-  if(!isOpen) el.classList.add('open');
+/* Profile accordion */
+function toggleProfile(id) {
+  const el = document.getElementById(id);
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.profile').forEach(p => p.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
 }
+
+/* Roadmap accordion */
+function toggleRM(stage) {
+  stage.classList.toggle('open');
+}
+
+/* Game card link → open button */
+document.querySelectorAll('.game-link-input').forEach(input => {
+  const btn = input.nextElementSibling;
+
+  function syncBtn() {
+    const val = input.value.trim();
+    if (val) {
+      btn.classList.remove('disabled');
+      btn.href = val;
+      btn.target = '_blank';
+      btn.rel = 'noopener';
+      btn.onclick = null;
+    } else {
+      btn.classList.add('disabled');
+      btn.href = '#';
+      btn.onclick = (e) => e.preventDefault();
+    }
+  }
+
+  syncBtn(); // activate on load if pre-filled
+  input.addEventListener('input', syncBtn);
+  input.addEventListener('paste', () => setTimeout(syncBtn, 0));
+});
+
+// openLink replaced by native <a> tags
+
+/* ── MEMBER PROTOTYPE ADD ──────────────────────────────────── */
+function addMemberProto(profileId, nameInputId, urlInputId) {
+  const nameEl = document.getElementById(nameInputId);
+  const urlEl  = document.getElementById(urlInputId);
+  const name = nameEl.value.trim();
+  const url  = urlEl.value.trim();
+  if (!name) { nameEl.focus(); return; }
+
+  const member = profileId.replace('profile-', '');
+  const tbody  = document.getElementById(member + '-tbody');
+  const table  = document.getElementById(member + '-table');
+  const empty  = document.getElementById(member + '-empty');
+  const count  = document.getElementById(member + '-count');
+
+  if (!tbody) return; // Abby uses a static table; skip dynamic for her
+
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><strong>${escapeHtml(name)}</strong></td>
+    <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+      ${url ? `<a href="${escapeHtml(url)}" target="_blank" style="color:var(--coral);font-family:'DM Mono',monospace;font-size:11px">${escapeHtml(url)}</a>` : '<span style="color:#ccc;font-style:italic">No URL</span>'}
+    </td>
+    <td>
+      ${url ? `<button class="game-open-btn" style="padding:5px 10px;font-size:10px" onclick="window.open('${escapeHtml(url)}','_blank')">Open ↗</button>` : ''}
+      <button class="note-btn" style="padding:5px 10px;font-size:10px;margin-left:4px" onclick="this.closest('tr').remove(); updateMemberCount('${member}')"></button>
+    </td>`;
+  tbody.appendChild(tr);
+
+  if (empty) empty.style.display = 'none';
+  if (table) table.style.display = '';
+  updateMemberCount(member);
+
+  nameEl.value = '';
+  urlEl.value  = '';
+  nameEl.focus();
+}
+
+function updateMemberCount(member) {
+  const tbody = document.getElementById(member + '-tbody');
+  const count = document.getElementById(member + '-count');
+  const empty = document.getElementById(member + '-empty');
+  const table = document.getElementById(member + '-table');
+  if (!tbody || !count) return;
+  const rows = tbody.querySelectorAll('tr').length;
+  count.textContent = rows > 0 ? rows + (rows === 1 ? ' prototype' : ' prototypes') : '';
+  if (empty) empty.style.display = rows === 0 ? '' : 'none';
+  if (table) table.style.display = rows === 0 ? 'none' : '';
+}
+
+/* Doc card inputs */
+document.querySelectorAll('.doc-link-input').forEach(input => {
+  const btn = input.nextElementSibling;
+  function syncDoc() {
+    const val = input.value.trim();
+    if (val) { btn.classList.remove('disabled'); btn.href = val; btn.target = '_blank'; btn.rel = 'noopener'; btn.onclick = null; }
+    else     { btn.classList.add('disabled'); btn.href = '#'; btn.onclick = (e) => e.preventDefault(); }
+  }
+  input.addEventListener('input', syncDoc);
+  input.addEventListener('paste', () => setTimeout(syncDoc, 0));
+});
+
+/* ── MEETING NOTES ─────────────────────────────────────── */
+const notesData = []; // { id, title, dateLabel, dateYear, fileName, content }
+
+const dropZone   = document.getElementById('notes-drop-zone');
+const fileInput  = document.getElementById('notes-file-input');
+const timeline   = document.getElementById('notes-timeline');
+const emptyMsg   = document.getElementById('notes-empty');
+const notesCount = document.getElementById('notes-count');
+
+/* Drag-and-drop */
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over') });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  handleFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+function handleFiles(files) {
+  Array.from(files).forEach(file => {
+    const id = 'note-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+    const dateObj = new Date(file.lastModified);
+    const dateLabel = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const dateYear  = dateObj.getFullYear();
+    const sortKey   = dateObj.getTime();
+
+    const entry = { id, title: file.name.replace(/\.[^.]+$/, ''), dateLabel, dateYear, sortKey, fileName: file.name, content: null };
+
+    // Read text files for preview
+    if (file.type === 'text/plain' || file.name.endsWith('.md')) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        entry.content = e.target.result;
+        renderTimeline();
+      };
+      reader.readAsText(file);
+    } else {
+      renderTimeline();
+    }
+
+    notesData.push(entry);
+    notesData.sort((a, b) => b.sortKey - a.sortKey); // newest first
+    renderTimeline();
+  });
+  fileInput.value = '';
+}
+
+function renderTimeline() {
+  // Remove existing note entries (keep empty msg)
+  timeline.querySelectorAll('.note-entry').forEach(el => el.remove());
+
+  if (notesData.length === 0) {
+    emptyMsg.style.display = '';
+    notesCount.textContent = '0 entries';
+    return;
+  }
+
+  emptyMsg.style.display = 'none';
+  notesCount.textContent = notesData.length + (notesData.length === 1 ? ' entry' : ' entries');
+
+  notesData.forEach(note => {
+    const entry = document.createElement('div');
+    entry.className = 'note-entry';
+    entry.innerHTML = `
+      <div class="note-date-col">
+        <div class="note-date-label">${note.dateLabel}</div>
+        <span class="note-date-year">${note.dateYear}</span>
+      </div>
+      <div class="note-dot-col"><div class="note-dot"></div></div>
+      <div class="note-card-col">
+        <div class="note-card" id="${note.id}">
+          <div class="note-card-header" onclick="toggleNote('${note.id}')">
+            <div class="note-card-title" id="${note.id}-title">${escapeHtml(note.title)}</div>
+            <div class="note-card-right">
+              <span class="note-file-name">${escapeHtml(note.fileName)}</span>
+              <span class="note-chevron">▾</span>
+            </div>
+          </div>
+          <div class="note-card-body">
+            <div class="note-card-content">
+              ${note.content != null
+                ? `<div class="note-file-preview">${escapeHtml(note.content)}</div>`
+                : `<div class="note-file-preview" style="color:var(--ink-soft);font-style:italic">Preview not available for this file type.</div>`}
+              <div class="note-file-actions">
+                <button class="note-btn" onclick="renameNote('${note.id}')">Rename</button>
+                <button class="note-btn" onclick="deleteNote('${note.id}')">Remove</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    timeline.appendChild(entry);
+  });
+}
+
+function toggleNote(id) {
+  const card = document.getElementById(id);
+  card.classList.toggle('open');
+}
+
+function renameNote(id) {
+  const note = notesData.find(n => n.id === id);
+  if (!note) return;
+  const newTitle = prompt('Rename this note:', note.title);
+  if (newTitle && newTitle.trim()) {
+    note.title = newTitle.trim();
+    renderTimeline();
+    // Re-open the card
+    const card = document.getElementById(id);
+    if (card) card.classList.add('open');
+  }
+}
+
+function deleteNote(id) {
+  if (!confirm('Remove this meeting note?')) return;
+  const idx = notesData.findIndex(n => n.id === id);
+  if (idx > -1) notesData.splice(idx, 1);
+  renderTimeline();
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+
+const sections = document.querySelectorAll('.section[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-40% 0px -55% 0px' });
+
+sections.forEach(s => observer.observe(s));
 </script>
 </body>
 </html>

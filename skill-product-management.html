@@ -4,41 +4,62 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>product-management — OL Design Skills</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#faf9f5;font-family:'Inter',sans-serif;color:#2a2a2a;min-height:100vh}
-header{background:#ed6a5a;padding:32px 24px 28px;text-align:center}
-header h1{font-family:'Lora',serif;font-size:clamp(22px,4vw,32px);color:#fff;font-weight:700;margin-bottom:6px}
-header p{font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0 auto;line-height:1.6;font-family:'Lora',serif}
-.back{display:inline-block;margin:20px 24px;font-size:13px;color:#ed6a5a;text-decoration:none;font-weight:600}
+:root {
+  --coral:#d95f4b;--coral-dk:#b84a38;--coral-lt:#faeae7;
+  --teal:#2d7d74;--teal-lt:#e3f4f2;
+  --cream:#f6f6f7;--ink:#111318;--ink-mid:#3c3f4a;--ink-soft:#7b7f8e;
+  --border:#e2e4e9;--white:#ffffff;
+  --r:10px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);font-family:'Inter',sans-serif;color:var(--ink);min-height:100vh}
+header{position:relative;background:var(--ink);overflow:hidden;padding:48px 24px 40px;text-align:center}
+header::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 20% 50%,rgba(237,106,90,.22) 0%,transparent 70%),
+  radial-gradient(ellipse 50% 70% at 80% 30%,rgba(74,158,151,.18) 0%,transparent 65%);pointer-events:none}
+header::after{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.header-inner{position:relative;z-index:1;max-width:640px;margin:0 auto}
+header h1{font-family:'Inter',sans-serif;font-size:clamp(24px,5vw,36px);font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:10px}
+header p{font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;max-width:520px;margin:0 auto}
+.back{display:inline-flex;align-items:center;gap:6px;margin:20px 24px;font-size:13px;color:var(--coral);text-decoration:none;font-weight:600}
 .back:hover{text-decoration:underline}
 main{max-width:800px;margin:0 auto;padding:0 20px 60px}
-h2{font-family:'Lora',serif;font-size:22px;font-weight:700;color:#3a3a3a;margin:32px 0 12px;padding-bottom:8px;border-bottom:3px solid #ed6a5a}
-h3{font-family:'Lora',serif;font-size:17px;font-weight:700;color:#3a3a3a;margin:24px 0 8px}
-h4{font-family:'Lora',serif;font-size:14px;font-weight:700;color:#5a5a5a;margin:18px 0 6px}
-p{font-size:13px;color:#4a4a4a;line-height:1.7;margin-bottom:10px}
-ul{margin:8px 0 14px 20px;font-size:13px;color:#4a4a4a;line-height:1.7}
+h2{font-family:'Inter',sans-serif;font-size:20px;font-weight:700;color:var(--ink);margin:36px 0 14px;padding-bottom:10px;border-bottom:2px solid var(--coral);letter-spacing:-0.3px}
+h3{font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:var(--ink);margin:28px 0 10px;letter-spacing:-0.2px}
+h4{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--ink-mid);margin:20px 0 6px}
+p{font-size:13px;color:var(--ink-mid);line-height:1.7;margin-bottom:10px}
+ul{margin:8px 0 14px 20px;font-size:13px;color:var(--ink-mid);line-height:1.7}
 li{margin-bottom:4px}
-strong{color:#3a3a3a}
-em{color:#7a7040;font-style:normal;background:rgba(244,241,187,0.5);padding:1px 4px;border-radius:3px}
-code.inline{background:#f0ede8;padding:2px 6px;border-radius:4px;font-size:12px;color:#c04a3a}
-pre{background:#2a2a2a;color:#e0ddd8;padding:18px;border-radius:10px;overflow-x:auto;font-size:12px;line-height:1.6;margin:12px 0 16px}
-pre code{background:none;padding:0;color:inherit;font-size:inherit}
-hr{border:none;border-top:2px solid #eae8e2;margin:28px 0}
-.table-wrap{overflow-x:auto;margin:12px 0 16px}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th{text-align:left;padding:10px 12px;background:#ed6a5a;color:#fff;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-family:'Lora',serif}
-td{padding:10px 12px;border-bottom:1px solid #eae8e2;color:#3a3a3a}
-tr:hover td{background:#faf8f2}
-.tag{display:inline-block;background:rgba(155,193,188,0.25);color:#4a6a66;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;margin-top:8px}
-footer{text-align:center;padding:28px;font-size:11px;color:#bbb;font-family:'Lora',serif}
+strong{color:var(--ink)}
+em{color:var(--teal);font-style:normal;background:var(--teal-lt);padding:1px 5px;border-radius:4px}
+code.inline{font-family:'DM Mono',monospace;background:var(--cream);padding:2px 6px;border-radius:4px;font-size:11px;color:var(--coral)}
+pre{background:var(--ink);color:rgba(255,255,255,.75);padding:18px;border-radius:var(--r);overflow-x:auto;font-family:'DM Mono',monospace;font-size:12px;line-height:1.6;margin:12px 0 16px;border:1.5px solid rgba(255,255,255,.08)}
+pre code{background:none;padding:0;color:inherit;font-size:inherit;font-family:inherit}
+hr{border:none;border-top:1.5px solid var(--border);margin:32px 0}
+.table-wrap{overflow-x:auto;margin:12px 0 16px;border-radius:var(--r);border:1.5px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;padding:11px 14px;background:var(--ink);color:rgba(255,255,255,.7);
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500}
+td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--ink-mid)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--cream)}
+.tag{display:inline-block;background:var(--teal-lt);color:var(--teal);padding:4px 12px;border-radius:20px;
+  font-family:'DM Mono',monospace;font-size:10px;font-weight:500;margin:12px 0 4px}
+footer{background:var(--ink);text-align:center;padding:28px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;color:rgba(255,255,255,.2)}
+@media(max-width:600px){header h1{letter-spacing:-.5px}}
 </style>
 </head>
 <body>
 <header>
-  <h1>product-management</h1>
-  <p>Manage the end-to-end design process for OL Prototypes. Covers design stages (Double Diamond), decision logging, user research, prototyping, branding, backlog management, and playtesting methodology. </p>
+  <div class="header-inner">
+    <h1>product-management</h1>
+    <p>Manage the end-to-end design process for OL Prototypes. Covers design stages (Double Diamond), decision logging, user research, prototyping, branding, backlog management, and playtesting methodology. </p>
+  </div>
 </header>
 <a class="back" href="index.html">← Back to Project HQ</a>
 <main>
