@@ -2129,92 +2129,143 @@ try {
   db = firebase.firestore();
 } catch(e) { console.error('Firebase init failed:', e); }
 
-/* ── LOAD FROM FIRESTORE ─────────────────────────────────── */
-function loadFromFirestore() {
-  if (!db) return;
-  // Load game card data (status, mechanics, notes)
-  db.collection('games').get().then(snapshot => {
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const card = document.querySelector(`.game-card[data-id="${doc.id}"]`);
-      if (!card) return;
+/* ── STORAGE LAYER (localStorage + Firestore) ──────────── */
+const STORE_KEY = 'ol-hq-data';
 
-      // Status badge
+function loadStore() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) { return {}; }
+}
+function saveStore(store) {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch(e) {}
+}
+function saveGame(id, fields) {
+  const store = loadStore();
+  store.games = store.games || {};
+  store.games[id] = Object.assign(store.games[id] || {}, fields);
+  saveStore(store);
+  if (db) db.collection('games').doc(id).set(fields, {merge:true}).catch(()=>{});
+}
+function saveActionItem(id, done) {
+  const store = loadStore();
+  store.actions = store.actions || {};
+  store.actions[id] = {done};
+  saveStore(store);
+  if (db) db.collection('action-items').doc(id).set({done}, {merge:true}).catch(()=>{});
+}
+
+/* ── LOAD DATA ─────────────────────────────────────────── */
+function loadData() {
+  const store = loadStore();
+
+  // Load game card data
+  if (store.games) {
+    Object.keys(store.games).forEach(id => {
+      const data = store.games[id];
+      const card = document.querySelector(`.game-card[data-id="${id}"]`);
+      if (!card) return;
       if (data.status && data.statusText) {
         const badge = card.querySelector('.game-status-badge');
-        if (badge) {
-          badge.className = 'game-status-badge ' + data.status;
-          badge.textContent = data.statusText;
-        }
+        if (badge) { badge.className = 'game-status-badge ' + data.status; badge.textContent = data.statusText; }
       }
-
-      // Mechanics
       if (data.mechanics) {
         const mechEl = card.querySelector('[contenteditable]');
-        if (mechEl) {
-          mechEl.textContent = data.mechanics;
-          mechEl.classList.remove('game-mechanics-placeholder');
-          mechEl.classList.add('game-mechanics');
-        }
+        if (mechEl) { mechEl.textContent = data.mechanics; mechEl.classList.remove('game-mechanics-placeholder'); mechEl.classList.add('game-mechanics'); }
       }
-
-      // Notes
       if (data.notes != null) {
         const notesEl = card.querySelector('.game-notes');
         if (notesEl) notesEl.value = data.notes;
       }
     });
-  }).catch(err => console.warn('Firestore load games error:', err));
+  }
 
-  // Load action item done states
-  db.collection('action-items').get().then(snapshot => {
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const item = actionItems.find(a => a.id === doc.id);
-      if (item && data.done !== undefined) {
-        item.done = data.done;
-      }
+  // Load action item states
+  if (store.actions) {
+    Object.keys(store.actions).forEach(id => {
+      const item = actionItems.find(a => a.id === id);
+      if (item) item.done = store.actions[id].done;
     });
-    renderActions();
-  }).catch(err => console.warn('Firestore load action-items error:', err));
+  }
 
-  // Load member prototypes
-  db.collection('member-protos').get().then(snapshot => {
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      if (!data.member || !data.name) return;
-      const member = data.member;
-      const tbody = document.getElementById(member + '-tbody');
-      const table = document.getElementById(member + '-table');
-      const empty = document.getElementById(member + '-empty');
-      if (!tbody) return;
-
-      const tr = document.createElement('tr');
-      tr.setAttribute('data-proto-id', doc.id);
-      tr.innerHTML = `
-        <td><strong>${escapeHtml(data.name)}</strong></td>
-        <td><span style="font-size:11px;color:var(--ink-soft)">${escapeHtml(data.type || '—')}</span></td>
-        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-          ${data.url ? `<a href="${escapeHtml(data.url)}" target="_blank" style="color:var(--coral);font-family:'DM Mono',monospace;font-size:11px">${escapeHtml(data.url)}</a>` : '<span style="color:#ccc;font-style:italic">No URL</span>'}
-        </td>
-        <td style="white-space:nowrap">
-          ${data.url ? `<a class="game-open-btn" href="${escapeHtml(data.url)}" target="_blank" rel="noopener" style="padding:5px 10px;font-size:10px">Open ↗</a>` : ''}
-          <button class="note-btn" style="padding:5px 10px;font-size:10px;margin-left:4px" onclick="removeMemberProto('${member}', '${doc.id}', this)">Remove</button>
-        </td>`;
-      tbody.appendChild(tr);
-
-      if (empty) empty.style.display = 'none';
-      if (table) table.style.display = '';
-      updateMemberCount(member);
+  // Load member protos
+  if (store.memberProtos) {
+    store.memberProtos.forEach(p => {
+      renderMemberProtoRow(p.member, p.name, p.type, p.url, p.id);
     });
-  }).catch(err => console.warn('Firestore load member-protos error:', err));
+  }
+
+  // Also try Firestore (will overwrite localStorage data if available)
+  if (db) {
+    db.collection('games').get().then(snapshot => {
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const card = document.querySelector(`.game-card[data-id="${doc.id}"]`);
+        if (!card) return;
+        if (data.status && data.statusText) {
+          const badge = card.querySelector('.game-status-badge');
+          if (badge) { badge.className = 'game-status-badge ' + data.status; badge.textContent = data.statusText; }
+        }
+        if (data.mechanics) {
+          const mechEl = card.querySelector('[contenteditable]');
+          if (mechEl) { mechEl.textContent = data.mechanics; mechEl.classList.remove('game-mechanics-placeholder'); mechEl.classList.add('game-mechanics'); }
+        }
+        if (data.notes != null) {
+          const notesEl = card.querySelector('.game-notes');
+          if (notesEl) notesEl.value = data.notes;
+        }
+        // Sync to localStorage
+        const store2 = loadStore();
+        store2.games = store2.games || {};
+        store2.games[doc.id] = data;
+        saveStore(store2);
+      });
+    }).catch(()=>{});
+
+    db.collection('action-items').get().then(snapshot => {
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const item = actionItems.find(a => a.id === doc.id);
+        if (item && data.done !== undefined) item.done = data.done;
+      });
+      renderActions();
+    }).catch(()=>{});
+  }
+
+  renderActions();
+}
+
+function renderMemberProtoRow(member, name, type, url, protoId) {
+  const tbody = document.getElementById(member + '-tbody');
+  const table = document.getElementById(member + '-table');
+  const empty = document.getElementById(member + '-empty');
+  if (!tbody) return;
+  const tr = document.createElement('tr');
+  tr.setAttribute('data-proto-id', protoId);
+  tr.innerHTML = `
+    <td><strong>${escapeHtml(name)}</strong></td>
+    <td><span style="font-size:11px;color:var(--ink-soft)">${escapeHtml(type || '—')}</span></td>
+    <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+      ${url ? `<a href="${escapeHtml(url)}" target="_blank" style="color:var(--coral);font-family:'DM Mono',monospace;font-size:11px">${escapeHtml(url)}</a>` : '<span style="color:#ccc;font-style:italic">No URL</span>'}
+    </td>
+    <td style="white-space:nowrap">
+      ${url ? `<a class="game-open-btn" href="${escapeHtml(url)}" target="_blank" rel="noopener" style="padding:5px 10px;font-size:10px">Open ↗</a>` : ''}
+      <button class="note-btn" style="padding:5px 10px;font-size:10px;margin-left:4px" onclick="removeMemberProto('${member}', '${protoId}', this)">Remove</button>
+    </td>`;
+  tbody.appendChild(tr);
+  if (empty) empty.style.display = 'none';
+  if (table) table.style.display = '';
+  updateMemberCount(member);
 }
 
 function removeMemberProto(member, docId, btn) {
   btn.closest('tr').remove();
   updateMemberCount(member);
-  if (db) db.collection('member-protos').doc(docId).delete()
-    .catch(err => console.warn('Firestore delete error:', err));
+  // Remove from localStorage
+  const store = loadStore();
+  if (store.memberProtos) {
+    store.memberProtos = store.memberProtos.filter(p => p.id !== docId);
+    saveStore(store);
+  }
+  if (db) db.collection('member-protos').doc(docId).delete().catch(()=>{});
 }
 
 /* Mechanics editable placeholders */
@@ -2256,14 +2307,8 @@ document.querySelectorAll('.game-status-badge').forEach(badge => {
       this.textContent = 'In Progress';
       newStatus = 'status-wip'; newText = 'In Progress';
     }
-    // Save to Firestore
     const card = this.closest('.game-card[data-id]');
-    if (card && db) {
-      db.collection('games').doc(card.dataset.id).set(
-        { status: newStatus, statusText: newText },
-        { merge: true }
-      ).catch(err => console.warn('Firestore save error:', err));
-    }
+    if (card) saveGame(card.dataset.id, {status: newStatus, statusText: newText});
   });
 });
 
@@ -2283,31 +2328,16 @@ document.querySelectorAll('.game-card[data-id]').forEach(card => {
     mechEl.addEventListener('blur', function() {
       const placeholder = this.getAttribute('data-placeholder');
       const text = this.textContent.trim();
-      if (text && text !== placeholder && db) {
-        db.collection('games').doc(id).set(
-          { mechanics: text },
-          { merge: true }
-        ).catch(err => console.warn('Firestore save error:', err));
+      if (text && text !== placeholder) {
+        saveGame(id, {mechanics: text});
       }
     });
   }
 
   if (notesEl) {
-    const saveNotes = debounce(function() {
-      if (!db) return;
-      db.collection('games').doc(id).set(
-        { notes: notesEl.value },
-        { merge: true }
-      ).catch(err => console.warn('Firestore save error:', err));
-    }, 800);
+    const saveNotes = debounce(function() { saveGame(id, {notes: notesEl.value}); }, 800);
     notesEl.addEventListener('input', saveNotes);
-    notesEl.addEventListener('blur', function() {
-      if (!db) return;
-      db.collection('games').doc(id).set(
-        { notes: notesEl.value },
-        { merge: true }
-      ).catch(err => console.warn('Firestore save error:', err));
-    });
+    notesEl.addEventListener('blur', function() { saveGame(id, {notes: notesEl.value}); });
   }
 });
 
@@ -2381,23 +2411,23 @@ function addMemberProto(profileId, nameInputId, typeSelectId, urlInputId) {
   if (table) table.style.display = '';
   updateMemberCount(member);
 
-  // Save to Firestore
+  // Save to localStorage + Firestore
   const protoId = 'proto-' + Date.now() + '-' + Math.random().toString(36).slice(2);
   tr.setAttribute('data-proto-id', protoId);
-  if (db) {
-    db.collection('member-protos').doc(protoId).set({
-      member: member, name: name, type: type, url: url
-    }).catch(err => console.warn('Firestore save error:', err));
-  }
+  const store = loadStore();
+  store.memberProtos = store.memberProtos || [];
+  store.memberProtos.push({id: protoId, member, name, type, url});
+  saveStore(store);
+  if (db) db.collection('member-protos').doc(protoId).set({member, name, type, url}).catch(()=>{});
 
-  // Update remove button to use Firestore-aware version
   const removeBtn = tr.querySelector('button');
   if (removeBtn) {
     removeBtn.onclick = function() {
       this.closest('tr').remove();
       updateMemberCount(member);
-      if (db) db.collection('member-protos').doc(protoId).delete()
-        .catch(err => console.warn('Firestore delete error:', err));
+      const s = loadStore();
+      if (s.memberProtos) { s.memberProtos = s.memberProtos.filter(p => p.id !== protoId); saveStore(s); }
+      if (db) db.collection('member-protos').doc(protoId).delete().catch(()=>{});
     };
   }
 
@@ -2469,10 +2499,7 @@ function toggleActionDone(id) {
   if (item) {
     item.done = !item.done;
     renderActions();
-    if (db) db.collection('action-items').doc(id).set(
-      { done: item.done },
-      { merge: true }
-    ).catch(err => console.warn('Firestore save error:', err));
+    saveActionItem(id, item.done);
   }
 }
 
@@ -2698,7 +2725,7 @@ const observer = new IntersectionObserver(entries => {
 sections.forEach(s => observer.observe(s));
 
 renderActions();
-loadFromFirestore();
+loadData();
 </script>
 </body>
 </html>
