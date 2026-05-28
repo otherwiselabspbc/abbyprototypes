@@ -2116,18 +2116,22 @@ footer {
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 // Firebase
-firebase.initializeApp({
-  apiKey: "AIzaSyDwSpbAxXzlnvPkDt0YwbqBOe88qOoa7Fs",
-  authDomain: "ol-project-hq.firebaseapp.com",
-  projectId: "ol-project-hq",
-  storageBucket: "ol-project-hq.firebasestorage.app",
-  messagingSenderId: "114993145834",
-  appId: "1:114993145834:web:4d9db4bfc0cf27c2293493"
-});
-const db = firebase.firestore();
+let db = null;
+try {
+  firebase.initializeApp({
+    apiKey: "AIzaSyDwSpbAxXzlnvPkDt0YwbqBOe88qOoa7Fs",
+    authDomain: "ol-project-hq.firebaseapp.com",
+    projectId: "ol-project-hq",
+    storageBucket: "ol-project-hq.firebasestorage.app",
+    messagingSenderId: "114993145834",
+    appId: "1:114993145834:web:4d9db4bfc0cf27c2293493"
+  });
+  db = firebase.firestore();
+} catch(e) { console.error('Firebase init failed:', e); }
 
 /* ── LOAD FROM FIRESTORE ─────────────────────────────────── */
 function loadFromFirestore() {
+  if (!db) return;
   // Load game card data (status, mechanics, notes)
   db.collection('games').get().then(snapshot => {
     snapshot.forEach(doc => {
@@ -2209,7 +2213,7 @@ function loadFromFirestore() {
 function removeMemberProto(member, docId, btn) {
   btn.closest('tr').remove();
   updateMemberCount(member);
-  db.collection('member-protos').doc(docId).delete()
+  if (db) db.collection('member-protos').doc(docId).delete()
     .catch(err => console.warn('Firestore delete error:', err));
 }
 
@@ -2254,7 +2258,7 @@ document.querySelectorAll('.game-status-badge').forEach(badge => {
     }
     // Save to Firestore
     const card = this.closest('.game-card[data-id]');
-    if (card) {
+    if (card && db) {
       db.collection('games').doc(card.dataset.id).set(
         { status: newStatus, statusText: newText },
         { merge: true }
@@ -2279,7 +2283,7 @@ document.querySelectorAll('.game-card[data-id]').forEach(card => {
     mechEl.addEventListener('blur', function() {
       const placeholder = this.getAttribute('data-placeholder');
       const text = this.textContent.trim();
-      if (text && text !== placeholder) {
+      if (text && text !== placeholder && db) {
         db.collection('games').doc(id).set(
           { mechanics: text },
           { merge: true }
@@ -2290,6 +2294,7 @@ document.querySelectorAll('.game-card[data-id]').forEach(card => {
 
   if (notesEl) {
     const saveNotes = debounce(function() {
+      if (!db) return;
       db.collection('games').doc(id).set(
         { notes: notesEl.value },
         { merge: true }
@@ -2297,6 +2302,7 @@ document.querySelectorAll('.game-card[data-id]').forEach(card => {
     }, 800);
     notesEl.addEventListener('input', saveNotes);
     notesEl.addEventListener('blur', function() {
+      if (!db) return;
       db.collection('games').doc(id).set(
         { notes: notesEl.value },
         { merge: true }
@@ -2378,12 +2384,11 @@ function addMemberProto(profileId, nameInputId, typeSelectId, urlInputId) {
   // Save to Firestore
   const protoId = 'proto-' + Date.now() + '-' + Math.random().toString(36).slice(2);
   tr.setAttribute('data-proto-id', protoId);
-  db.collection('member-protos').doc(protoId).set({
-    member: member,
-    name: name,
-    type: type,
-    url: url
-  }).catch(err => console.warn('Firestore save error:', err));
+  if (db) {
+    db.collection('member-protos').doc(protoId).set({
+      member: member, name: name, type: type, url: url
+    }).catch(err => console.warn('Firestore save error:', err));
+  }
 
   // Update remove button to use Firestore-aware version
   const removeBtn = tr.querySelector('button');
@@ -2391,7 +2396,7 @@ function addMemberProto(profileId, nameInputId, typeSelectId, urlInputId) {
     removeBtn.onclick = function() {
       this.closest('tr').remove();
       updateMemberCount(member);
-      db.collection('member-protos').doc(protoId).delete()
+      if (db) db.collection('member-protos').doc(protoId).delete()
         .catch(err => console.warn('Firestore delete error:', err));
     };
   }
@@ -2464,7 +2469,7 @@ function toggleActionDone(id) {
   if (item) {
     item.done = !item.done;
     renderActions();
-    db.collection('action-items').doc(id).set(
+    if (db) db.collection('action-items').doc(id).set(
       { done: item.done },
       { merge: true }
     ).catch(err => console.warn('Firestore save error:', err));
