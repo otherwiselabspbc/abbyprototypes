@@ -1730,7 +1730,7 @@ footer {
       <div class="games-grid">
 
         <!-- Block Breaker -->
-        <div class="game-card lesson-card">
+        <div class="game-card lesson-card" data-id="block-breaker">
           <div class="game-card-top">
             <div class="game-info">
               <div class="game-name">Block Breaker</div>
@@ -1752,7 +1752,7 @@ footer {
         </div>
 
         <!-- Seed Script -->
-        <div class="game-card lesson-card">
+        <div class="game-card lesson-card" data-id="seed-script">
           <div class="game-card-top">
             <div class="game-info">
               <div class="game-name">Seed Script</div>
@@ -1774,7 +1774,7 @@ footer {
         </div>
 
         <!-- Syllable Sprout -->
-        <div class="game-card lesson-card">
+        <div class="game-card lesson-card" data-id="syllable-sprout">
           <div class="game-card-top">
             <div class="game-info">
               <div class="game-name">Syllable Sprout</div>
@@ -1810,7 +1810,7 @@ footer {
       <div class="games-grid">
 
         <!-- Enchanted Gems -->
-        <div class="game-card lesson-card">
+        <div class="game-card lesson-card" data-id="enchanted-gems">
           <div class="game-card-top">
             <div class="game-info">
               <div class="game-name">Enchanted Gems</div>
@@ -1832,7 +1832,7 @@ footer {
         </div>
 
         <!-- The Rune Stones -->
-        <div class="game-card lesson-card">
+        <div class="game-card lesson-card" data-id="rune-stones">
           <div class="game-card-top">
             <div class="game-info">
               <div class="game-name">The Rune Stones</div>
@@ -1854,7 +1854,7 @@ footer {
         </div>
 
         <!-- The Enchanted Harp -->
-        <div class="game-card lesson-card">
+        <div class="game-card lesson-card" data-id="enchanted-harp">
           <div class="game-card-top">
             <div class="game-info">
               <div class="game-name">The Enchanted Harp</div>
@@ -1876,7 +1876,7 @@ footer {
         </div>
 
         <!-- The Whispering Stones -->
-        <div class="game-card lesson-card">
+        <div class="game-card lesson-card" data-id="whispering-stones">
           <div class="game-card-top">
             <div class="game-info">
               <div class="game-name">The Whispering Stones</div>
@@ -1898,7 +1898,7 @@ footer {
         </div>
 
         <!-- Quest Catcher -->
-        <div class="game-card lesson-card">
+        <div class="game-card lesson-card" data-id="quest-catcher">
           <div class="game-card-top">
             <div class="game-info">
               <div class="game-name">Mini Lesson: Quest Catcher</div>
@@ -1920,7 +1920,7 @@ footer {
         </div>
 
         <!-- Spell Caster -->
-        <div class="game-card lesson-card">
+        <div class="game-card lesson-card" data-id="spell-caster">
           <div class="game-card-top">
             <div class="game-info">
               <div class="game-name">Spell Caster</div>
@@ -1942,7 +1942,7 @@ footer {
         </div>
 
         <!-- Lesson: Letter Sounds -->
-        <div class="game-card lesson-card">
+        <div class="game-card lesson-card" data-id="lesson-letter-sounds">
           <div class="game-card-top">
             <div class="game-info">
               <div class="game-name">Mini Lesson: Letter Sounds</div>
@@ -1964,7 +1964,7 @@ footer {
         </div>
 
         <!-- The Locked Door -->
-        <div class="game-card lesson-card">
+        <div class="game-card lesson-card" data-id="locked-door">
           <div class="game-card-top">
             <div class="game-info">
               <div class="game-name">Mini Lesson: The Locked Door</div>
@@ -2112,7 +2112,107 @@ footer {
 
 <footer>OL Project HQ · Updated May 2026</footer>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
+// Firebase
+firebase.initializeApp({
+  apiKey: "AIzaSyDwSpbAxXzlnvPkDt0YwbqBOe88qOoa7Fs",
+  authDomain: "ol-project-hq.firebaseapp.com",
+  projectId: "ol-project-hq",
+  storageBucket: "ol-project-hq.firebasestorage.app",
+  messagingSenderId: "114993145834",
+  appId: "1:114993145834:web:4d9db4bfc0cf27c2293493"
+});
+const db = firebase.firestore();
+
+/* ── LOAD FROM FIRESTORE ─────────────────────────────────── */
+function loadFromFirestore() {
+  // Load game card data (status, mechanics, notes)
+  db.collection('games').get().then(snapshot => {
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const card = document.querySelector(`.game-card[data-id="${doc.id}"]`);
+      if (!card) return;
+
+      // Status badge
+      if (data.status && data.statusText) {
+        const badge = card.querySelector('.game-status-badge');
+        if (badge) {
+          badge.className = 'game-status-badge ' + data.status;
+          badge.textContent = data.statusText;
+        }
+      }
+
+      // Mechanics
+      if (data.mechanics) {
+        const mechEl = card.querySelector('[contenteditable]');
+        if (mechEl) {
+          mechEl.textContent = data.mechanics;
+          mechEl.classList.remove('game-mechanics-placeholder');
+          mechEl.classList.add('game-mechanics');
+        }
+      }
+
+      // Notes
+      if (data.notes != null) {
+        const notesEl = card.querySelector('.game-notes');
+        if (notesEl) notesEl.value = data.notes;
+      }
+    });
+  }).catch(err => console.warn('Firestore load games error:', err));
+
+  // Load action item done states
+  db.collection('action-items').get().then(snapshot => {
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const item = actionItems.find(a => a.id === doc.id);
+      if (item && data.done !== undefined) {
+        item.done = data.done;
+      }
+    });
+    renderActions();
+  }).catch(err => console.warn('Firestore load action-items error:', err));
+
+  // Load member prototypes
+  db.collection('member-protos').get().then(snapshot => {
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      if (!data.member || !data.name) return;
+      const member = data.member;
+      const tbody = document.getElementById(member + '-tbody');
+      const table = document.getElementById(member + '-table');
+      const empty = document.getElementById(member + '-empty');
+      if (!tbody) return;
+
+      const tr = document.createElement('tr');
+      tr.setAttribute('data-proto-id', doc.id);
+      tr.innerHTML = `
+        <td><strong>${escapeHtml(data.name)}</strong></td>
+        <td><span style="font-size:11px;color:var(--ink-soft)">${escapeHtml(data.type || '—')}</span></td>
+        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+          ${data.url ? `<a href="${escapeHtml(data.url)}" target="_blank" style="color:var(--coral);font-family:'DM Mono',monospace;font-size:11px">${escapeHtml(data.url)}</a>` : '<span style="color:#ccc;font-style:italic">No URL</span>'}
+        </td>
+        <td style="white-space:nowrap">
+          ${data.url ? `<a class="game-open-btn" href="${escapeHtml(data.url)}" target="_blank" rel="noopener" style="padding:5px 10px;font-size:10px">Open ↗</a>` : ''}
+          <button class="note-btn" style="padding:5px 10px;font-size:10px;margin-left:4px" onclick="removeMemberProto('${member}', '${doc.id}', this)">Remove</button>
+        </td>`;
+      tbody.appendChild(tr);
+
+      if (empty) empty.style.display = 'none';
+      if (table) table.style.display = '';
+      updateMemberCount(member);
+    });
+  }).catch(err => console.warn('Firestore load member-protos error:', err));
+}
+
+function removeMemberProto(member, docId, btn) {
+  btn.closest('tr').remove();
+  updateMemberCount(member);
+  db.collection('member-protos').doc(docId).delete()
+    .catch(err => console.warn('Firestore delete error:', err));
+}
+
 /* Mechanics editable placeholders */
 document.querySelectorAll('.game-mechanics-placeholder[contenteditable]').forEach(el => {
   const placeholder = el.getAttribute('data-placeholder');
@@ -2138,17 +2238,71 @@ document.querySelectorAll('.game-mechanics-placeholder[contenteditable]').forEac
 document.querySelectorAll('.game-status-badge').forEach(badge => {
   badge.addEventListener('click', function(e) {
     e.stopPropagation();
+    let newStatus, newText;
     if (this.classList.contains('status-wip')) {
       this.classList.replace('status-wip', 'status-done');
       this.textContent = 'Complete';
+      newStatus = 'status-done'; newText = 'Complete';
     } else if (this.classList.contains('status-done')) {
       this.classList.replace('status-done', 'status-nonfunctional');
       this.textContent = 'Non-functional';
+      newStatus = 'status-nonfunctional'; newText = 'Non-functional';
     } else {
       this.classList.replace('status-nonfunctional', 'status-wip');
       this.textContent = 'In Progress';
+      newStatus = 'status-wip'; newText = 'In Progress';
+    }
+    // Save to Firestore
+    const card = this.closest('.game-card[data-id]');
+    if (card) {
+      db.collection('games').doc(card.dataset.id).set(
+        { status: newStatus, statusText: newText },
+        { merge: true }
+      ).catch(err => console.warn('Firestore save error:', err));
     }
   });
+});
+
+/* Debounce helper */
+function debounce(fn, ms) {
+  let timer;
+  return function(...args) { clearTimeout(timer); timer = setTimeout(() => fn.apply(this, args), ms); };
+}
+
+/* Save mechanics on blur */
+document.querySelectorAll('.game-card[data-id]').forEach(card => {
+  const mechEl = card.querySelector('[contenteditable]');
+  const notesEl = card.querySelector('.game-notes');
+  const id = card.dataset.id;
+
+  if (mechEl) {
+    mechEl.addEventListener('blur', function() {
+      const placeholder = this.getAttribute('data-placeholder');
+      const text = this.textContent.trim();
+      if (text && text !== placeholder) {
+        db.collection('games').doc(id).set(
+          { mechanics: text },
+          { merge: true }
+        ).catch(err => console.warn('Firestore save error:', err));
+      }
+    });
+  }
+
+  if (notesEl) {
+    const saveNotes = debounce(function() {
+      db.collection('games').doc(id).set(
+        { notes: notesEl.value },
+        { merge: true }
+      ).catch(err => console.warn('Firestore save error:', err));
+    }, 800);
+    notesEl.addEventListener('input', saveNotes);
+    notesEl.addEventListener('blur', function() {
+      db.collection('games').doc(id).set(
+        { notes: notesEl.value },
+        { merge: true }
+      ).catch(err => console.warn('Firestore save error:', err));
+    });
+  }
 });
 
 /* Profile accordion */
@@ -2221,6 +2375,27 @@ function addMemberProto(profileId, nameInputId, typeSelectId, urlInputId) {
   if (table) table.style.display = '';
   updateMemberCount(member);
 
+  // Save to Firestore
+  const protoId = 'proto-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+  tr.setAttribute('data-proto-id', protoId);
+  db.collection('member-protos').doc(protoId).set({
+    member: member,
+    name: name,
+    type: type,
+    url: url
+  }).catch(err => console.warn('Firestore save error:', err));
+
+  // Update remove button to use Firestore-aware version
+  const removeBtn = tr.querySelector('button');
+  if (removeBtn) {
+    removeBtn.onclick = function() {
+      this.closest('tr').remove();
+      updateMemberCount(member);
+      db.collection('member-protos').doc(protoId).delete()
+        .catch(err => console.warn('Firestore delete error:', err));
+    };
+  }
+
   nameEl.value = '';
   if (typeEl) typeEl.selectedIndex = 0;
   urlEl.value  = '';
@@ -2286,7 +2461,14 @@ function addActionItem() {
 
 function toggleActionDone(id) {
   const item = actionItems.find(a => a.id === id);
-  if (item) { item.done = !item.done; renderActions(); }
+  if (item) {
+    item.done = !item.done;
+    renderActions();
+    db.collection('action-items').doc(id).set(
+      { done: item.done },
+      { merge: true }
+    ).catch(err => console.warn('Firestore save error:', err));
+  }
 }
 
 function updateActionDue(id, val) {
@@ -2511,6 +2693,7 @@ const observer = new IntersectionObserver(entries => {
 sections.forEach(s => observer.observe(s));
 
 renderActions();
+loadFromFirestore();
 </script>
 </body>
 </html>
