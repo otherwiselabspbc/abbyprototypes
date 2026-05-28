@@ -1581,7 +1581,7 @@ footer {
       <span class="section-count">2 docs</span>
     </div>
     <div class="cards-grid">
-      <div class="card doc-card">
+      <div class="card doc-card" data-doc-id="product-vision">
         <div class="card-title">Product Vision</div>
         <div class="card-desc">Core concept, three-phase roadmap, design principles.</div>
         <div class="doc-link-row">
@@ -1589,7 +1589,7 @@ footer {
           <a class="game-open-btn disabled" href="#" onclick="return false;">Open ↗</a>
         </div>
       </div>
-      <div class="card doc-card">
+      <div class="card doc-card" data-doc-id="curriculum-map">
         <div class="card-title">Curriculum Map</div>
         <div class="card-desc">~50 Orton-Gillingham activities with modalities and sample items.</div>
         <div class="doc-link-row">
@@ -2178,6 +2178,22 @@ function loadData() {
     });
   }
 
+  // Load doc links
+  if (store.docs) {
+    Object.keys(store.docs).forEach(id => {
+      const card = document.querySelector(`.doc-card[data-doc-id="${id}"]`);
+      if (!card || !store.docs[id]) return;
+      const input = card.querySelector('.doc-link-input');
+      const btn = card.querySelector('.game-open-btn');
+      if (input) {
+        input.value = store.docs[id];
+        if (btn && store.docs[id]) {
+          btn.classList.remove('disabled'); btn.href = store.docs[id]; btn.target = '_blank'; btn.rel = 'noopener'; btn.onclick = null;
+        }
+      }
+    });
+  }
+
   // Load action item states
   if (store.actions) {
     Object.keys(store.actions).forEach(id => {
@@ -2449,13 +2465,22 @@ function updateMemberCount(member) {
   if (table) table.style.display = rows === 0 ? 'none' : '';
 }
 
-/* Doc card inputs */
+/* Doc card inputs — save URLs to localStorage */
 document.querySelectorAll('.doc-link-input').forEach(input => {
   const btn = input.nextElementSibling;
+  const card = input.closest('.doc-card[data-doc-id]');
+  const docId = card ? card.dataset.docId : null;
+
   function syncDoc() {
     const val = input.value.trim();
     if (val) { btn.classList.remove('disabled'); btn.href = val; btn.target = '_blank'; btn.rel = 'noopener'; btn.onclick = null; }
     else     { btn.classList.add('disabled'); btn.href = '#'; btn.onclick = (e) => e.preventDefault(); }
+    if (docId) {
+      const store = loadStore();
+      store.docs = store.docs || {};
+      store.docs[docId] = val;
+      saveStore(store);
+    }
   }
   input.addEventListener('input', syncDoc);
   input.addEventListener('paste', () => setTimeout(syncDoc, 0));
