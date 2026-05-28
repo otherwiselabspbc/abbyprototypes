@@ -2530,28 +2530,28 @@ function renderActions() {
       if (d < today) overdueClass = ' overdue';
     }
 
-    row.innerHTML = \`
+    row.innerHTML = `
       <div class="action-checkbox-cell">
-        <div class="action-checkbox \${item.done ? 'checked' : ''}" onclick="toggleActionDone('\${item.id}')"></div>
+        <div class="action-checkbox ${item.done ? 'checked' : ''}" onclick="toggleActionDone('${item.id}')"></div>
       </div>
-      <div class="action-row-cell"><span class="action-text">\${escapeHtml(item.text)}</span></div>
+      <div class="action-row-cell"><span class="action-text">${escapeHtml(item.text)}</span></div>
       <div class="action-row-cell">
-        \${item.owner ? \`<span class="action-owner-tag">\${escapeHtml(item.owner)}</span>\` : '<span style="color:#ccc;font-size:11px">—</span>'}
-      </div>
-      <div class="action-row-cell">
-        <span class="action-priority-pill action-priority-\${item.priority.toLowerCase()}">\${escapeHtml(item.priority)}</span>
+        ${item.owner ? `<span class="action-owner-tag">${escapeHtml(item.owner)}</span>` : '<span style="color:#ccc;font-size:11px">—</span>'}
       </div>
       <div class="action-row-cell">
-        <span class="action-status-pill \${item.done ? 'action-status-done' : 'action-status-open'}" onclick="toggleActionDone('\${item.id}')">
-          \${item.done ? 'Done' : 'Open'}
+        <span class="action-priority-pill action-priority-${item.priority.toLowerCase()}">${escapeHtml(item.priority)}</span>
+      </div>
+      <div class="action-row-cell">
+        <span class="action-status-pill ${item.done ? 'action-status-done' : 'action-status-open'}" onclick="toggleActionDone('${item.id}')">
+          ${item.done ? 'Done' : 'Open'}
         </span>
       </div>
       <div class="action-row-cell">
-        <input type="date" class="action-due-input\${overdueClass}" value="\${escapeHtml(item.due)}" onchange="updateActionDue('\${item.id}', this.value); renderActions()" />
+        <input type="date" class="action-due-input${overdueClass}" value="${escapeHtml(item.due)}" onchange="updateActionDue('${item.id}', this.value); renderActions()" />
       </div>
       <div class="action-row-cell" style="padding:0;text-align:center">
-        <button class="action-remove" onclick="removeAction('\${item.id}')">&#x2715;</button>
-      </div>\`;
+        <button class="action-remove" onclick="removeAction('${item.id}')">&#x2715;</button>
+      </div>`;
     list.appendChild(row);
   });
 }
