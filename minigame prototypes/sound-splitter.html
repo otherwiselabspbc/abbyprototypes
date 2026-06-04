@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Sound Splitter — Phoneme Segmenting</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#3d8a28;overflow:hidden;font-family:'Press Start 2P',monospace;user-select:none;-webkit-user-select:none;height:100vh;width:100vw}
+.screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;background:linear-gradient(180deg,#89d4f5 0%,#a8e2f8 20%,#6cc14c 35%,#5aac3a 50%,#4a9830 100%)}
+.screen.off{display:none}
+.eyebrow{font-size:8px;letter-spacing:4px;color:#fff;text-transform:uppercase;margin-bottom:14px;text-shadow:1px 1px 0 rgba(0,0,0,0.3)}
+.big-title{font-size:clamp(26px,7vw,46px);color:#fff;text-align:center;line-height:1.3;text-shadow:3px 3px 0 #2d6a1e;margin-bottom:28px}
+.btn{background:linear-gradient(180deg,#ff6b6b 0%,#ee5a24 100%);color:#fff;border:4px solid #b33a1a;padding:14px 36px;font-size:12px;font-family:'Press Start 2P',monospace;border-radius:4px;cursor:pointer;letter-spacing:2px;text-transform:uppercase;box-shadow:inset -3px -3px 0 #b33a1a,inset 3px 3px 0 #ff9a7a,6px 6px 0 rgba(0,0,0,0.2);transition:transform .1s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn:active{transform:scale(0.96)!important}
+.btn-glow{font-size:16px;padding:18px 48px;animation:btn-glow 1.8s ease-in-out infinite}
+@keyframes btn-glow{0%,100%{transform:scale(1);box-shadow:inset -3px -3px 0 #b33a1a,inset 3px 3px 0 #ff9a7a,6px 6px 0 rgba(0,0,0,0.2),0 0 20px rgba(255,107,107,0.3)}50%{transform:scale(1.08);box-shadow:inset -3px -3px 0 #b33a1a,inset 3px 3px 0 #ff9a7a,6px 6px 0 rgba(0,0,0,0.2),0 0 50px rgba(255,107,107,0.6),0 0 80px rgba(238,90,36,0.3)}}
+#s-game{justify-content:space-between;padding:clamp(14px,4vw,24px) 20px clamp(24px,5vw,36px)}
+.hud{display:flex;flex-direction:column;align-items:center;gap:6px}
+.round-dots{display:flex;gap:10px}
+.rdot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);transition:all .4s}
+.rdot.done{background:#7cfc00;border-color:#2a5020}
+.rdot.cur{background:#ffe44d;border-color:#cc8800}
+.round-label{font-size:7px;letter-spacing:3px;color:#fff;text-transform:uppercase;text-shadow:1px 1px 0 rgba(0,0,0,0.2)}
+#prompt{font-size:clamp(10px,2.5vw,13px);color:#fff;text-align:center;line-height:2.4;word-spacing:0.15em;background:rgba(42,30,15,0.9);border:4px solid #5a3e1b;border-radius:8px;padding:clamp(8px,2vw,12px) clamp(12px,3vw,18px);box-shadow:4px 4px 0 rgba(0,0,0,0.25);text-shadow:1px 1px 0 #000;min-height:36px;transition:opacity .3s}
+#prompt strong{color:#ffe44d}
+#game-area{display:flex;flex-direction:column;align-items:center;gap:14px}
+#word-display{font-size:clamp(28px,7vw,48px);color:#fff;text-align:center;text-shadow:3px 3px 0 rgba(0,0,0,0.3);padding:8px 24px;background:rgba(42,30,15,0.7);border:3px solid #5a3e1b;border-radius:8px;letter-spacing:0.12em}
+#gem-row{display:flex;gap:clamp(8px,2.5vw,14px);justify-content:center;min-height:36px}
+.gem{width:clamp(26px,6vw,36px);height:clamp(26px,6vw,36px);border-radius:50%;background:rgba(255,255,255,0.15);border:3px solid rgba(255,255,255,0.3);transition:all .3s}
+.gem.lit{background:#ffe44d;border-color:#cc8800;box-shadow:0 0 12px rgba(255,228,77,0.6)}
+.gem.correct{background:#7cfc00;border-color:#2a5020;box-shadow:0 0 16px rgba(124,252,0,0.6)}
+#tap-btn{width:clamp(80px,20vw,110px);height:clamp(80px,20vw,110px);border-radius:50%;background:linear-gradient(135deg,#a78bfa 0%,#7c3aed 100%);border:5px solid #5b21b6;color:#fff;font-size:clamp(14px,3.5vw,18px);font-family:'Press Start 2P',monospace;cursor:pointer;box-shadow:inset -3px -3px 0 #4c1d95,inset 3px 3px 0 #c4b5fd,5px 5px 0 rgba(0,0,0,0.2);text-shadow:2px 2px 0 rgba(0,0,0,0.3);transition:transform .1s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+#tap-btn:active{transform:scale(0.92)}
+#number-row{display:flex;gap:clamp(8px,2.5vw,14px);justify-content:center}
+.num-btn{width:clamp(48px,11vw,64px);height:clamp(48px,11vw,64px);border-radius:50%;border:4px solid #c0392b;background:linear-gradient(135deg,#ff7e4e 0%,#e74c3c 100%);color:#fff;font-size:clamp(16px,4vw,22px);font-family:'Press Start 2P',monospace;cursor:pointer;box-shadow:inset -3px -3px 0 #a03020,inset 3px 3px 0 #ff9a7a,4px 4px 0 rgba(0,0,0,0.2);text-shadow:2px 2px 0 rgba(0,0,0,0.3);transition:transform .12s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;display:flex;align-items:center;justify-content:center}
+.num-btn:active{transform:scale(0.9)}
+.num-btn.correct{background:linear-gradient(135deg,#7cfc00 0%,#32cd32 100%);border-color:#1a5010;box-shadow:inset -3px -3px 0 #1a5010,inset 3px 3px 0 #a0ff60,4px 4px 0 rgba(0,0,0,0.2)}
+.num-btn.wrong{animation:btn-shake 0.4s ease-out}
+@keyframes btn-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.win-screen{background:linear-gradient(180deg,#89d4f5 0%,#ffe44d 60%,#ffaa00 100%)!important}
+.win-title{font-size:clamp(28px,8vw,50px);color:#fff;text-shadow:4px 4px 0 #2d6a1e;margin-bottom:20px;text-align:center}
+.badge{background:#fff;border:4px solid #5a3e1b;border-radius:12px;padding:16px 28px;margin-bottom:28px;text-align:center;box-shadow:4px 4px 0 rgba(0,0,0,0.15)}
+.badge-label{font-size:7px;letter-spacing:3px;color:#5a3e1b;text-transform:uppercase}
+.badge-name{font-size:12px;color:#2d6a1e;margin-top:8px}
+</style>
+</head>
+<body>
+
+<!-- Landing -->
+<div class="screen" id="s-landing">
+  <p class="eyebrow">Phoneme Segmenting</p>
+  <h1 class="big-title">Sound<br>Splitter</h1>
+  <button class="btn btn-glow" id="startBtn">Begin</button>
+</div>
+
+<!-- Game -->
+<div class="screen off" id="s-game">
+  <div class="hud">
+    <div class="round-dots" id="round-dots"></div>
+    <div class="round-label" id="round-label"></div>
+  </div>
+  <div id="prompt"></div>
+  <div id="game-area">
+    <div id="word-display"></div>
+    <div id="gem-row"></div>
+    <button id="tap-btn">TAP</button>
+    <div id="number-row">
+      <button class="num-btn" data-num="2">2</button>
+      <button class="num-btn" data-num="3">3</button>
+      <button class="num-btn" data-num="4">4</button>
+      <button class="num-btn" data-num="5">5</button>
+    </div>
+  </div>
+  <div></div>
+</div>
+
+<!-- Win -->
+<div class="screen off win-screen" id="s-win">
+  <p class="eyebrow">Quest Complete</p>
+  <div class="win-title">Well Done!</div>
+  <div class="badge">
+    <div class="badge-label">Skill Unlocked</div>
+    <div class="badge-name">Phoneme Segmenting</div>
+  </div>
+  <button class="btn" id="playAgainBtn">Play Again</button>
+</div>
+
+<script>
+'use strict';
+
+const ROUNDS=[
+  {word:'sat',  phonemes:['s','a','t'],       count:3},
+  {word:'me',   phonemes:['m','e'],            count:2},
+  {word:'fish', phonemes:['f','i','sh'],       count:3},
+  {word:'stop', phonemes:['s','t','o','p'],    count:4},
+  {word:'at',   phonemes:['a','t'],            count:2},
+  {word:'jump', phonemes:['j','u','m','p'],    count:4},
+];
+let rIdx=0,hintTier=0,locked=false,tapCount=0,maxGems=5;
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.add('off'));
+  document.getElementById(id).classList.remove('off');
+}
+
+// Speech
+let cv=null;
+function cacheV(){const v=speechSynthesis.getVoices();if(!v.length)return;
+  const p=['samantha','karen','moira','tessa','fiona','victoria','zira','jenny','google uk english female','google us english'];
+  for(const n of p){const f=v.find(x=>x.name.toLowerCase().includes(n)&&x.lang.startsWith('en'));if(f){cv=f;return;}}
+  cv=v.find(x=>x.lang.startsWith('en')&&x.localService)||v.find(x=>x.lang.startsWith('en'))||v[0];}
+speechSynthesis.onvoiceschanged=cacheV;cacheV();
+
+function say(t,rate,cb){
+  if(typeof rate==='function'){cb=rate;rate=0.9;}
+  if(!t){if(cb)cb();return;}
+  try{speechSynthesis.cancel();}catch(e){}
+  setTimeout(()=>{const u=new SpeechSynthesisUtterance(t);u.rate=rate||0.9;u.pitch=1.05;u.volume=1;
+    if(!cv)cacheV();if(cv)u.voice=cv;let d=false;
+    function fin(){if(d)return;d=true;if(cb)cb();}
+    u.onend=fin;u.onerror=fin;setTimeout(fin,Math.max(3000,t.length*250));
+    speechSynthesis.speak(u);if(speechSynthesis.paused)speechSynthesis.resume();},60);
+}
+function sayPhonemes(ph,cb){
+  let i=0;
+  function next(){if(i>=ph.length){if(cb)cb();return;}
+    say('/'+ph[i]+'/',0.7,()=>{i++;setTimeout(next,500);});}
+  next();
+}
+setInterval(()=>{if(speechSynthesis.paused)speechSynthesis.resume();},500);
+
+// SFX
+let _ac;
+function ac(){if(!_ac)_ac=new(window.AudioContext||window.webkitAudioContext)();if(_ac.state==='suspended')_ac.resume();return _ac;}
+function sfxTap(idx){try{const a=ac(),n=a.currentTime;const hz=[523,587,659,784,880][Math.min(idx,4)];
+  const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=hz;
+  g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(0.18,n+0.02);
+  g.gain.exponentialRampToValueAtTime(0.001,n+0.35);o.connect(g);g.connect(a.destination);
+  o.start(n);o.stop(n+0.4);}catch(e){}}
+function sfxOk(){try{const a=ac(),n=a.currentTime;[523,659,784,1047].forEach((h,i)=>{
+  const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=h;
+  g.gain.setValueAtTime(0,n+i*0.1);g.gain.linearRampToValueAtTime(0.16,n+i*0.1+0.03);
+  g.gain.exponentialRampToValueAtTime(0.001,n+i*0.1+0.7);o.connect(g);g.connect(a.destination);
+  o.start(n+i*0.1);o.stop(n+i*0.1+0.75);});}catch(e){}}
+function sfxNo(){try{const a=ac(),n=a.currentTime;const o=a.createOscillator(),g=a.createGain();
+  o.type='sine';o.frequency.setValueAtTime(280,n);o.frequency.linearRampToValueAtTime(200,n+0.2);
+  g.gain.setValueAtTime(0.1,n);g.gain.exponentialRampToValueAtTime(0.001,n+0.25);
+  o.connect(g);g.connect(a.destination);o.start(n);o.stop(n+0.3);}catch(e){}}
+function sfxWin(){try{const a=ac(),n=a.currentTime;[523,587,659,784,880,1047].forEach((h,i)=>{
+  const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=h;
+  g.gain.setValueAtTime(0,n+i*0.1);g.gain.linearRampToValueAtTime(0.1,n+i*0.1+0.01);
+  g.gain.exponentialRampToValueAtTime(0.001,n+i*0.1+0.7);o.connect(g);g.connect(a.destination);
+  o.start(n+i*0.1);o.stop(n+i*0.1+0.8);});}catch(e){}}
+document.addEventListener('pointerdown',()=>{try{ac();}catch(e){}},{once:true});
+
+// DOM refs
+const wordEl=document.getElementById('word-display');
+const promptEl=document.getElementById('prompt');
+const gemRow=document.getElementById('gem-row');
+const tapBtn=document.getElementById('tap-btn');
+const numBtns=document.querySelectorAll('.num-btn');
+
+function startGame(){
+  try{ac();}catch(e){}speechSynthesis.cancel();
+  rIdx=0;showScreen('s-game');setTimeout(()=>setupRound(0),200);
+}
+
+function setupRound(idx){
+  const r=ROUNDS[idx];locked=false;hintTier=0;tapCount=0;
+
+  document.getElementById('round-dots').innerHTML=ROUNDS.map((_,i)=>
+    `<div class="rdot${i<idx?' done':''}${i===idx?' cur':''}"></div>`).join('');
+  document.getElementById('round-label').textContent=`Round ${idx+1} of ${ROUNDS.length}`;
+
+  numBtns.forEach(b=>{b.className='num-btn';b.style.visibility='visible';});
+  gemRow.innerHTML='';
+  wordEl.textContent=r.word.toUpperCase();
+  tapBtn.style.display='';
+
+  if(idx===0){
+    promptEl.innerHTML='Listen to the word. How many sounds do you hear? Tap the number!';
+    say('Listen to the word. How many sounds do you hear? Tap the number!',0.9,()=>{
+      setTimeout(()=>say(r.word,0.85,()=>{}),200);});
+  } else {
+    promptEl.innerHTML='How many sounds?';
+    say(r.word,0.85,()=>{});
+  }
+}
+
+tapBtn.addEventListener('click',e=>{
+  e.preventDefault();if(locked)return;
+  if(tapCount<maxGems){
+    tapCount++;sfxTap(tapCount-1);
+    const g=document.createElement('div');g.className='gem lit';gemRow.appendChild(g);
+  }
+});
+
+function checkAnswer(num){
+  if(locked)return;locked=true;
+  const r=ROUNDS[rIdx];
+
+  if(num===r.count){
+    const btn=document.querySelector(`.num-btn[data-num="${num}"]`);
+    if(btn)btn.classList.add('correct');
+    sfxOk();tapBtn.style.display='none';
+    // Reset gems to correct count with green glow
+    gemRow.innerHTML='';
+    for(let i=0;i<r.count;i++){const g=document.createElement('div');g.className='gem correct';gemRow.appendChild(g);}
+    const phStr=r.phonemes.map(p=>'/'+p+'/').join('  ');
+    promptEl.innerHTML=`Right! <strong>${r.word}</strong> has <strong>${r.count}</strong> sounds: ${phStr}`;
+    say(`Right! ${r.word} has ${r.count} sounds`,0.9,()=>{
+      sayPhonemes(r.phonemes,()=>{setTimeout(advanceRound,500);});});
+  } else {
+    hintTier++;sfxNo();
+    const btn=document.querySelector(`.num-btn[data-num="${num}"]`);
+    if(btn)btn.classList.add('wrong');
+    setTimeout(()=>{if(btn)btn.classList.remove('wrong');},500);
+    // Reset gems for retry
+    gemRow.innerHTML='';tapCount=0;
+
+    if(hintTier===1){
+      promptEl.innerHTML='Not quite, listen again!';
+      say('Not quite, listen again!',0.9,()=>{say(r.word,0.85,()=>{locked=false;});});
+    } else if(hintTier===2){
+      promptEl.innerHTML='Listen to each sound slowly.';
+      say('Listen to each sound slowly.',0.9,()=>{
+        sayPhonemes(r.phonemes,()=>{locked=false;});});
+    } else {
+      tapBtn.style.display='none';
+      const correctBtn=document.querySelector(`.num-btn[data-num="${r.count}"]`);
+      if(correctBtn)correctBtn.classList.add('correct');
+      for(let i=0;i<r.count;i++){const g=document.createElement('div');g.className='gem correct';gemRow.appendChild(g);}
+      const phStr=r.phonemes.map(p=>'/'+p+'/').join('  ');
+      promptEl.innerHTML=`${r.word} has <strong>${r.count}</strong> sounds: ${phStr}`;
+      say(`${r.word} has ${r.count} sounds`,0.9,()=>{
+        sayPhonemes(r.phonemes,()=>{sfxOk();setTimeout(advanceRound,800);});});
+    }
+  }
+}
+
+function advanceRound(){
+  rIdx++;
+  if(rIdx>=ROUNDS.length){sfxWin();showScreen('s-win');burstWin();}
+  else setupRound(rIdx);
+}
+
+numBtns.forEach(btn=>{
+  btn.addEventListener('click',e=>{e.preventDefault();checkAnswer(parseInt(btn.dataset.num));});
+});
+
+function burstWin(){
+  const c=document.createElement('canvas');c.width=innerWidth;c.height=innerHeight;
+  c.style.cssText='position:fixed;top:0;left:0;z-index:100;pointer-events:none';
+  document.body.appendChild(c);const cx=c.getContext('2d');const parts=[];
+  for(let i=0;i<80;i++){const a=Math.random()*Math.PI*2,s=Math.random()*5+2;
+    parts.push({x:c.width/2,y:c.height/2,vx:Math.cos(a)*s,vy:Math.sin(a)*s-3,
+      r:Math.random()*4+2,color:`hsl(${Math.random()*360},80%,60%)`,alpha:1});}
+  (function loop(){cx.clearRect(0,0,c.width,c.height);let alive=false;
+    parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.12;p.alpha-=0.015;
+      if(p.alpha>0){alive=true;cx.globalAlpha=p.alpha;cx.fillStyle=p.color;
+        cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fill();}});
+    cx.globalAlpha=1;if(alive)requestAnimationFrame(loop);else c.remove();})();
+}
+
+document.getElementById('startBtn').addEventListener('click',startGame);
+document.getElementById('playAgainBtn').addEventListener('click',startGame);
+</script>
+</body>
+</html>

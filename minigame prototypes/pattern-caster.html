@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pattern Caster</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Nunito',sans-serif;background:#0e0b1a;color:#e8e0f0;min-height:100vh;display:flex;align-items:center;justify-content:center;cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><circle cx="12" cy="2" r="2" fill="%23ffd700"/><rect x="11" y="4" width="2" height="18" rx="1" fill="%239b7ecf"/></svg>') 12 2,auto;overflow:hidden}
+#app{width:100%;max-width:480px;text-align:center;padding:1.5rem}
+.screen{display:none;flex-direction:column;align-items:center;gap:1.2rem}
+.screen.active{display:flex}
+h1{font-family:'Cinzel',serif;font-size:2.4rem;background:linear-gradient(135deg,#c9a0ff,#7b5ea7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tag{font-size:.85rem;color:#a78bfa;letter-spacing:.12em;text-transform:uppercase}
+.btn-begin{margin-top:1rem;padding:.9rem 2.8rem;font-family:'Nunito',sans-serif;font-size:1.15rem;font-weight:800;color:#fff;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:2rem;cursor:pointer;animation:pulse 2s ease-in-out infinite;position:relative;overflow:hidden}
+@keyframes pulse{0%,100%{box-shadow:0 0 12px #a855f766}50%{box-shadow:0 0 28px #a855f7cc}}
+.round-info{display:flex;align-items:center;gap:.6rem;justify-content:center}
+.dot{width:10px;height:10px;border-radius:50%;background:#3b2e5a;transition:background .3s}
+.dot.done{background:#a855f7}
+.dot.current{background:#c084fc;box-shadow:0 0 6px #c084fc}
+.round-label{font-size:.8rem;color:#a78bfa}
+.tiles{display:flex;flex-direction:column;gap:.9rem;width:100%;margin-top:.5rem}
+.tile{padding:1.1rem;font-size:1.5rem;font-weight:700;letter-spacing:.06em;background:#1a1333;border:2px solid #5b3f8f;border-radius:1rem;cursor:pointer;transition:all .25s;user-select:none}
+.tile:hover{border-color:#a78bfa;background:#221a40}
+.tile.correct{border-color:#22c55e;box-shadow:0 0 18px #22c55e88;background:#14291e}
+.tile.wrong{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.tile .hl{color:#fbbf24;text-shadow:0 0 6px #fbbf2488}
+.hint{font-size:.9rem;color:#c084fc;min-height:1.4rem}
+.badge{font-size:.85rem;color:#a78bfa;letter-spacing:.12em;text-transform:uppercase;border:1px solid #5b3f8f;padding:.35rem 1rem;border-radius:2rem}
+canvas#sparkle{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999}
+</style>
+</head>
+<body>
+<canvas id="sparkle"></canvas>
+<div id="app">
+  <div id="landing" class="screen active">
+    <h1>Pattern Caster</h1>
+    <span class="tag">Orthographic Patterns</span>
+    <button class="btn-begin" onclick="startGame()">Begin</button>
+  </div>
+  <div id="game" class="screen">
+    <div class="round-info" id="dots"></div>
+    <span class="round-label" id="roundLabel"></span>
+    <p class="hint" id="hint"></p>
+    <div class="tiles" id="tiles"></div>
+  </div>
+  <div id="win" class="screen">
+    <h1>Well Done!</h1>
+    <span class="badge">Orthographic Patterns</span>
+    <button class="btn-begin" onclick="resetGame()">Play Again</button>
+  </div>
+</div>
+<script>
+const ROUNDS=[
+  {word:'ship',correct:'ship',wrong:['shp','sip'],pattern:'sh'},
+  {word:'chip',correct:'chip',wrong:['cip','chp'],pattern:'ch'},
+  {word:'thin',correct:'thin',wrong:['tin','fin'],pattern:'th'},
+  {word:'catch',correct:'catch',wrong:['cach','cath'],pattern:'tch'},
+  {word:'barn',correct:'barn',wrong:['ban','bran'],pattern:'ar'},
+  {word:'coin',correct:'coin',wrong:['con','coen'],pattern:'oi'}
+];
+let round=0,hintTier=0,locked=false,voice=null,actx=null;
+
+function getAudioCtx(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();return actx}
+
+function pickVoice(){
+  if(voice)return voice;
+  const v=speechSynthesis.getVoices();
+  voice=v.find(x=>/samantha|karen|daniel|google us/i.test(x.name))||v.find(x=>x.lang.startsWith('en'))||v[0];
+  return voice;
+}
+speechSynthesis.onvoiceschanged=pickVoice;
+pickVoice();
+
+function speak(text,cb){
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.voice=pickVoice();u.rate=0.85;u.pitch=1.05;
+  if(cb)u.onend=cb;
+  speechSynthesis.speak(u);
+}
+
+function playTone(freqs,dur,type='sine'){
+  const ctx=getAudioCtx(),g=ctx.createGain();g.connect(ctx.destination);
+  g.gain.setValueAtTime(0.18,ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);
+  freqs.forEach((f,i)=>{const o=ctx.createOscillator();o.type=type;o.frequency.value=f;o.connect(g);o.start(ctx.currentTime+i*0.12);o.stop(ctx.currentTime+dur+i*0.12)});
+}
+function chime(){playTone([523,659,784],0.45)}
+function wrongTone(){playTone([400,320],0.35,'triangle')}
+function winArpeggio(){playTone([523,659,784,1047],0.7)}
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function renderDots(){
+  const c=document.getElementById('dots');c.innerHTML='';
+  for(let i=0;i<ROUNDS.length;i++){const d=document.createElement('span');d.className='dot'+(i<round?' done':'')+(i===round?' current':'');c.appendChild(d)}
+}
+
+function highlightPattern(word,pattern){
+  const i=word.indexOf(pattern);
+  if(i===-1)return word;
+  return word.slice(0,i)+'<span class="hl">'+pattern+'</span>'+word.slice(i+pattern.length);
+}
+
+function loadRound(){
+  hintTier=0;locked=false;
+  const r=ROUNDS[round];
+  renderDots();
+  document.getElementById('roundLabel').textContent=`Round ${round+1} of ${ROUNDS.length}`;
+  document.getElementById('hint').textContent='';
+  const tc=document.getElementById('tiles');tc.innerHTML='';
+  const opts=shuffle([r.correct,...r.wrong]);
+  opts.forEach(o=>{
+    const t=document.createElement('div');t.className='tile';t.textContent=o;
+    t.onclick=()=>pick(t,o,r);
+    tc.appendChild(t);
+  });
+  speak(r.word,()=>{if(round===0)speak('Listen to the word, then tap the correct spelling.')});
+}
+
+function pick(el,choice,r){
+  if(locked)return;
+  if(choice===r.correct){
+    locked=true;el.classList.add('correct');chime();
+    el.innerHTML=highlightPattern(r.correct,r.pattern);
+    speak(`That's right! ${r.word} is spelled with ${r.pattern}.`,()=>{
+      setTimeout(()=>{round++;round<ROUNDS.length?loadRound():(winArpeggio(),show('win'))},400);
+    });
+  } else {
+    el.classList.add('wrong');wrongTone();hintTier++;
+    setTimeout(()=>el.classList.remove('wrong'),400);
+    const h=document.getElementById('hint');
+    if(hintTier===1){h.textContent='Listen again.';speak(r.word)}
+    else if(hintTier===2){
+      h.textContent=`The word has the "${r.pattern}" sound.`;
+      document.querySelectorAll('.tile').forEach(t=>{if(t.textContent===r.correct)t.innerHTML=highlightPattern(r.correct,r.pattern)});
+    } else {
+      locked=true;
+      document.querySelectorAll('.tile').forEach(t=>{if(t.textContent===r.correct||t.innerHTML.includes('hl'))t.classList.add('correct')});
+      h.textContent='';
+      speak(`The answer is ${r.word}.`,()=>{setTimeout(()=>{round++;round<ROUNDS.length?loadRound():(winArpeggio(),show('win'))},600)});
+    }
+  }
+}
+
+function startGame(){round=0;show('game');loadRound()}
+function resetGame(){round=0;show('landing')}
+
+/* Sparkle trail */
+const cv=document.getElementById('sparkle'),cx=cv.getContext('2d');
+let particles=[];
+function resizeCanvas(){cv.width=innerWidth;cv.height=innerHeight}
+resizeCanvas();addEventListener('resize',resizeCanvas);
+addEventListener('mousemove',e=>{for(let i=0;i<2;i++)particles.push({x:e.clientX,y:e.clientY,vx:(Math.random()-.5)*1.5,vy:(Math.random()-.5)*1.5-1,life:1,size:Math.random()*2.5+1})});
+function animateSparkles(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  particles=particles.filter(p=>{p.life-=0.025;p.x+=p.vx;p.y+=p.vy;
+    if(p.life<=0)return false;
+    cx.globalAlpha=p.life;cx.fillStyle='#c9a0ff';cx.beginPath();cx.arc(p.x,p.y,p.size,0,Math.PI*2);cx.fill();return true});
+  requestAnimationFrame(animateSparkles);
+}
+animateSparkles();
+</script>
+</body>
+</html>

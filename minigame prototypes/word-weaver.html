@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Word Weaver — Multi-syllable Decoding</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#3d8a28;overflow:hidden;font-family:'Press Start 2P',monospace;
+  user-select:none;-webkit-user-select:none;height:100vh;width:100vw;color:#fff}
+.screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:20px;
+  background:linear-gradient(180deg,#89d4f5 0%,#a8e2f8 30%,#6cc14c 55%,#5aac3a 75%,#4a9830 100%)}
+.screen.off{display:none}
+.eyebrow{font-size:8px;letter-spacing:4px;color:#fff;text-transform:uppercase;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.3);margin-bottom:14px}
+.big-title{font-size:clamp(26px,7vw,46px);color:#fff;text-align:center;line-height:1.3;
+  text-shadow:3px 3px 0 #2d6a1e;margin-bottom:28px}
+.btn{background:linear-gradient(180deg,#ff6b6b 0%,#ee5a24 100%);color:#fff;
+  border:4px solid #b33a1a;padding:14px 36px;font-size:12px;
+  font-family:'Press Start 2P',monospace;border-radius:4px;cursor:pointer;letter-spacing:2px;
+  text-transform:uppercase;
+  box-shadow:inset -3px -3px 0 #b33a1a,inset 3px 3px 0 #ff9a7a,6px 6px 0 rgba(0,0,0,0.2);
+  transition:transform .1s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn:active{transform:scale(0.96)!important}
+.btn-glow{font-size:16px;padding:18px 48px;animation:btn-glow 1.8s ease-in-out infinite}
+@keyframes btn-glow{
+  0%,100%{transform:scale(1);box-shadow:inset -3px -3px 0 #b33a1a,inset 3px 3px 0 #ff9a7a,6px 6px 0 rgba(0,0,0,0.2),0 0 20px rgba(255,107,107,0.3)}
+  50%{transform:scale(1.08);box-shadow:inset -3px -3px 0 #b33a1a,inset 3px 3px 0 #ff9a7a,6px 6px 0 rgba(0,0,0,0.2),0 0 50px rgba(255,107,107,0.6),0 0 80px rgba(238,90,36,0.3)}}
+/* HUD */
+.hud{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:18px}
+.round-dots{display:flex;gap:10px}
+.rdot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.2);
+  border:2px solid rgba(255,255,255,0.4);transition:all .4s}
+.rdot.done{background:#7cfc00;border-color:#2a5020}
+.rdot.cur{background:#ffe44d;border-color:#cc8800}
+.round-label{font-size:7px;letter-spacing:3px;color:#fff;text-transform:uppercase;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.2)}
+/* Slots */
+.slots{display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap;justify-content:center}
+.slot{min-width:70px;padding:12px 18px;border:3px dashed rgba(255,255,255,0.5);border-radius:10px;
+  background:rgba(0,0,0,0.15);font-size:clamp(14px,4vw,22px);text-align:center;
+  transition:all .3s;min-height:50px;display:flex;align-items:center;justify-content:center}
+.slot.filled{border:3px solid #2a5020;background:#3aaa2a;color:#fff;
+  text-shadow:1px 1px 0 #1a6a10;box-shadow:0 0 16px rgba(58,170,42,0.5)}
+/* Tiles */
+.tiles{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:18px}
+.tile{padding:14px 24px;background:linear-gradient(180deg,#d4a463 0%,#b8874a 100%);
+  border:4px solid #7a5a2e;border-radius:10px;font-size:clamp(14px,4vw,22px);color:#fff;
+  text-shadow:1px 1px 0 #5a3e1b;cursor:pointer;
+  box-shadow:inset -2px -2px 0 #8a6a3a,inset 2px 2px 0 #e8c88a,4px 4px 0 rgba(0,0,0,0.2);
+  transition:transform .1s,opacity .3s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.tile:active{transform:scale(0.94)}
+.tile.used{opacity:0.3;pointer-events:none}
+@keyframes tile-shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.tile.shake{animation:tile-shake .4s ease}
+/* Replay */
+.replay-btn{width:48px;height:48px;border-radius:50%;border:3px solid #7a5a2e;
+  background:linear-gradient(180deg,#d4a463,#b8874a);cursor:pointer;font-size:22px;
+  display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+  box-shadow:3px 3px 0 rgba(0,0,0,0.2);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.replay-btn:active{transform:scale(0.92)}
+/* Feedback */
+.feedback{font-size:clamp(9px,2.5vw,11px);color:#fff;text-shadow:1px 1px 0 rgba(0,0,0,0.3);
+  min-height:20px;text-align:center;margin-bottom:10px}
+/* Win */
+.win-screen{background:linear-gradient(180deg,#89d4f5 0%,#ffe44d 60%,#ffaa00 100%)!important}
+.win-title{font-size:clamp(28px,8vw,50px);color:#fff;text-shadow:4px 4px 0 #cc8800;margin-bottom:12px}
+.badge{font-size:9px;letter-spacing:3px;color:#7a5a2e;text-transform:uppercase;
+  background:#fff3d4;border:3px solid #cc8800;border-radius:6px;padding:10px 20px;
+  margin-bottom:28px;text-shadow:none}
+</style>
+</head>
+<body>
+<!-- Landing -->
+<div class="screen" id="landing">
+  <div class="eyebrow">Multi-syllable Decoding</div>
+  <div class="big-title">Word Weaver</div>
+  <button class="btn btn-glow" onclick="startGame()">Begin</button>
+</div>
+<!-- Game -->
+<div class="screen off" id="game">
+  <div class="hud"><div class="round-dots" id="dots"></div>
+    <div class="round-label" id="roundLabel">Round 1</div></div>
+  <button class="replay-btn" onclick="speakWord()" aria-label="Hear word again">&#128264;</button>
+  <div class="feedback" id="feedback"></div>
+  <div class="slots" id="slots"></div>
+  <div class="tiles" id="tiles"></div>
+</div>
+<!-- Win -->
+<div class="screen off win-screen" id="win">
+  <div class="win-title">Well Done!</div>
+  <div class="badge">Multi-syllable Decoding</div>
+  <button class="btn btn-glow" onclick="resetGame()">Play Again</button>
+</div>
+<script>
+const ROUNDS=[
+  {word:'open',syllables:['o','pen']},
+  {word:'rabbit',syllables:['rab','bit']},
+  {word:'sunset',syllables:['sun','set']},
+  {word:'basket',syllables:['bas','ket']},
+  {word:'butterfly',syllables:['but','ter','fly']},
+  {word:'wonderful',syllables:['won','der','ful']}
+];
+const AC=new(window.AudioContext||window.webkitAudioContext)();
+let round=0,placed=0,wrongCount=0,locked=false,cachedVoice=null;
+
+function pickVoice(){
+  const v=speechSynthesis.getVoices();
+  cachedVoice=v.find(x=>/samantha|karen|moira|zira|google us/i.test(x.name))||v.find(x=>/en[-_]us/i.test(x.lang))||v[0]||null;
+}
+speechSynthesis.onvoiceschanged=pickVoice;pickVoice();
+
+function speak(text,cb){
+  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);
+  u.rate=0.85;u.pitch=1.05;if(cachedVoice)u.voice=cachedVoice;
+  if(cb)u.onend=cb;speechSynthesis.speak(u);
+}
+function speakWord(){speak(ROUNDS[round].word)}
+
+function tone(freq,dur,type='sine'){
+  const o=AC.createOscillator(),g=AC.createGain();
+  o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(0.18,AC.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+dur);
+  o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+dur);
+}
+function chime(index){tone(440+index*120,0.25,'triangle')}
+function wrongTone(){tone(280,0.2,'sine');setTimeout(()=>tone(220,0.25,'sine'),100)}
+function celebArpeggio(){[0,1,2,3].forEach((i)=>setTimeout(()=>tone(523+i*100,0.3,'triangle'),i*120))}
+function winArpeggio(){[0,1,2,3,4].forEach((i)=>setTimeout(()=>tone(440+i*110,0.35,'triangle'),i*140))}
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.add('off'));document.getElementById(id).classList.remove('off')}
+
+function buildHUD(){
+  const d=document.getElementById('dots');d.innerHTML='';
+  for(let i=0;i<6;i++){const dot=document.createElement('div');dot.className='rdot'+(i<round?' done':i===round?' cur':'');d.appendChild(dot)}
+  document.getElementById('roundLabel').textContent='Round '+(round+1);
+}
+
+function buildRound(){
+  locked=false;placed=0;wrongCount=0;
+  const r=ROUNDS[round],slotsEl=document.getElementById('slots'),tilesEl=document.getElementById('tiles'),fb=document.getElementById('feedback');
+  slotsEl.innerHTML='';tilesEl.innerHTML='';fb.textContent='';
+  buildHUD();
+  r.syllables.forEach(()=>{const s=document.createElement('div');s.className='slot';slotsEl.appendChild(s)});
+  const shuffled=shuffle(r.syllables);
+  shuffled.forEach(syl=>{
+    const t=document.createElement('div');t.className='tile';t.textContent=syl;
+    t.onclick=()=>tapTile(t,syl);tilesEl.appendChild(t);
+  });
+  if(round===0)speak("Listen to the word, then tap the syllables in order to build it.",()=>speakWord());
+  else speakWord();
+}
+
+function tapTile(el,syl){
+  if(locked||el.classList.contains('used'))return;
+  AC.resume();
+  const r=ROUNDS[round],expected=r.syllables[placed];
+  if(syl===expected){
+    el.classList.add('used');
+    const slot=document.querySelectorAll('.slot')[placed];
+    slot.textContent=syl;slot.classList.add('filled');
+    chime(placed);placed++;
+    document.getElementById('feedback').textContent='';
+    if(placed===r.syllables.length){
+      locked=true;celebArpeggio();
+      slot.parentElement.style.filter='drop-shadow(0 0 12px #7cfc00)';
+      setTimeout(()=>{speak("That's right! "+r.word+"!",()=>{nextRound()})},400);
+    }
+  }else{
+    wrongCount++;el.classList.add('shake');wrongTone();
+    document.getElementById('feedback').textContent='Try a different one';
+    setTimeout(()=>el.classList.remove('shake'),400);
+    if(wrongCount>=3){
+      locked=true;
+      document.getElementById('feedback').textContent='The word is: '+r.word;
+      const slots=document.querySelectorAll('.slot');
+      r.syllables.forEach((s,i)=>{slots[i].textContent=s;slots[i].classList.add('filled')});
+      document.querySelectorAll('.tile').forEach(t=>t.classList.add('used'));
+      setTimeout(()=>speak(r.word,()=>{nextRound()}),600);
+    }
+  }
+}
+
+function nextRound(){
+  round++;if(round>=6){show('win');winArpeggio();return}
+  buildRound();
+}
+
+function startGame(){AC.resume();show('game');round=0;buildRound()}
+function resetGame(){show('landing');round=0}
+</script>
+</body>
+</html>

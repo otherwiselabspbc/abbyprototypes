@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Symbol Sort — Print Concepts</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;font-family:'Press Start 2P',monospace;user-select:none;
+  -webkit-user-select:none;touch-action:manipulation;height:100vh;width:100vw}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;z-index:10}
+.off{display:none!important}
+
+/* Shared BG */
+.bg{background:linear-gradient(180deg,#4a8ff5 0%,#6ec6ff 40%,#a8e6a3 65%,#5cb85c 75%,#3a7d3a 100%)}
+
+/* Landing */
+.big-title{font-size:clamp(24px,7vw,44px);color:#fff;text-align:center;line-height:1.3;
+  text-shadow:3px 3px 0 #2a5fb0;margin-bottom:28px}
+.btn{background:linear-gradient(180deg,#ff6b6b,#ee5a24);color:#fff;border:4px solid #b33a1a;
+  padding:18px 48px;font-size:16px;font-family:'Press Start 2P',monospace;border-radius:4px;
+  cursor:pointer;letter-spacing:2px;text-transform:uppercase;
+  box-shadow:inset -3px -3px 0 #b33a1a,inset 3px 3px 0 #ff9a7a,6px 6px 0 rgba(0,0,0,.2);
+  animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{
+  0%,100%{transform:scale(1);box-shadow:inset -3px -3px 0 #b33a1a,inset 3px 3px 0 #ff9a7a,
+    6px 6px 0 rgba(0,0,0,.2),0 0 20px rgba(255,107,107,.3)}
+  50%{transform:scale(1.08);box-shadow:inset -3px -3px 0 #b33a1a,inset 3px 3px 0 #ff9a7a,
+    6px 6px 0 rgba(0,0,0,.2),0 0 50px rgba(255,107,107,.6)}}
+.btn:active{transform:scale(.96)!important}
+.skill-tag{position:absolute;bottom:20px;font-size:7px;letter-spacing:2px;
+  color:rgba(255,255,255,.6);text-transform:uppercase}
+
+/* HUD */
+#hud{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:clamp(18px,4vw,28px)}
+#dots{display:flex;gap:10px}
+.dot{width:10px;height:10px;border-radius:2px;background:#2a5fb0;border:2px solid #1a3f80;transition:.4s}
+.dot.done{background:#7cfc00;border-color:#2a5020}
+.dot.cur{background:#ffe44d;border-color:#cc8800;box-shadow:0 0 8px rgba(255,228,77,.6)}
+#round-label{font-size:7px;letter-spacing:3px;color:#fff;text-transform:uppercase;text-shadow:1px 1px 0 rgba(0,0,0,.2)}
+
+/* Feedback toast */
+#toast{position:fixed;top:18%;left:50%;transform:translateX(-50%);font-size:clamp(9px,2.2vw,12px);
+  color:#fff;background:rgba(180,40,40,.92);border:3px solid #a02020;border-radius:6px;
+  padding:8px 18px;text-shadow:1px 1px 0 rgba(0,0,0,.3);opacity:0;transition:opacity .25s;
+  pointer-events:none;z-index:20}
+#toast.show{opacity:1}
+
+/* Grid */
+#grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,3vw,18px);margin:auto}
+.tile{width:clamp(72px,20vw,100px);height:clamp(72px,20vw,100px);border-radius:12px;
+  border:4px solid #1a3f80;background:linear-gradient(135deg,#e8f0ff,#c4d8f5);
+  box-shadow:inset -3px -3px 0 #8aa8d4,inset 3px 3px 0 #f0f6ff,4px 4px 0 rgba(0,0,0,.18);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  font-size:clamp(28px,7vw,42px);color:#1a2a50;transition:transform .15s,border-color .2s,box-shadow .2s}
+.tile.symbol{color:#8866aa}
+.tile.found{border-color:#2e8b2e;background:linear-gradient(135deg,#b5f5b5,#7cfc7c);
+  box-shadow:0 0 18px rgba(124,252,0,.5);color:#1a5a1a;pointer-events:none}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.tile.wrong{animation:shake .35s}
+
+/* Win */
+.badge{font-size:clamp(8px,2vw,11px);color:#ffe44d;letter-spacing:2px;text-transform:uppercase;
+  border:3px solid #cc8800;border-radius:6px;padding:10px 20px;margin:18px 0 28px;
+  background:rgba(204,136,0,.18);text-shadow:1px 1px 0 rgba(0,0,0,.3);text-align:center;line-height:2}
+</style>
+</head>
+<body>
+
+<!-- Landing -->
+<div id="s-land" class="screen bg">
+  <div class="big-title">Symbol Sort</div>
+  <button class="btn" onclick="startGame()">Begin</button>
+  <div class="skill-tag">Print Concepts</div>
+</div>
+
+<!-- Game -->
+<div id="s-game" class="screen bg off" style="justify-content:space-between;padding:0 20px clamp(24px,5vw,36px)">
+  <div id="hud">
+    <div id="dots"></div>
+    <div id="round-label"></div>
+  </div>
+  <div id="toast">That's not a letter</div>
+  <div id="grid"></div>
+  <div style="height:1px"></div>
+</div>
+
+<!-- Win -->
+<div id="s-win" class="screen bg off">
+  <div class="big-title">Well Done!</div>
+  <div class="badge">Print Concepts:<br>Text Identification</div>
+  <button class="btn" onclick="startGame()">Play Again</button>
+</div>
+
+<script>
+const ROUNDS=[
+  {items:['A','★','M','7','♦','T','9','♥','⚡'],letters:['A','M','T']},
+  {items:['3','B','☀','S','♦','9','K','★','♥'],letters:['B','S','K']},
+  {items:['P','⚡','7','D','★','L','♥','3','☀'],letters:['P','D','L']},
+  {items:['★','F','9','♦','N','R','⚡','3','G'],letters:['F','N','R','G']},
+  {items:['E','♥','W','★','7','H','☀','⚡','J'],letters:['E','W','H','J']}
+];
+
+const AC=new(window.AudioContext||window.webkitAudioContext)();
+let voice=null, round=0, found=0, needed=0, busy=false;
+
+// Cache voice
+function pickVoice(){
+  const v=speechSynthesis.getVoices();
+  const prefs=['samantha','karen','moira','tessa','fiona'];
+  for(const p of prefs){const m=v.find(x=>x.name.toLowerCase().includes(p));if(m)return m;}
+  return v.find(x=>x.lang.startsWith('en'))||v[0]||null;
+}
+speechSynthesis.onvoiceschanged=()=>{voice=pickVoice()};
+setTimeout(()=>{if(!voice)voice=pickVoice()},200);
+
+function speak(txt){
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(txt);
+  if(voice)u.voice=voice;
+  u.rate=0.9; u.pitch=1.05;
+  speechSynthesis.speak(u);
+}
+
+// SFX helpers
+function tone(freq,dur,type='sine',gain=.12){
+  const o=AC.createOscillator(),g=AC.createGain();
+  o.type=type;o.frequency.value=freq;g.gain.value=gain;
+  o.connect(g);g.connect(AC.destination);
+  g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+dur);
+  o.start();o.stop(AC.currentTime+dur);
+}
+function sfxCorrect(){tone(523,.12);setTimeout(()=>tone(659,.12),80);setTimeout(()=>tone(784,.15),160)}
+function sfxWrong(){tone(330,.12);setTimeout(()=>tone(262,.18),100)}
+function sfxRoundDone(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.13),i*90))}
+function sfxWin(){[523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>tone(f,.18,.sine,.15),i*110))}
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.add('off'));
+  document.getElementById(id).classList.remove('off')}
+
+function startGame(){
+  if(AC.state==='suspended')AC.resume();
+  round=0; show('s-game'); loadRound();
+}
+
+function loadRound(){
+  const r=ROUNDS[round]; found=0; needed=r.letters.length; busy=false;
+  // dots
+  const dots=document.getElementById('dots');
+  dots.innerHTML=ROUNDS.map((_,i)=>`<div class="dot${i<round?' done':''}${i===round?' cur':''}"></div>`).join('');
+  document.getElementById('round-label').textContent=`Round ${round+1} of ${ROUNDS.length}`;
+  // grid
+  const grid=document.getElementById('grid');
+  grid.innerHTML=r.items.map((item,i)=>{
+    const isLetter=r.letters.includes(item);
+    return `<div class="tile${isLetter?'':' symbol'}" data-letter="${isLetter?1:0}" data-idx="${i}">${item}</div>`;
+  }).join('');
+  // animate in
+  grid.querySelectorAll('.tile').forEach((t,i)=>{
+    t.style.opacity='0';t.style.transform='scale(.7)';
+    setTimeout(()=>{t.style.opacity='1';t.style.transform='scale(1)'},i*50+100);
+  });
+  // attach handlers
+  grid.querySelectorAll('.tile').forEach(t=>t.addEventListener('click',onTap));
+  // first round spoken instruction
+  if(round===0)setTimeout(()=>speak('Find all the letters. Tap each one!'),400);
+}
+
+function onTap(e){
+  if(busy)return;
+  const t=e.currentTarget;
+  if(t.classList.contains('found'))return;
+  if(t.dataset.letter==='1'){
+    t.classList.add('found');
+    sfxCorrect();
+    // speak letter lowercase
+    speak(t.textContent.toLowerCase());
+    found++;
+    if(found>=needed){
+      busy=true;
+      sfxRoundDone();
+      setTimeout(()=>{
+        round++;
+        if(round>=ROUNDS.length){sfxWin();setTimeout(()=>show('s-win'),600);}
+        else loadRound();
+      },800);
+    }
+  }else{
+    sfxWrong();
+    t.classList.add('wrong');
+    const toast=document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(()=>{t.classList.remove('wrong');toast.classList.remove('show')},700);
+  }
+}
+</script>
+</body>
+</html>

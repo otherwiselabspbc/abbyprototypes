@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Sound Forge — Phoneme Blending</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d0a1a;overflow:hidden;font-family:'Nunito',sans-serif;user-select:none;-webkit-user-select:none;cursor:none;color:#c0b0d8}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;transition:opacity .4s}.off{display:none!important}
+
+/* TITLE */
+#s-title{background:radial-gradient(ellipse at center,rgba(20,12,40,.97),rgba(13,10,26,.99))}
+.big-title{font-family:'Cinzel',serif;font-size:clamp(44px,11vw,76px);color:#e8d5a3;text-align:center;text-shadow:0 0 30px rgba(232,213,163,.5),0 0 60px rgba(80,200,180,.2);margin-bottom:16px}
+.skill-tag{position:absolute;bottom:28px;font-size:10px;letter-spacing:3px;color:rgba(100,80,140,.7);text-transform:uppercase;font-family:'Nunito',sans-serif}
+.btn{background:linear-gradient(145deg,#0e2a2a,#1a4040);color:#a0e8d8;border:1px solid rgba(80,200,180,.5);padding:15px 44px;font-size:17px;font-family:'Cinzel',serif;border-radius:4px;cursor:none;letter-spacing:3px;text-transform:uppercase;box-shadow:0 0 24px rgba(80,200,180,.3);transition:box-shadow .2s,transform .1s;animation:btn-bob 2.2s ease-in-out infinite}
+.btn:hover{animation:none;transform:scale(1.08);box-shadow:0 0 40px rgba(80,200,180,.7);border-color:rgba(120,240,210,.9)}
+.btn:active{transform:scale(.96)!important}
+@keyframes btn-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* WIN */
+#s-win{background:radial-gradient(ellipse at center,rgba(20,35,20,.97),rgba(13,10,26,.99))}
+.win-title{font-family:'Cinzel',serif;font-size:clamp(42px,10vw,72px);color:#7ee8b0;text-shadow:0 0 40px rgba(126,232,176,.6);margin-bottom:10px}
+.win-sub{font-size:16px;color:#9080b0;margin-bottom:28px}
+.badge{background:rgba(20,40,35,.9);border:1px solid rgba(80,200,180,.4);border-radius:6px;padding:14px 28px;margin-bottom:36px;text-align:center}
+.badge-label{font-size:10px;letter-spacing:4px;color:rgba(80,200,180,.7);text-transform:uppercase}
+.badge-name{font-size:17px;color:#e8d5a3;margin-top:5px;font-family:'Cinzel',serif}
+
+/* HUD */
+#hud{position:fixed;top:14px;left:0;width:100%;display:none;flex-direction:column;align-items:center;gap:6px;z-index:15;pointer-events:none}
+#hud.on{display:flex}
+#round-dots{display:flex;gap:9px}
+.rdot{width:9px;height:9px;border-radius:50%;background:rgba(80,200,180,.15);border:1px solid rgba(80,200,180,.3);transition:.4s}
+.rdot.done{background:#7ee8b0;border-color:#7ee8b0}.rdot.cur{background:#50c8b4;border-color:#50c8b4;box-shadow:0 0 8px rgba(80,200,180,.8)}
+#round-label{font-size:12px;color:rgba(160,232,216,.6);letter-spacing:2px}
+
+/* ORACLE */
+#oracle-wrap{display:none;flex-direction:column;align-items:center;gap:14px;margin-bottom:30px}
+#oracle-wrap.on{display:flex}
+#oracle{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(80,200,180,.25),rgba(13,10,26,.9));border:2px solid rgba(80,200,180,.4);display:flex;align-items:center;justify-content:center;font-size:32px;transition:.3s}
+#oracle.speaking{box-shadow:0 0 30px rgba(80,200,180,.7),0 0 60px rgba(80,200,180,.3);border-color:#50c8b4;animation:pulse .6s ease-in-out infinite alternate}
+@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.08)}}
+#phoneme-display{font-size:28px;color:#a0e8d8;letter-spacing:8px;min-height:36px;font-family:'Cinzel',serif}
+
+/* CHOICES */
+#choices{display:none;gap:16px;justify-content:center;flex-wrap:wrap}
+#choices.on{display:flex}
+.choice{background:rgba(15,30,30,.85);border:2px solid rgba(80,200,180,.35);border-radius:12px;padding:18px 36px;font-size:clamp(24px,6vw,34px);font-family:'Cinzel',serif;color:#c0e8e0;cursor:none;transition:.2s;min-width:100px;text-align:center}
+.choice:hover{border-color:#50c8b4;box-shadow:0 0 20px rgba(80,200,180,.5);transform:scale(1.05)}
+.choice.correct{background:rgba(30,80,50,.6);border-color:#7ee8b0;box-shadow:0 0 30px rgba(126,232,176,.6)}
+.choice.wrong{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+/* INSTRUCTION */
+#msg{position:fixed;bottom:34px;left:50%;transform:translateX(-50%);background:rgba(8,2,16,.88);border:1px solid rgba(80,200,180,.35);padding:11px 22px;border-radius:24px;font-size:14px;text-align:center;max-width:340px;z-index:15;pointer-events:none;display:none;backdrop-filter:blur(6px)}
+#msg.on{display:block}
+
+/* WAND */
+#wand{position:fixed;width:8px;height:148px;transform-origin:top center;transform:rotate(20deg);z-index:50;display:none;pointer-events:none}
+#wand.on{display:block}
+#wand-shaft{position:absolute;top:8px;left:0;width:8px;height:132px;background:linear-gradient(to bottom,#f0e0a0,#c88830,#7a4018,#2a1005);border-radius:1px 1px 3px 3px;box-shadow:0 0 10px rgba(200,140,48,.35)}
+#wand-star{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:24px;color:#ffe070;text-shadow:0 0 8px #ffe070,0 0 22px rgba(255,200,60,.9);animation:sp .38s ease-in-out infinite alternate}
+#wand-glow{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:34px;height:34px;background:radial-gradient(circle,rgba(255,210,60,.35) 0%,transparent 70%);border-radius:50%;animation:sp .38s ease-in-out infinite alternate}
+@keyframes sp{from{opacity:.75;transform:translateX(-50%) scale(1)}to{opacity:1;transform:translateX(-50%) scale(1.4)}}
+
+/* SPARKLE TRAIL */
+.sparkle{position:fixed;pointer-events:none;z-index:49;font-size:10px;color:#ffe070;opacity:1;transition:opacity .5s,transform .5s}
+</style>
+</head>
+<body>
+
+<div id="wand"><div id="wand-glow"></div><div id="wand-star">&#10022;</div><div id="wand-shaft"></div></div>
+
+<!-- TITLE -->
+<div id="s-title" class="screen">
+  <div class="big-title">Sound<br>Forge</div>
+  <button class="btn" id="btn-start">Begin</button>
+  <div class="skill-tag">Phoneme Blending</div>
+</div>
+
+<!-- GAME -->
+<div id="s-game" class="screen off">
+  <div id="hud"><div id="round-dots"></div><div id="round-label"></div></div>
+  <div id="oracle-wrap"><div id="oracle">&#128264;</div><div id="phoneme-display"></div></div>
+  <div id="choices"></div>
+</div>
+<div id="msg"></div>
+
+<!-- WIN -->
+<div id="s-win" class="screen off">
+  <div class="win-title">Well Done!</div>
+  <div class="win-sub">You forged every word from its sounds.</div>
+  <div class="badge"><div class="badge-label">Badge Earned</div><div class="badge-name">Phoneme Blending</div></div>
+  <button class="btn" id="btn-again">Play Again</button>
+</div>
+
+<script>
+const rounds=[
+  {sounds:['s','a','t'],answer:'sat',choices:['sat','sit','set']},
+  {sounds:['p','i','n'],answer:'pin',choices:['pin','pan','pen']},
+  {sounds:['h','o','t'],answer:'hot',choices:['hot','hat','hit']},
+  {sounds:['r','u','g'],answer:'rug',choices:['rug','rig','rag']},
+  {sounds:['b','e','d'],answer:'bed',choices:['bed','bad','bid']},
+  {sounds:['c','u','p'],answer:'cup',choices:['cup','cap','cop']}
+];
+let cur=0,hints=0,locked=false,actx,voice=null,audioCache={};
+const $=id=>document.getElementById(id);
+
+// --- WAND & SPARKLES ---
+const wand=$('wand');
+document.addEventListener('mousemove',e=>{wand.style.left=e.clientX+'px';wand.style.top=e.clientY+'px';spawnSparkle(e.clientX,e.clientY)});
+document.addEventListener('touchmove',e=>{const t=e.touches[0];wand.style.left=t.clientX+'px';wand.style.top=t.clientY+'px'},{passive:true});
+let sparkleT=0;
+function spawnSparkle(x,y){if(Date.now()-sparkleT<60)return;sparkleT=Date.now();const s=document.createElement('div');s.className='sparkle';s.textContent='✦';s.style.left=(x+Math.random()*16-8)+'px';s.style.top=(y+Math.random()*16-8)+'px';document.body.appendChild(s);requestAnimationFrame(()=>{s.style.opacity='0';s.style.transform='translateY(-18px) scale(0.3)'});setTimeout(()=>s.remove(),500)}
+
+// --- AUDIO INIT ---
+function initAudio(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume()}
+function chime(type){initAudio();const now=actx.currentTime;const g=actx.createGain();g.gain.setValueAtTime(.18,now);g.connect(actx.destination);
+  if(type==='correct'){[523,659,784].forEach((f,i)=>{const o=actx.createOscillator();o.type='sine';o.frequency.value=f;o.connect(g);o.start(now+i*.1);o.stop(now+i*.1+.2)})}
+  else if(type==='wrong'){[400,320].forEach((f,i)=>{const o=actx.createOscillator();o.type='sine';o.frequency.value=f;o.connect(g);o.start(now+i*.12);o.stop(now+i*.12+.18)});g.gain.setValueAtTime(.12,now)}
+  else if(type==='win'){[523,587,659,698,784,880].forEach((f,i)=>{const o=actx.createOscillator();o.type='sine';o.frequency.value=f;o.connect(g);o.start(now+i*.12);o.stop(now+i*.12+.25)})}}
+
+// --- VOICE ---
+function pickVoice(){const vs=speechSynthesis.getVoices();const prefs=['samantha','karen','moira','fiona','tessa'];for(const p of prefs){const v=vs.find(v=>v.name.toLowerCase().includes(p));if(v)return v}return vs.find(v=>v.lang.startsWith('en'))||vs[0]}
+function ensureVoice(cb){if(voice)return cb();speechSynthesis.getVoices().length?((voice=pickVoice()),cb()):speechSynthesis.onvoiceschanged=()=>{voice=pickVoice();cb()}}
+
+// --- PHONEME AUDIO (pre-recorded or TTS fallback) ---
+const audioLetters=new Set(['a','e','i','o','u','s','t','p','n','h','r','g','b','d','c','k','m','f']);
+function preloadAudio(){audioLetters.forEach(l=>{const a=new Audio();a.src=`../audio/harp/${l}.wav`;a.preload='auto';a.addEventListener('canplaythrough',()=>{audioCache[l]=a},{once:true});a.addEventListener('error',()=>{a.src=`../audio/harp/${l}.mp3`;a.addEventListener('canplaythrough',()=>{audioCache[l]=a},{once:true});a.addEventListener('error',()=>{},{once:true})},{once:true})})}
+preloadAudio();
+
+function speakPhoneme(letter){return new Promise(resolve=>{if(audioCache[letter]){const a=audioCache[letter].cloneNode();a.play().then(()=>{a.onended=resolve}).catch(()=>ttsFallback(letter,resolve))}else ttsFallback(letter,resolve)})}
+function ttsFallback(letter,resolve){const u=new SpeechSynthesisUtterance(letter);u.voice=voice;u.rate=0.7;u.onend=resolve;u.onerror=resolve;speechSynthesis.speak(u)}
+function speakWord(word){return new Promise(resolve=>{const u=new SpeechSynthesisUtterance(word);u.voice=voice;u.rate=0.9;u.onend=resolve;u.onerror=resolve;speechSynthesis.speak(u)})}
+function speakText(text){return new Promise(resolve=>{const u=new SpeechSynthesisUtterance(text);u.voice=voice;u.rate=0.95;u.onend=resolve;u.onerror=resolve;speechSynthesis.speak(u)})}
+
+// --- PLAY SOUNDS SEQUENCE ---
+async function playSounds(sounds){const oracle=$('oracle'),disp=$('phoneme-display');oracle.classList.add('speaking');disp.textContent='';
+  for(let i=0;i<sounds.length;i++){disp.textContent=`/${sounds[i]}/`;await speakPhoneme(sounds[i]);if(i<sounds.length-1)await delay(600)}
+  oracle.classList.remove('speaking');disp.textContent=sounds.map(s=>`/${s}/`).join(' ')}
+
+// --- SCREENS ---
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.add('off'));$(id).classList.remove('off')}
+function showMsg(t){const m=$('msg');m.textContent=t;m.classList.add('on');setTimeout(()=>m.classList.remove('on'),3000)}
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+
+// --- START ---
+$('btn-start').onclick=()=>{initAudio();ensureVoice(()=>{wand.classList.add('on');cur=0;startGame()})};
+$('btn-again').onclick=()=>{cur=0;startGame()};
+
+function startGame(){show('s-game');$('hud').classList.add('on');$('oracle-wrap').classList.add('on');buildDots();startRound()}
+
+function buildDots(){const d=$('round-dots');d.innerHTML='';for(let i=0;i<rounds.length;i++){const dot=document.createElement('div');dot.className='rdot'+(i<cur?' done':'');d.appendChild(dot)}}
+
+async function startRound(){locked=true;hints=0;$('choices').classList.remove('on');$('choices').innerHTML='';buildDots();
+  const dots=$('round-dots').children;if(dots[cur])dots[cur].classList.add('cur');
+  $('round-label').textContent=`Round ${cur+1} of ${rounds.length}`;
+  if(cur===0)showMsg("Listen to each sound, then tap the word they make.");
+  if(cur===0)await speakText("Listen to each sound, then tap the word they make.");
+  await delay(400);
+  await playSounds(rounds[cur].sounds);
+  await delay(300);
+  showChoices();locked=false}
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+
+function showChoices(){const box=$('choices');box.innerHTML='';const order=shuffle(rounds[cur].choices);
+  order.forEach(w=>{const b=document.createElement('button');b.className='choice';b.textContent=w;b.onclick=()=>pick(w,b);box.appendChild(b)});box.classList.add('on')}
+
+async function pick(word,el){if(locked)return;locked=true;const r=rounds[cur];
+  if(word===r.answer){el.classList.add('correct');chime('correct');
+    const phStr=r.sounds.map(s=>`/${s}/`).join(' ');
+    await speakText(`That's right! ${phStr} makes ${r.answer}`);
+    await delay(400);cur++;
+    if(cur>=rounds.length){winScreen()}else{startRound()}}
+  else{el.classList.add('wrong');chime('wrong');hints++;
+    await delay(400);el.classList.remove('wrong');
+    if(hints===1){showMsg("Not quite — try again!");await speakText("Not quite, try again!");locked=false}
+    else if(hints===2){showMsg("Listen again...");await playSounds(r.sounds);locked=false}
+    else{showMsg(`The answer is ${r.answer}.`);await speakText(`The answer is ${r.answer}`);
+      document.querySelectorAll('.choice').forEach(c=>{if(c.textContent===r.answer)c.classList.add('correct')});
+      await delay(1200);cur++;if(cur>=rounds.length){winScreen()}else{startRound()}}}}
+
+function winScreen(){$('hud').classList.remove('on');$('oracle-wrap').classList.remove('on');$('choices').classList.remove('on');show('s-win');chime('win')}
+</script>
+</body>
+</html>
