@@ -1553,155 +1553,21 @@ footer {
 <!-- ═══ HEADER ════════════════════════════════════════════════════ -->
 <header>
   <div class="header-inner">
-    <div class="header-eyebrow">OL Project HQ · Active</div>
-    <h1>OL<span> Project</span> HQ</h1>
+    <div class="header-eyebrow">Otherwise Labs · Prototypes</div>
+    <h1>Abby's<span> Prototypes</span></h1>
   </div>
 </header>
 
 <!-- ═══ NAV ═══════════════════════════════════════════════════════ -->
 <nav>
   <div class="nav-inner">
-    <a class="nav-link active" href="#documents">Documents</a>
-    <a class="nav-link" href="#team">Team</a>
-    <a class="nav-link" href="#prototypes">Prototypes</a>
-    <a class="nav-link" href="#frameworks">Frameworks</a>
-    <a class="nav-link" href="#resources">Resource Library</a>
-    <a class="nav-link" href="#meeting-notes">Meeting Notes</a>
-    <a class="nav-link" href="#action-items">Action Items</a>
+    <a class="nav-link active" href="#prototypes">Prototypes</a>
+    <a class="nav-link" href="#frameworks">Design Frameworks</a>
   </div>
 </nav>
 
 <!-- ═══ MAIN ═══════════════════════════════════════════════════════ -->
 <main>
-
-  <!-- ═══ DOCUMENTS ═══════════════════════════════════════════════ -->
-  <div class="section" id="documents">
-    <div class="section-header">
-      <h2 class="section-title">Project Documents</h2>
-      <span class="section-count">2 docs</span>
-    </div>
-    <div class="cards-grid">
-      <div class="card doc-card" data-doc-id="product-vision">
-        <div class="card-title">Product Vision</div>
-        <div class="card-desc">Core concept, three-phase roadmap, design principles.</div>
-        <div class="doc-link-row">
-          <input class="game-link-input doc-link-input" type="text" placeholder="Paste document URL…" />
-          <a class="game-open-btn disabled" href="#" onclick="return false;">Open ↗</a>
-        </div>
-      </div>
-      <div class="card doc-card" data-doc-id="curriculum-map">
-        <div class="card-title">Curriculum Map</div>
-        <div class="card-desc">~50 Orton-Gillingham activities with modalities and sample items.</div>
-        <div class="doc-link-row">
-          <input class="game-link-input doc-link-input" type="text" placeholder="Paste document URL…" />
-          <a class="game-open-btn disabled" href="#" onclick="return false;">Open ↗</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══ TEAM ════════════════════════════════════════════════════ -->
-  <div class="section" id="team">
-    <div class="section-header">
-      <h2 class="section-title">Team</h2>
-      <span class="section-count">4 members</span>
-    </div>
-    <div class="profiles">
-      <!-- Abby -->
-      <div class="profile" id="profile-abby">
-        <div class="profile-header" onclick="toggleProfile('profile-abby')">
-          <div class="profile-left">
-            <div class="profile-avatar" style="background:var(--coral)">A</div>
-            <div><div class="profile-name">Abby</div></div>
-          </div>
-          <div class="profile-right">
-            <span class="profile-count">11 prototypes</span>
-            <span class="profile-chevron">▾</span>
-          </div>
-        </div>
-        <div class="profile-body">
-          <div class="profile-content">
-            <table class="profile-table">
-              <thead><tr><th>Prototype</th><th>Type</th><th>Skill</th><th>Status</th></tr></thead>
-              <tbody>
-                <tr><td>Enchanted Gems</td><td>Mini-game</td><td>Phoneme Identification</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>The Rune Stones</td><td>Mini-game</td><td>Phoneme Sequence</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>The Enchanted Harp</td><td>Mini-game</td><td>Phoneme Sequence</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>The Whispering Stones</td><td>Mini-game</td><td>Rhyme Detection</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>Block Breaker</td><td>Mini-game</td><td>Letter Recognition</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>Seed Script</td><td>Mini-game</td><td>Letter Tracing</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>Syllable Sprout</td><td>Mini-game</td><td>Syllable Counting</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>Mini Lesson: Letter Sounds</td><td>Mini-lesson</td><td>Letter Sounds</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>Mini Lesson: The Locked Door</td><td>Mini-lesson</td><td>Letter Sounds · Narrative</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>Mini Lesson: Quest Catcher</td><td>Mini-lesson</td><td>Vocabulary in Context</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-                <tr><td>Spell Caster</td><td>Mini-game</td><td>Decoding · Word Building</td><td><span class="game-status-badge status-wip">In Progress</span></td></tr>
-              </tbody>
-            </table>
-            <div class="member-upload-section">
-              <div class="member-upload-label">Add a new prototype</div>
-              <div class="member-upload-row">
-                <input class="game-link-input" type="text" placeholder="Prototype name" id="abby-proto-name" />
-                <select class="game-link-input proto-type-select" id="abby-proto-type"><option value="Mini-game">Mini-game</option><option value="Mini-lesson">Mini-lesson</option><option value="Other">Other</option></select>
-                <input class="game-link-input" type="text" placeholder="URL" id="abby-proto-url" />
-                <button class="game-open-btn" onclick="addMemberProto('profile-abby', 'abby-proto-name', 'abby-proto-type', 'abby-proto-url')">Add</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Bob -->
-      <div class="profile" id="profile-bob">
-        <div class="profile-header" onclick="toggleProfile('profile-bob')">
-          <div class="profile-left"><div class="profile-avatar" style="background:var(--teal)">B</div><div><div class="profile-name">Bob</div></div></div>
-          <div class="profile-right"><span class="profile-count" id="bob-count"></span><span class="profile-chevron">▾</span></div>
-        </div>
-        <div class="profile-body"><div class="profile-content">
-          <table class="profile-table" id="bob-table" style="display:none"><thead><tr><th>Prototype</th><th>Type</th><th>URL</th><th></th></tr></thead><tbody id="bob-tbody"></tbody></table>
-          <div class="profile-empty" id="bob-empty">No prototypes yet</div>
-          <div class="member-upload-section"><div class="member-upload-label">Add a new prototype</div><div class="member-upload-row">
-            <input class="game-link-input" type="text" placeholder="Prototype name" id="bob-proto-name" />
-            <select class="game-link-input proto-type-select" id="bob-proto-type"><option value="Mini-game">Mini-game</option><option value="Mini-lesson">Mini-lesson</option><option value="Other">Other</option></select>
-            <input class="game-link-input" type="text" placeholder="URL" id="bob-proto-url" />
-            <button class="game-open-btn" onclick="addMemberProto('profile-bob', 'bob-proto-name', 'bob-proto-type', 'bob-proto-url')">Add</button>
-          </div></div>
-        </div></div>
-      </div>
-      <!-- Tyler -->
-      <div class="profile" id="profile-tyler">
-        <div class="profile-header" onclick="toggleProfile('profile-tyler')">
-          <div class="profile-left"><div class="profile-avatar" style="background:var(--gold)">T</div><div><div class="profile-name">Tyler</div></div></div>
-          <div class="profile-right"><span class="profile-count" id="tyler-count"></span><span class="profile-chevron">▾</span></div>
-        </div>
-        <div class="profile-body"><div class="profile-content">
-          <table class="profile-table" id="tyler-table" style="display:none"><thead><tr><th>Prototype</th><th>Type</th><th>URL</th><th></th></tr></thead><tbody id="tyler-tbody"></tbody></table>
-          <div class="profile-empty" id="tyler-empty">No prototypes yet</div>
-          <div class="member-upload-section"><div class="member-upload-label">Add a new prototype</div><div class="member-upload-row">
-            <input class="game-link-input" type="text" placeholder="Prototype name" id="tyler-proto-name" />
-            <select class="game-link-input proto-type-select" id="tyler-proto-type"><option value="Mini-game">Mini-game</option><option value="Mini-lesson">Mini-lesson</option><option value="Other">Other</option></select>
-            <input class="game-link-input" type="text" placeholder="URL" id="tyler-proto-url" />
-            <button class="game-open-btn" onclick="addMemberProto('profile-tyler', 'tyler-proto-name', 'tyler-proto-type', 'tyler-proto-url')">Add</button>
-          </div></div>
-        </div></div>
-      </div>
-      <!-- Jed -->
-      <div class="profile" id="profile-jed">
-        <div class="profile-header" onclick="toggleProfile('profile-jed')">
-          <div class="profile-left"><div class="profile-avatar" style="background:#6b7ecc">J</div><div><div class="profile-name">Jed</div></div></div>
-          <div class="profile-right"><span class="profile-count" id="jed-count"></span><span class="profile-chevron">▾</span></div>
-        </div>
-        <div class="profile-body"><div class="profile-content">
-          <table class="profile-table" id="jed-table" style="display:none"><thead><tr><th>Prototype</th><th>Type</th><th>URL</th><th></th></tr></thead><tbody id="jed-tbody"></tbody></table>
-          <div class="profile-empty" id="jed-empty">No prototypes yet</div>
-          <div class="member-upload-section"><div class="member-upload-label">Add a new prototype</div><div class="member-upload-row">
-            <input class="game-link-input" type="text" placeholder="Prototype name" id="jed-proto-name" />
-            <select class="game-link-input proto-type-select" id="jed-proto-type"><option value="Mini-game">Mini-game</option><option value="Mini-lesson">Mini-lesson</option><option value="Other">Other</option></select>
-            <input class="game-link-input" type="text" placeholder="URL" id="jed-proto-url" />
-            <button class="game-open-btn" onclick="addMemberProto('profile-jed', 'jed-proto-name', 'jed-proto-type', 'jed-proto-url')">Add</button>
-          </div></div>
-        </div></div>
-      </div>
-    </div>
-  </div>
 
   <!-- ═══ PROTOTYPES ══════════════════════════════════════════════ -->
   <div class="section" id="prototypes">
@@ -2015,102 +1881,10 @@ footer {
     </div>
   </div>
 
-  <!-- ═══ RESEARCH ════════════════════════════════════════════════ -->
-  <div class="section" id="resources">
-    <div class="section-header">
-      <h2 class="section-title">Resource Library</h2>
-      <span class="section-count">5 sources</span>
-      <a href="https://drive.google.com/drive/u/0/folders/1kZLAUjk5gWplhWxgBuv5Z1SGsmzxbLNr" target="_blank" rel="noopener" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--teal);text-decoration:none;padding:5px 12px;border:1.5px solid var(--teal-lt);border-radius:8px;background:var(--teal-lt);transition:background .15s" onmouseover="this.style.background='#c4e8e4'" onmouseout="this.style.background='var(--teal-lt)'">Open in Google Drive ↗</a>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>ID</th><th>Title</th><th>Authors</th><th>Type</th><th>Topics</th></tr></thead>
-        <tbody>
-          <tr><td>R-001</td><td>Handbook of Game-Based Learning</td><td>Plass, Mayer, Homer</td><td><span class="status-pill status-active">Textbook</span></td><td>Cognitive load, feedback design, motivation (SDT)…</td></tr>
-          <tr><td>R-002</td><td>Actionable Gamification</td><td>Yu-kai Chou</td><td><span class="status-pill status-active">Book</span></td><td>8 Core Drives of motivation, White Hat vs Black Hat…</td></tr>
-          <tr><td>R-003</td><td>MDA — A Formal Approach to Game Design</td><td>Hunicke, LeBlanc, Zubek</td><td><span class="status-pill status-active">Paper</span></td><td>Game design decomposition, mechanics vs dynamics vs aesthetics…</td></tr>
-          <tr><td>R-004</td><td>Otherwise Labs Check-in — Explicit &amp; Systematic Instruction</td><td>Ogata, Garewal, Borges</td><td><span class="status-pill status-active">Meeting Notes</span></td><td>Explicit instruction, systematic teaching, 80/20 rule…</td></tr>
-          <tr><td>R-005</td><td>WRS Lesson Plan Poster</td><td>Wilson Reading System</td><td><span class="status-pill status-active">Reference</span></td><td>Lesson plan structure, 10-step lesson sequence…</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ═══ MEETING NOTES ══════════════════════════════════════════ -->
-  <div class="section" id="meeting-notes">
-    <div class="section-header">
-      <h2 class="section-title">Meeting Notes</h2>
-      <span class="section-count" id="notes-count">0 entries</span>
-    </div>
-
-    <!-- Upload zone -->
-    <div class="notes-upload-zone" id="notes-drop-zone" onclick="document.getElementById('notes-file-input').click()">
-      
-      <div class="notes-upload-label">Upload meeting notes</div>
-      <div class="notes-upload-sub">Drop files here or <strong>click to browse</strong> · .txt, .md, .pdf, .docx</div>
-      <input type="file" id="notes-file-input" multiple accept=".txt,.md,.pdf,.doc,.docx" style="display:none" />
-    </div>
-
-    <!-- Timeline -->
-    <div class="notes-timeline" id="notes-timeline">
-      <div class="notes-empty" id="notes-empty">No meeting notes yet — upload a file above to get started.</div>
-    </div>
-  </div>
-
-  <!-- ═══ ACTION ITEMS ═══════════════════════════════════════════ -->
-  <div class="section" id="action-items">
-    <div class="section-header">
-      <h2 class="section-title">Action Items</h2>
-      <span class="section-count" id="action-count">0 items</span>
-    </div>
-
-    <!-- Filter tabs -->
-    <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
-      <button class="action-filter active" onclick="filterActions('all', this)">All</button>
-      <button class="action-filter" onclick="filterActions('open', this)">Open</button>
-      <button class="action-filter" onclick="filterActions('done', this)">Done</button>
-    </div>
-
-    <!-- Board -->
-    <div class="action-board">
-      <div class="action-board-header">
-        <div class="action-board-header-cell"></div>
-        <div class="action-board-header-cell">Task</div>
-        <div class="action-board-header-cell">Assignee</div>
-        <div class="action-board-header-cell">Priority</div>
-        <div class="action-board-header-cell">Status</div>
-        <div class="action-board-header-cell">Due Date</div>
-        <div class="action-board-header-cell"></div>
-      </div>
-      <div id="action-list">
-        <div class="action-empty" id="action-empty" style="padding:32px;text-align:center;font-size:13px;color:var(--ink-soft);font-style:italic">No action items yet.</div>
-      </div>
-
-      <!-- Add new row -->
-      <div class="action-add-row">
-        <input type="text" id="action-text" placeholder="+ Add an action item…" onkeydown="if(event.key==='Enter') addActionItem()" />
-        <select id="action-owner">
-          <option value="">Assignee</option>
-          <option value="Abby">Abby</option>
-          <option value="Bob">Bob</option>
-          <option value="Tyler">Tyler</option>
-          <option value="Jed">Jed</option>
-          <option value="Team">Team</option>
-        </select>
-        <select id="action-priority">
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
-          <option value="Low">Low</option>
-        </select>
-        <input type="date" id="action-due" />
-        <button class="game-open-btn" style="flex-shrink:0" onclick="addActionItem()">Add</button>
-      </div>
-    </div>
-  </div>
 
 </main>
 
-<footer>OL Project HQ · Updated May 2026</footer>
+<footer>Abby's Prototypes · Otherwise Labs</footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -2119,12 +1893,12 @@ footer {
 let db = null;
 try {
   firebase.initializeApp({
-    apiKey: "AIzaSyDwSpbAxXzlnvPkDt0YwbqBOe88qOoa7Fs",
-    authDomain: "ol-project-hq.firebaseapp.com",
-    projectId: "ol-project-hq",
-    storageBucket: "ol-project-hq.firebasestorage.app",
-    messagingSenderId: "114993145834",
-    appId: "1:114993145834:web:4d9db4bfc0cf27c2293493"
+    apiKey: "AIzaSyC1YAADVhGSWXBOjMU7oGzfPCl8EbDsj2s",
+    authDomain: "ol-hq-6d482.firebaseapp.com",
+    projectId: "ol-hq-6d482",
+    storageBucket: "ol-hq-6d482.firebasestorage.app",
+    messagingSenderId: "876051686372",
+    appId: "1:876051686372:web:fe854edaef6b2395fa1df1"
   });
   db = firebase.firestore();
 } catch(e) { console.error('Firebase init failed:', e); }
@@ -2178,38 +1952,7 @@ function loadData() {
     });
   }
 
-  // Load doc links
-  if (store.docs) {
-    Object.keys(store.docs).forEach(id => {
-      const card = document.querySelector(`.doc-card[data-doc-id="${id}"]`);
-      if (!card || !store.docs[id]) return;
-      const input = card.querySelector('.doc-link-input');
-      const btn = card.querySelector('.game-open-btn');
-      if (input) {
-        input.value = store.docs[id];
-        if (btn && store.docs[id]) {
-          btn.classList.remove('disabled'); btn.href = store.docs[id]; btn.target = '_blank'; btn.rel = 'noopener'; btn.onclick = null;
-        }
-      }
-    });
-  }
-
-  // Load action item states
-  if (store.actions) {
-    Object.keys(store.actions).forEach(id => {
-      const item = actionItems.find(a => a.id === id);
-      if (item) item.done = store.actions[id].done;
-    });
-  }
-
-  // Load member protos
-  if (store.memberProtos) {
-    store.memberProtos.forEach(p => {
-      renderMemberProtoRow(p.member, p.name, p.type, p.url, p.id);
-    });
-  }
-
-  // Also try Firestore (will overwrite localStorage data if available)
+  // Also try Firestore
   if (db) {
     db.collection('games').get().then(snapshot => {
       snapshot.forEach(doc => {
@@ -2228,61 +1971,15 @@ function loadData() {
           const notesEl = card.querySelector('.game-notes');
           if (notesEl) notesEl.value = data.notes;
         }
-        // Sync to localStorage
         const store2 = loadStore();
         store2.games = store2.games || {};
         store2.games[doc.id] = data;
         saveStore(store2);
       });
     }).catch(()=>{});
-
-    db.collection('action-items').get().then(snapshot => {
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const item = actionItems.find(a => a.id === doc.id);
-        if (item && data.done !== undefined) item.done = data.done;
-      });
-      renderActions();
-    }).catch(()=>{});
   }
-
-  renderActions();
 }
 
-function renderMemberProtoRow(member, name, type, url, protoId) {
-  const tbody = document.getElementById(member + '-tbody');
-  const table = document.getElementById(member + '-table');
-  const empty = document.getElementById(member + '-empty');
-  if (!tbody) return;
-  const tr = document.createElement('tr');
-  tr.setAttribute('data-proto-id', protoId);
-  tr.innerHTML = `
-    <td><strong>${escapeHtml(name)}</strong></td>
-    <td><span style="font-size:11px;color:var(--ink-soft)">${escapeHtml(type || '—')}</span></td>
-    <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-      ${url ? `<a href="${escapeHtml(url)}" target="_blank" style="color:var(--coral);font-family:'DM Mono',monospace;font-size:11px">${escapeHtml(url)}</a>` : '<span style="color:#ccc;font-style:italic">No URL</span>'}
-    </td>
-    <td style="white-space:nowrap">
-      ${url ? `<a class="game-open-btn" href="${escapeHtml(url)}" target="_blank" rel="noopener" style="padding:5px 10px;font-size:10px">Open ↗</a>` : ''}
-      <button class="note-btn" style="padding:5px 10px;font-size:10px;margin-left:4px" onclick="removeMemberProto('${member}', '${protoId}', this)">Remove</button>
-    </td>`;
-  tbody.appendChild(tr);
-  if (empty) empty.style.display = 'none';
-  if (table) table.style.display = '';
-  updateMemberCount(member);
-}
-
-function removeMemberProto(member, docId, btn) {
-  btn.closest('tr').remove();
-  updateMemberCount(member);
-  // Remove from localStorage
-  const store = loadStore();
-  if (store.memberProtos) {
-    store.memberProtos = store.memberProtos.filter(p => p.id !== docId);
-    saveStore(store);
-  }
-  if (db) db.collection('member-protos').doc(docId).delete().catch(()=>{});
-}
 
 /* Mechanics editable placeholders */
 document.querySelectorAll('.game-mechanics-placeholder[contenteditable]').forEach(el => {
@@ -2357,13 +2054,7 @@ document.querySelectorAll('.game-card[data-id]').forEach(card => {
   }
 });
 
-/* Profile accordion */
-function toggleProfile(id) {
-  const el = document.getElementById(id);
-  const isOpen = el.classList.contains('open');
-  document.querySelectorAll('.profile').forEach(p => p.classList.remove('open'));
-  if (!isOpen) el.classList.add('open');
-}
+/* (Team profiles removed) */
 
 /* Game card link → open button (only in game-footer, not member upload rows) */
 document.querySelectorAll('.game-footer .game-link-input').forEach(input => {
@@ -2392,351 +2083,13 @@ document.querySelectorAll('.game-footer .game-link-input').forEach(input => {
 
 // openLink replaced by native <a> tags
 
-/* ── MEMBER PROTOTYPE ADD ──────────────────────────────────── */
-function addMemberProto(profileId, nameInputId, typeSelectId, urlInputId) {
-  const nameEl = document.getElementById(nameInputId);
-  const typeEl = document.getElementById(typeSelectId);
-  const urlEl  = document.getElementById(urlInputId);
-  const name = nameEl.value.trim();
-  const type = typeEl ? typeEl.value : '—';
-  const url  = urlEl.value.trim();
-  if (!name) { nameEl.focus(); return; }
-
-  const member = profileId.replace('profile-', '');
-  const tbody  = document.getElementById(member + '-tbody');
-  const table  = document.getElementById(member + '-table');
-  const empty  = document.getElementById(member + '-empty');
-  const count  = document.getElementById(member + '-count');
-
-  if (!tbody) return;
-
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td><strong>${escapeHtml(name)}</strong></td>
-    <td><span style="font-size:11px;color:var(--ink-soft)">${escapeHtml(type)}</span></td>
-    <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-      ${url ? `<a href="${escapeHtml(url)}" target="_blank" style="color:var(--coral);font-family:'DM Mono',monospace;font-size:11px">${escapeHtml(url)}</a>` : '<span style="color:#ccc;font-style:italic">No URL</span>'}
-    </td>
-    <td style="white-space:nowrap">
-      ${url ? `<a class="game-open-btn" href="${escapeHtml(url)}" target="_blank" rel="noopener" style="padding:5px 10px;font-size:10px">Open ↗</a>` : ''}
-      <button class="note-btn" style="padding:5px 10px;font-size:10px;margin-left:4px" onclick="this.closest('tr').remove(); updateMemberCount('${member}')">Remove</button>
-    </td>`;
-  tbody.appendChild(tr);
-
-  if (empty) empty.style.display = 'none';
-  if (table) table.style.display = '';
-  updateMemberCount(member);
-
-  // Save to localStorage + Firestore
-  const protoId = 'proto-' + Date.now() + '-' + Math.random().toString(36).slice(2);
-  tr.setAttribute('data-proto-id', protoId);
-  const store = loadStore();
-  store.memberProtos = store.memberProtos || [];
-  store.memberProtos.push({id: protoId, member, name, type, url});
-  saveStore(store);
-  if (db) db.collection('member-protos').doc(protoId).set({member, name, type, url}).catch(()=>{});
-
-  const removeBtn = tr.querySelector('button');
-  if (removeBtn) {
-    removeBtn.onclick = function() {
-      this.closest('tr').remove();
-      updateMemberCount(member);
-      const s = loadStore();
-      if (s.memberProtos) { s.memberProtos = s.memberProtos.filter(p => p.id !== protoId); saveStore(s); }
-      if (db) db.collection('member-protos').doc(protoId).delete().catch(()=>{});
-    };
-  }
-
-  nameEl.value = '';
-  if (typeEl) typeEl.selectedIndex = 0;
-  urlEl.value  = '';
-  nameEl.focus();
-}
-
-function updateMemberCount(member) {
-  const tbody = document.getElementById(member + '-tbody');
-  const count = document.getElementById(member + '-count');
-  const empty = document.getElementById(member + '-empty');
-  const table = document.getElementById(member + '-table');
-  if (!tbody || !count) return;
-  const rows = tbody.querySelectorAll('tr').length;
-  count.textContent = rows > 0 ? rows + (rows === 1 ? ' prototype' : ' prototypes') : '';
-  if (empty) empty.style.display = rows === 0 ? '' : 'none';
-  if (table) table.style.display = rows === 0 ? 'none' : '';
-}
-
-/* Doc card inputs — save URLs to localStorage */
-document.querySelectorAll('.doc-link-input').forEach(input => {
-  const btn = input.nextElementSibling;
-  const card = input.closest('.doc-card[data-doc-id]');
-  const docId = card ? card.dataset.docId : null;
-
-  function syncDoc() {
-    const val = input.value.trim();
-    if (val) { btn.classList.remove('disabled'); btn.href = val; btn.target = '_blank'; btn.rel = 'noopener'; btn.onclick = null; }
-    else     { btn.classList.add('disabled'); btn.href = '#'; btn.onclick = (e) => e.preventDefault(); }
-    if (docId) {
-      const store = loadStore();
-      store.docs = store.docs || {};
-      store.docs[docId] = val;
-      saveStore(store);
-    }
-  }
-  input.addEventListener('input', syncDoc);
-  input.addEventListener('paste', () => setTimeout(syncDoc, 0));
-});
-
-/* ── ACTION ITEMS BOARD ──────────────────────────────────────── */
-const actionItems = [
-  { id: 'action-1', text: 'Tyler and Abby: schedule kick-off meeting for Learning Progression Mechanics document', owner: 'Tyler', priority: 'High', done: false, due: '' },
-  { id: 'action-2', text: 'Bob and Jed: schedule kick-off meeting for Context & Narrative document', owner: 'Bob', priority: 'High', done: false, due: '' },
-  { id: 'action-3', text: 'Tyler: keep Abby in the loop as Learning Progression Mechanics document progresses', owner: 'Tyler', priority: 'Medium', done: false, due: '' },
-  { id: 'action-4', text: 'Team: align on terminology — differentiate between skills, tutor-led activities, digital activities, and learning/game mechanics', owner: 'Team', priority: 'High', done: false, due: '' },
-  { id: 'action-5', text: 'Tyler + Abby: draft Learning Progression Mechanics document, including session loop structure (warm-up → learning activities) and level/stage groupings', owner: 'Tyler', priority: 'High', done: false, due: '' },
-  { id: 'action-6', text: 'Bob + Jed (with Tyler + Abby): draft Context & Narrative document — backstory, recurring characters, core verb set, and examples of mechanics binding into story', owner: 'Bob', priority: 'Medium', done: false, due: '' },
-  { id: 'action-7', text: 'Team: decide whether the 3 games share a single narrative or each has its own', owner: 'Team', priority: 'Medium', done: false, due: '' },
-  { id: 'action-8', text: 'Team: decide whether to include initial diagnostic assessments in the progression document or keep assessment separate', owner: 'Team', priority: 'Medium', done: false, due: '' },
-  { id: 'action-9', text: 'Bob: reach out to Jed separately to schedule Context & Narrative working session', owner: 'Bob', priority: 'High', done: false, due: '' },
-];
-let currentFilter = 'all';
-
-function addActionItem() {
-  const textEl     = document.getElementById('action-text');
-  const ownerEl    = document.getElementById('action-owner');
-  const priorityEl = document.getElementById('action-priority');
-  const dueEl      = document.getElementById('action-due');
-  const text = textEl.value.trim();
-  if (!text) { textEl.focus(); return; }
-  actionItems.unshift({
-    id: 'action-' + Date.now(),
-    text,
-    owner: ownerEl.value || '',
-    priority: priorityEl.value,
-    done: false,
-    due: dueEl.value || ''
-  });
-  textEl.value = ''; ownerEl.selectedIndex = 0; priorityEl.selectedIndex = 0; dueEl.value = '';
-  renderActions();
-}
-
-function toggleActionDone(id) {
-  const item = actionItems.find(a => a.id === id);
-  if (item) {
-    item.done = !item.done;
-    renderActions();
-    saveActionItem(id, item.done);
-  }
-}
-
-function updateActionDue(id, val) {
-  const item = actionItems.find(a => a.id === id);
-  if (item) item.due = val;
-}
-
-function removeAction(id) {
-  const idx = actionItems.findIndex(a => a.id === id);
-  if (idx > -1) { actionItems.splice(idx, 1); renderActions(); }
-}
-
-function filterActions(filter, btn) {
-  currentFilter = filter;
-  document.querySelectorAll('.action-filter').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderActions();
-}
-
-function renderActions() {
-  const list  = document.getElementById('action-list');
-  const empty = document.getElementById('action-empty');
-  const count = document.getElementById('action-count');
-
-  list.querySelectorAll('.action-row').forEach(el => el.remove());
-
-  const filtered = actionItems.filter(a => {
-    if (currentFilter === 'open') return !a.done;
-    if (currentFilter === 'done') return a.done;
-    return true;
-  });
-
-  const open = actionItems.filter(a => !a.done).length;
-  count.textContent = open + ' open · ' + actionItems.length + ' total';
-
-  if (filtered.length === 0) {
-    empty.style.display = '';
-    empty.textContent = currentFilter === 'done' ? 'No completed items yet.' :
-                        currentFilter === 'open' ? 'All items are done!' :
-                        'No action items yet.';
-    return;
-  }
-  empty.style.display = 'none';
-
-  const today = new Date(); today.setHours(0,0,0,0);
-
-  filtered.forEach(item => {
-    const row = document.createElement('div');
-    row.className = 'action-row' + (item.done ? ' done-item' : '');
-
-    let overdueClass = '';
-    if (item.due && !item.done) {
-      const d = new Date(item.due + 'T00:00:00');
-      if (d < today) overdueClass = ' overdue';
-    }
-
-    row.innerHTML = `
-      <div class="action-checkbox-cell">
-        <div class="action-checkbox ${item.done ? 'checked' : ''}" onclick="toggleActionDone('${item.id}')"></div>
-      </div>
-      <div class="action-row-cell"><span class="action-text">${escapeHtml(item.text)}</span></div>
-      <div class="action-row-cell">
-        ${item.owner ? `<span class="action-owner-tag">${escapeHtml(item.owner)}</span>` : '<span style="color:#ccc;font-size:11px">—</span>'}
-      </div>
-      <div class="action-row-cell">
-        <span class="action-priority-pill action-priority-${item.priority.toLowerCase()}">${escapeHtml(item.priority)}</span>
-      </div>
-      <div class="action-row-cell">
-        <span class="action-status-pill ${item.done ? 'action-status-done' : 'action-status-open'}" onclick="toggleActionDone('${item.id}')">
-          ${item.done ? 'Done' : 'Open'}
-        </span>
-      </div>
-      <div class="action-row-cell">
-        <input type="date" class="action-due-input${overdueClass}" value="${escapeHtml(item.due)}" onchange="updateActionDue('${item.id}', this.value); renderActions()" />
-      </div>
-      <div class="action-row-cell" style="padding:0;text-align:center">
-        <button class="action-remove" onclick="removeAction('${item.id}')">&#x2715;</button>
-      </div>`;
-    list.appendChild(row);
-  });
-}
-
-/* ── MEETING NOTES ─────────────────────────────────────── */
-const notesData = []; // { id, title, dateLabel, dateYear, fileName, content }
-
-const dropZone   = document.getElementById('notes-drop-zone');
-const fileInput  = document.getElementById('notes-file-input');
-const timeline   = document.getElementById('notes-timeline');
-const emptyMsg   = document.getElementById('notes-empty');
-const notesCount = document.getElementById('notes-count');
-
-/* Drag-and-drop */
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over') });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.classList.remove('drag-over');
-  handleFiles(e.dataTransfer.files);
-});
-fileInput.addEventListener('change', () => handleFiles(fileInput.files));
-
-function handleFiles(files) {
-  Array.from(files).forEach(file => {
-    const id = 'note-' + Date.now() + '-' + Math.random().toString(36).slice(2);
-    const dateObj = new Date(file.lastModified);
-    const dateLabel = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    const dateYear  = dateObj.getFullYear();
-    const sortKey   = dateObj.getTime();
-
-    const entry = { id, title: file.name.replace(/\.[^.]+$/, ''), dateLabel, dateYear, sortKey, fileName: file.name, content: null };
-
-    // Read text files for preview
-    if (file.type === 'text/plain' || file.name.endsWith('.md')) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        entry.content = e.target.result;
-        renderTimeline();
-      };
-      reader.readAsText(file);
-    } else {
-      renderTimeline();
-    }
-
-    notesData.push(entry);
-    notesData.sort((a, b) => b.sortKey - a.sortKey); // newest first
-    renderTimeline();
-  });
-  fileInput.value = '';
-}
-
-function renderTimeline() {
-  // Remove existing note entries (keep empty msg)
-  timeline.querySelectorAll('.note-entry').forEach(el => el.remove());
-
-  if (notesData.length === 0) {
-    emptyMsg.style.display = '';
-    notesCount.textContent = '0 entries';
-    return;
-  }
-
-  emptyMsg.style.display = 'none';
-  notesCount.textContent = notesData.length + (notesData.length === 1 ? ' entry' : ' entries');
-
-  notesData.forEach(note => {
-    const entry = document.createElement('div');
-    entry.className = 'note-entry';
-    entry.innerHTML = `
-      <div class="note-date-col">
-        <div class="note-date-label">${note.dateLabel}</div>
-        <span class="note-date-year">${note.dateYear}</span>
-      </div>
-      <div class="note-dot-col"><div class="note-dot"></div></div>
-      <div class="note-card-col">
-        <div class="note-card" id="${note.id}">
-          <div class="note-card-header" onclick="toggleNote('${note.id}')">
-            <div class="note-card-title" id="${note.id}-title">${escapeHtml(note.title)}</div>
-            <div class="note-card-right">
-              <span class="note-file-name">${escapeHtml(note.fileName)}</span>
-              <span class="note-chevron">▾</span>
-            </div>
-          </div>
-          <div class="note-card-body">
-            <div class="note-card-content">
-              ${note.content != null
-                ? `<div class="note-file-preview">${escapeHtml(note.content)}</div>`
-                : `<div class="note-file-preview" style="color:var(--ink-soft);font-style:italic">Preview not available for this file type.</div>`}
-              <div class="note-file-actions">
-                <button class="note-btn" onclick="renameNote('${note.id}')">Rename</button>
-                <button class="note-btn" onclick="deleteNote('${note.id}')">Remove</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>`;
-    timeline.appendChild(entry);
-  });
-}
-
-function toggleNote(id) {
-  const card = document.getElementById(id);
-  card.classList.toggle('open');
-}
-
-function renameNote(id) {
-  const note = notesData.find(n => n.id === id);
-  if (!note) return;
-  const newTitle = prompt('Rename this note:', note.title);
-  if (newTitle && newTitle.trim()) {
-    note.title = newTitle.trim();
-    renderTimeline();
-    // Re-open the card
-    const card = document.getElementById(id);
-    if (card) card.classList.add('open');
-  }
-}
-
-function deleteNote(id) {
-  if (!confirm('Remove this meeting note?')) return;
-  const idx = notesData.findIndex(n => n.id === id);
-  if (idx > -1) notesData.splice(idx, 1);
-  renderTimeline();
-}
-
+/* ── NAV + INIT ──────────────────────────────────── */
 function escapeHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-
 const sections = document.querySelectorAll('.section[id]');
 const navLinks = document.querySelectorAll('.nav-link');
-
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -2746,10 +2099,8 @@ const observer = new IntersectionObserver(entries => {
     }
   });
 }, { rootMargin: '-40% 0px -55% 0px' });
-
 sections.forEach(s => observer.observe(s));
 
-renderActions();
 loadData();
 </script>
 </body>
